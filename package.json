@@ -1,0 +1,39 @@
+{
+  "name": "@fiug/layout",
+  "version": "0.0.0-0",
+  "description": "page layout for browser applications",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "rm -rf dist && rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fiugd/layout.git"
+  },
+  "keywords": [
+    "docking",
+    "layout",
+    "layout manager",
+    "esm"
+  ],
+  "author": "Harrison Cross",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fiugd/layout/issues"
+  },
+  "homepage": "https://github.com/fiugd/layout#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "rollup": "^2.26.11",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-filesize": "^9.0.2",
+    "rollup-plugin-gzip": "^2.5.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}

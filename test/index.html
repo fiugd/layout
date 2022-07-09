@@ -8,20 +8,21 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="color-scheme" content="dark">
+		<link rel="stylesheet" href="index.css" >
 	</head>
 
 	<body></body>
 
 	<script type="module">
-		import Layout from "https://unpkg.com/@fiug/layout";
+		import Layout from "https://unpkg.com/@fiug/layout@0.0.0-2";
 		//import Layout from "../src/index.js";
 
 		const layoutConfig = {
 			parent: document.body,
 			children: [
-				{ iframe: "tree.html" },
+				{ iframe: "tree.html", width: "200px" },
 				{ iframe: "editor.html" },
-				{ iframe: "terminal.html" },
+				{ iframe: "terminal.html", width: "30%" },
 			]
 		};
 		new Layout(layoutConfig);

@@ -13,3 +13,6 @@ const layoutConfig = {
 };
 new Layout(layoutConfig);
 ```
+
+## Summary
+This layout system uses css `grid` to position elements.

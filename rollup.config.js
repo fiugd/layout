@@ -5,18 +5,18 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from "rollup-plugin-commonjs";
 
 export default [
-  {
-    input: "src/index.js",
-    output: [
-      {
-        file: "dist/index.js",
-        format: "module",
-        name: "Layout",
-        sourcemap: true,
-        plugins: [terser(), gzipPlugin(), filesize()],
-      },
-    ],
+	{
+		input: "src/index.js",
+		output: [
+			{
+				file: "dist/layout.js",
+				format: "module",
+				name: "Layout",
+				sourcemap: true,
+				plugins: [terser(), gzipPlugin(), filesize()],
+			},
+		],
 
-    plugins: [resolve(), commonjs()],
-  },
+		plugins: [resolve(), commonjs()],
+	},
 ];

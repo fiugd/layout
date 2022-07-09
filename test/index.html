@@ -13,17 +13,18 @@
 	<body></body>
 
 	<script type="module">
-	    import Layout from "https://unpkg.com/@fiug/layout";
+		import Layout from "https://unpkg.com/@fiug/layout";
+		//import Layout from "../src/index.js";
 
-	    const layoutConfig = {
-	      parent: document.body
-	      children: [
-		{ iframe: "tree.html" },
-		{ iframe: "editor.html" },
-		{ iframe: "terminal.html" },
-	      ]
-	    };
-	    new Layout(layoutConfig);
-  	</script>
+		const layoutConfig = {
+			parent: document.body,
+			children: [
+				{ iframe: "tree.html" },
+				{ iframe: "editor.html" },
+				{ iframe: "terminal.html" },
+			]
+		};
+		new Layout(layoutConfig);
+	</script>
 </html>
 

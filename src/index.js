@@ -1,7 +1,7 @@
 class Layout {
-  constuctor(){
-    console.log('TODO: layout');
-  }
+	constructor(config){
+		console.log(config);
+	}
 };
 
 export default Layout;

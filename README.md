@@ -1,6 +1,7 @@
 # @fiug/layout
 
-[![NPM version](https://img.shields.io/npm/v/@fiug/layout)](https://www.npmjs.com/package/@fiug/layout) [![License](https://img.shields.io/github/license/fiugd/layout)](https://img.shields.io/github/license/fiugd/layout)
+[![NPM version](https://img.shields.io/npm/v/@fiug/layout)](https://www.npmjs.com/package/@fiug/layout)
+[![License](https://img.shields.io/github/license/fiugd/layout)](https://github.com/fiugd/layout/blob/main/LICENSE)
 
 page layout for browser applications
 

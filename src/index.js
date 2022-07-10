@@ -4,6 +4,8 @@ https://blog.jim-nielsen.com/2021/css-system-colors/
 https://css-tricks.com/snippets/css/complete-guide-grid/
 */
 
+import * as events from './events.js';
+
 const style = `
 	.page-layout {
 		display: grid;
@@ -23,29 +25,6 @@ const style = `
 	}
 `;
 
-const pointerDown = (sizer, index, resize) => (e) => {
-	let { x: startX, y: startY } = e;
-	sizer.setPointerCapture(e.pointerId);
-
-	const pointerMove = (e) => {
-		resize(sizer, index, e.x - startX, e.y - startY);
-		startX = e.x;
-		startY = e.y;
-	};
-	const pointerUp = () => {
-		document.removeEventListener('pointermove', pointerMove);
-		document.removeEventListener('pointerup', pointerUp);
-		document.removeEventListener('pointercancel', pointerUp);
-	};
-	document.addEventListener('pointermove', pointerMove);
-	document.addEventListener('pointerup', pointerUp);
-	document.addEventListener('pointercancel', pointerUp);
-};
-
-const attachResizeListener = (sizer, index, resize) => {
-	sizer.addEventListener('pointerdown', pointerDown(sizer, index, resize));
-};
-
 const createDom = (layout) => {
 	const { config, onResize } = layout;
 	const { children, id } = config;
@@ -64,9 +43,10 @@ const createDom = (layout) => {
 	const sizers = layoutDom.querySelectorAll(':scope > .sizer');
 	for(const [index, sizer] of Array.from(sizers).entries()){
 		sizer.id = Math.random().toString(16).replace('0.','');
-		attachResizeListener(sizer, index, onResize);
+		events.attachResizeListener(sizer, index, onResize);
 	}
 
+	events.attachDragListener();
 	return layoutDom;
 };
 
@@ -105,3 +85,6 @@ class Layout {
 };
 
 export default Layout;
+
+export const dragStart = events.dragStart;
+export const onDrop = events.onDrop;

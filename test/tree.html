@@ -1,4 +1,5 @@
 <meta name="color-scheme" content="dark">
+
 <style>
 	body { background: #262626; }
 	ul { padding: 0; }
@@ -14,11 +15,13 @@
 		color: white;
 	}
 </style>
-<script>
-	function drag(ev) {
-		ev.dataTransfer.setData("text", ev.target.textContent);
-	}
+
+<script type="module">
+	import { dragStart } from "https://unpkg.com/@fiug/layout@0.0.0-4";
+	//import { dragStart } from '../src/index.js';
+	window.drag = dragStart;
 </script>
+
 <ul>
 	<li id="one" draggable="true" ondragstart="drag(event)">one.json</li>
 	<li id="two" draggable="true" ondragstart="drag(event)">two.jpg</li>

@@ -1,4 +1,7 @@
 # @fiug/layout
+
+[![NPM version](https://img.shields.io/npm/v/@fiug/layout)](https://www.npmjs.com/package/@fiug/layout) [![License](https://img.shields.io/github/license/fiugd/layout)](https://img.shields.io/github/license/fiugd/layout)
+
 page layout for browser applications
 
 
@@ -15,4 +18,5 @@ new Layout(layoutConfig);
 ```
 
 ## Summary
-This layout system uses css `grid` to position elements.
+This layout system uses css grid to position elements.   
+It is written from scratch to be simple, flexible, and dependency-free.

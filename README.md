@@ -17,6 +17,7 @@ const layoutConfig = {
 };
 new Layout(layoutConfig);
 ```
+see `test/index.html` for a more involved example
 
 ## Summary
 This layout system uses css grid to position elements.   

@@ -7,7 +7,7 @@
 		margin: 0;
 	}
 	.hidden { display: none; }
-	.tabs { height: 25px; background: #3334; display: flex; }
+	.tabs { height: 25px; background: #333; display: flex; }
 	.tab { padding: 5px 15px; cursor: pointer; }
 	.tab + .tab { margin-left: 1px; }
 	.editor { flex: 1; }
@@ -17,7 +17,7 @@
 	.dropped { background: blue; }
 	.mouse { position: absolute; bottom: 5px; right: 5px; }
 	iframe { border: 0; width: 100%; height: 100%; }
-	.active, .open { background: #1c3d3f; }
+	.active, .open { background: #1a1a1a; }
 	.drag-target {
 		position: absolute;
 		left: 0;
@@ -72,6 +72,15 @@
 		tabs.innerHTML += `<div class="tab active" file="${data}">${data}</div>`;
 	}
 
+	function openDoc({ name }){
+		upsertTab(name);
+		editor.innerHTML = `
+			<iframe src="./document.html" ondragover="dragover(event)"></iframe>
+		`;
+		editor.querySelector('iframe').contentWindow.ondragover = dragover;
+		editor.classList.add('open');
+	}
+
 	const dragover = (ev) => {
 		dragTarget.classList.remove('hidden');
 		ev.preventDefault();
@@ -103,12 +112,8 @@
 		ev.preventDefault();
 		editor.classList.add('open');
 		//depending on hover class, will do different things here
-		editor.innerHTML = `
-			<iframe src="./document.html" ondragover="dragover(event)"></iframe>
-		`;
-		editor.querySelector('iframe').contentWindow.ondragover = dragover;
 		const data = ev.dataTransfer.getData("text");
-		upsertTab(data);
+		openDoc({ name: data });
 		//document.body.classList.remove('drag-hover');
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
@@ -123,4 +128,6 @@
 		hoverClassWait = undefined;
 		//document.body.classList.remove('drag-hover');
 	};
+
+	openDoc({ name: 'six.html' });
 </script>

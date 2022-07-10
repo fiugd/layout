@@ -14,15 +14,15 @@
 	<body></body>
 
 	<script type="module">
-		import Layout from "https://unpkg.com/@fiug/layout@0.0.0-2";
-		//import Layout from "../src/index.js";
+		//import Layout from "https://unpkg.com/@fiug/layout@0.0.0-3";
+		import Layout from "../src/index.js";
 
 		const layoutConfig = {
 			parent: document.body,
 			children: [
 				{ iframe: "tree.html", width: "200px" },
 				{ iframe: "editor.html" },
-				{ iframe: "terminal.html", width: "30%" },
+				{ iframe: "terminal.html", width: "300px" },
 			]
 		};
 		new Layout(layoutConfig);

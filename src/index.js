@@ -1,6 +1,7 @@
 /*
-system colors:
 https://blog.jim-nielsen.com/2021/css-system-colors/
+
+https://css-tricks.com/snippets/css/complete-guide-grid/
 */
 
 const style = `
@@ -18,16 +19,16 @@ const style = `
 		cursor: ew-resize;
 	}
 	.sizer:hover {
-		background: ButtonFace;
+		background: #48e;
 	}
 `;
 
-const pointerDown = (sizer, resize) => (e) => {
+const pointerDown = (sizer, index, resize) => (e) => {
 	let { x: startX, y: startY } = e;
 	sizer.setPointerCapture(e.pointerId);
 
 	const pointerMove = (e) => {
-		resize(sizer, e.x - startX, e.y - startY);
+		resize(sizer, index, e.x - startX, e.y - startY);
 		startX = e.x;
 		startY = e.y;
 	};
@@ -41,8 +42,8 @@ const pointerDown = (sizer, resize) => (e) => {
 	document.addEventListener('pointercancel', pointerUp);
 };
 
-const attachResizeListener = (sizer, resize) => {
-	sizer.addEventListener('pointerdown', pointerDown(sizer, resize));
+const attachResizeListener = (sizer, index, resize) => {
+	sizer.addEventListener('pointerdown', pointerDown(sizer, index, resize));
 };
 
 const createDom = (layout) => {
@@ -61,14 +62,10 @@ const createDom = (layout) => {
 	`);
 
 	const sizers = layoutDom.querySelectorAll(':scope > .sizer');
-	for(const sizer of Array.from(sizers)){
+	for(const [index, sizer] of Array.from(sizers).entries()){
 		sizer.id = Math.random().toString(16).replace('0.','');
-		attachResizeListener(sizer, onResize);
+		attachResizeListener(sizer, index, onResize);
 	}
-
-	layoutDom.style.gridTemplateColumns = children
-		.map(x=>x.width || '1fr')
-		.join(' 3px ');
 
 	return layoutDom;
 };
@@ -84,14 +81,20 @@ class Layout {
 		parent.append(this.dom);
 		this.setSize();
 	}
-	onResize(sizer, x, y){
-		console.log(sizer.id, x, y);
-		//TODO: figure out which elements to size
+	onResize(sizer, i, x, y){
+		const prev = this.config.children[i];
+		const next = this.config.children[i+1];
 		//TODO: figure out how to size them (px, %, 1fr)
-		//NOTE: for now this is hard-coded to resize first element
-		this.config.children[0].width = Number(
-			this.config.children[0].width.replace('px','')
-		) + x + 'px';
+		if(prev.width && prev.width.includes('px')){
+			prev.width = Number(
+				prev.width.replace('px','')
+			) + x + 'px';
+		}
+		if(next.width && next.width.includes('px')){
+			next.width = Number(
+				next.width.replace('px','')
+			) - x + 'px';
+		}
 		this.setSize();
 	}
 	setSize(){

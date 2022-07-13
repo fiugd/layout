@@ -21,6 +21,7 @@
 		const layoutConfig = {
 			parent: document.body,
 			columns: [
+				{ iframe: "action.html", width: "45px", resize: false },
 				{ iframe: "tree.html", width: "250px", minWidth: "200px", snapWidth: "150px", drop: false },
 				{
 					name: "editor",
@@ -29,7 +30,7 @@
 						{ iframe: "one.json", active: true }
 					],
 				},
-				{ iframe: "terminal.html", width: "300px" }
+				{ iframe: "terminal.html", width: "500px" }
 			]
 		};
 		new Layout(layoutConfig);

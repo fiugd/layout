@@ -1,9 +1,12 @@
 import { onDrop } from './events.js';
 
 export const style = () => `
-	.tabbedPane { display: flex; flex-direction: column; margin: 0; }
-	.tabs { height: 25px; background: #333; display: flex; }
-	.tab { padding: 5px 15px; cursor: pointer; }
+	.tabbedPane {
+		display: flex; flex-direction: column; margin: 0;
+		font-family: sans-serif; font-size: 14px;
+	}
+	.tabs { height: 30px; background: #333; display: flex; }
+	.tab { padding: 0.5em 1.5em; cursor: pointer; }
 	.tab + .tab { margin-left: 1px; }
 	.tabbedContent { flex: 1; }
 	.tabbedContent iframe { border: 0; width: 100%; height: 100%; }

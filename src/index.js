@@ -13,28 +13,37 @@ const style = `
 		width: 100%;
 		height: 100%;
 	}
-	.page-layout > iframe {
-		border: 0;
-	}
+	.page-layout > iframe { border: 0; }
 	.sizer {
-		/*background: ButtonFace;
-		transition: background 0.5s;*/
 		cursor: ew-resize;
+		background: transparent;
+		box-sizing: border-box;
+		left: -1.5px;
+		width: 3px;
+		position: relative;
 	}
-	.sizer:hover {
-		background: #48e;
-	}
+	.sizer.disabled { pointer-events: none; }
+	.sizer:hover { background: #48e; }
 
 	${tabbed.style()}
 `;
 
-const childDom = (child) => {
+const childContent = (child) => {
 	const { iframe, children, orient="" } = child;
 	if(iframe) return `<iframe src="${iframe}" width="100%" height="100%"></iframe>`;
 
 	if(children && orient === "tabs") return tabbed.createDom(children);
 
 	return `<iframe src="${children[0].iframe}" width="100%" height="100%"></iframe>`;
+};
+
+const childDom = (child, i, all) => {
+	if(i === 0) return childContent(child);
+	const prev = all[i-1];
+	const sizer = prev.resize+'' !== 'false'
+		? `<div class="sizer"></div>`
+		: '<div class="sizer disabled"></div>';
+	return sizer + childContent(child);
 };
 
 const createDom = (layout) => {
@@ -46,11 +55,7 @@ const createDom = (layout) => {
 
 	layoutDom.innerHTML = 
 	`<style>${style}</style>` + 
-	children
-		.map(childDom)
-		.join(`
-			<div class="sizer"></div>
-		`);
+	children.map(childDom).join('');
 
 	const sizers = layoutDom.querySelectorAll(':scope > .sizer');
 	for(const [index, sizer] of Array.from(sizers).entries()){
@@ -111,7 +116,7 @@ class Layout {
 	setSize(){
 		this.dom.style.gridTemplateColumns = this.config.children
 			.map(x=>x.width || '1fr')
-			.join(' 3px ');
+			.join(' 0px ');
 	}
 };
 

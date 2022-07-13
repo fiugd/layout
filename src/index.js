@@ -5,6 +5,7 @@ https://css-tricks.com/snippets/css/complete-guide-grid/
 */
 
 import * as events from './events.js';
+import * as tabbed from './tabbed.js';
 
 const style = `
 	.page-layout {
@@ -23,7 +24,18 @@ const style = `
 	.sizer:hover {
 		background: #48e;
 	}
+
+	${tabbed.style()}
 `;
+
+const childDom = (child) => {
+	const { iframe, children, orient="" } = child;
+	if(iframe) return `<iframe src="${iframe}" width="100%" height="100%"></iframe>`;
+
+	if(children && orient === "tabs") return tabbed.createDom(children);
+
+	return `<iframe src="${children[0].iframe}" width="100%" height="100%"></iframe>`;
+};
 
 const createDom = (layout) => {
 	const { config, onResize } = layout;
@@ -34,11 +46,11 @@ const createDom = (layout) => {
 
 	layoutDom.innerHTML = 
 	`<style>${style}</style>` + 
-	children.map(x => `
-		<iframe src="${x.iframe}" width="100%" height="100%"></iframe>
-	`).join(`
-		<div class="sizer"></div>
-	`);
+	children
+		.map(childDom)
+		.join(`
+			<div class="sizer"></div>
+		`);
 
 	const sizers = layoutDom.querySelectorAll(':scope > .sizer');
 	for(const [index, sizer] of Array.from(sizers).entries()){
@@ -47,15 +59,34 @@ const createDom = (layout) => {
 	}
 
 	events.attachDragListener();
+	tabbed.attachEvents(layoutDom);
 	return layoutDom;
+};
+
+const parseConfig = (config) => {
+	const { children, rows, columns, tabs, ...rest } = config;
+	const _children = children || rows || columns || tabs;
+	if(_children && !(_children||[]).find(x => x.active)){
+		_children[0] && (_children[0].active = true);
+	}
+
+	let orient = "column";
+	if(columns) orient = "row";
+	if(tabs) orient = "tabs";
+
+	return {
+		...rest,
+		orient,
+		children: (_children||[]).map(parseConfig)
+	}
 };
 
 class Layout {
 	constructor(config){
-		this.config = config;
-		const { parent, children } = config;
+		this.config = parseConfig(config);
+		const { parent, children } = this.config;
 		this.dom = createDom({
-			config,
+			config: this.config,
 			onResize: this.onResize.bind(this)
 		});
 		parent.append(this.dom);

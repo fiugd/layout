@@ -1,6 +1,6 @@
 {
 	"name": "@fiug/layout",
-	"version": "0.0.0-5",
+	"version": "0.0.0-6",
 	"description": "page layout for browser applications",
 	"main": "dist/layout.js",
 	"scripts": {

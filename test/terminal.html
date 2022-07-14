@@ -7,8 +7,8 @@
 <div>terminal</div>
 <pre class="term"></pre>
 <script type="module">
-	import { onDrop } from "https://unpkg.com/@fiug/layout@0.0.0-5";
-	//import { onDrop } from '../src/index.js';
+	//import { onDrop } from "https://unpkg.com/@fiug/layout@0.0.0-6";
+	import { onDrop } from '../src/index.js';
 	const term = document.querySelector('.term');
 	onDrop(({ name }) => {
 		term.textContent += (name + '\n');

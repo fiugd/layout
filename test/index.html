@@ -25,35 +25,38 @@
 					columns: [
 						{ iframe: "action.html", width: "45px", resize: false },
 						{ iframe: "tree.html", width: "250px", minWidth: "200px", snapWidth: "150px", drop: false },
-						{
-							rows: [{
-								height: "40%",
-								tabs: [
-									{ iframe: "six.html" },
-									{ iframe: "one.json", active: true }
-								],
-							}, {
-								tabs: [
-									{ iframe: "seven.html", active: true },
-									{ iframe: "two.json" }
-								],
-							}]
-						},
-						{
-							width: "40%",
-							rows: [
-								{ iframe: "terminal.html", height: "50%" },
-								{ columns: [
-									{ iframe: "terminal.html", width: "50%" },
-									{ 
-										rows: [
-											{ iframe: "terminal.html", height: "50%" },
-											{ iframe: "terminal.html" },
-										]
-									}
-								]}
-							]
-						}
+						{ columns: [
+							{
+								width: "50%",
+								rows: [{
+									height: "40%",
+									tabs: [
+										{ iframe: "six.html" },
+										{ iframe: "one.json", active: true }
+									],
+								}, {
+									tabs: [
+										{ iframe: "seven.html", active: true },
+										{ iframe: "two.json" }
+									],
+								}]
+							},
+							{
+								width: "50%",
+								rows: [
+									{ iframe: "terminal.html", height: "50%" },
+									{ columns: [
+										{ iframe: "terminal.html", width: "50%" },
+										{ 
+											rows: [
+												{ iframe: "terminal.html", height: "50%" },
+												{ iframe: "terminal.html" },
+											]
+										}
+									]}
+								]
+							}
+						]}
 					]
 				},
 				{ iframe: 'status.html', height: "22px", resize: false }

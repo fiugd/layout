@@ -151,6 +151,8 @@ class Layout {
 		parent.append(this.dom);
 	}
 	onResize(sizer, i, x, y){
+		//TODO: sizers should be stored in Layout state when created
+		//data gathering is too much to be doing while resizing
 		const orient = sizer.classList.contains("row") ? "row" : "column";
 		const configFlat = flatConfig(this.config);
 		const containerConfig = configFlat.find(x => x.id === sizer.parentNode.id);

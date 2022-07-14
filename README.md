@@ -42,7 +42,7 @@ refine layout events
 - [ ] option to use drop event as part of hosted page
 - [ ] listen to resize event (or other events) in hosted page
 - [ ] listen to resize event (or other events) in host element
-- [ ] global state as medium for dragStart information
+- [ ] global state as medium for drag meta info
 
 misc 
 - [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)

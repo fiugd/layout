@@ -5,6 +5,7 @@ export const style = () => `
 		display: flex; flex-direction: column; margin: 0;
 		font-family: sans-serif; font-size: 14px;
 	}
+	.tabbedPane { border-top: 1px solid #262626; border-left: 1px solid #262626; }
 	.tabs { height: 30px; background: #333; display: flex; }
 	.tab { padding: 0.5em 1.5em; cursor: pointer; }
 	.tab + .tab { margin-left: 1px; }

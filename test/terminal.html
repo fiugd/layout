@@ -1,9 +1,14 @@
 <meta name="color-scheme" content="dark">
+
+<style>
+	body { margin: 0; border-top: 1px solid #262626; border-left: 1px solid #262626; padding: 1em; }
+</style>
+
 <div>terminal</div>
 <pre class="term"></pre>
 <script type="module">
-	//import { onDrop } from "https://unpkg.com/@fiug/layout@0.0.0-5";
-	import { onDrop } from '../src/index.js';
+	import { onDrop } from "https://unpkg.com/@fiug/layout@0.0.0-5";
+	//import { onDrop } from '../src/index.js';
 	const term = document.querySelector('.term');
 	onDrop(({ name }) => {
 		term.textContent += (name + '\n');

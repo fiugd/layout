@@ -15,22 +15,48 @@
 	<body></body>
 
 	<script type="module">
-		//import Layout from "https://unpkg.com/@fiug/layout@0.0.0-5";
-		import Layout from "../src/index.js";
+		import Layout from "https://unpkg.com/@fiug/layout@0.0.0-5";
+		//import Layout from "../src/index.js";
 
 		const layoutConfig = {
 			parent: document.body,
-			columns: [
-				{ iframe: "action.html", width: "45px", resize: false },
-				{ iframe: "tree.html", width: "250px", minWidth: "200px", snapWidth: "150px", drop: false },
+			rows: [
 				{
-					name: "editor",
-					tabs: [
-						{ iframe: "six.html" },
-						{ iframe: "one.json", active: true }
-					],
+					columns: [
+						{ iframe: "action.html", width: "45px", resize: false },
+						{ iframe: "tree.html", width: "250px", minWidth: "200px", snapWidth: "150px", drop: false },
+						{
+							rows: [{
+								height: "40%",
+								tabs: [
+									{ iframe: "six.html" },
+									{ iframe: "one.json", active: true }
+								],
+							}, {
+								tabs: [
+									{ iframe: "seven.html", active: true },
+									{ iframe: "two.json" }
+								],
+							}]
+						},
+						{
+							width: "40%",
+							rows: [
+								{ iframe: "terminal.html", height: "50%" },
+								{ columns: [
+									{ iframe: "terminal.html", width: "50%" },
+									{ 
+										rows: [
+											{ iframe: "terminal.html", height: "50%" },
+											{ iframe: "terminal.html" },
+										]
+									}
+								]}
+							]
+						}
+					]
 				},
-				{ iframe: "terminal.html", width: "500px" }
+				{ iframe: 'status.html', height: "22px", resize: false }
 			]
 		};
 		new Layout(layoutConfig);

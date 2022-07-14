@@ -28,7 +28,7 @@ It is written from scratch to be simple, flexible, and dependency-free.
 refine visual layout
 - [X] move tab-related code out of editor.html and into module
 - [X] root-level column or rows layout
-- [ ] nested layout
+- [X] nested layout
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
 - [ ] full screen / minimize for panes

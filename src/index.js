@@ -7,20 +7,29 @@ https://css-tricks.com/snippets/css/complete-guide-grid/
 import * as events from './events.js';
 import * as tabbed from './tabbed.js';
 
+const randomId = () => Math.random().toString(16).replace('0.','');
+
 const style = `
-	.page-layout {
+	.layout-container {
 		display: grid;
 		width: 100%;
 		height: 100%;
 	}
-	.page-layout > iframe { border: 0; }
+	.layout-container > iframe { border: 0; }
 	.sizer {
-		cursor: ew-resize;
 		background: transparent;
 		box-sizing: border-box;
+		position: relative;
+	}
+	.sizer.column {
+		cursor: ew-resize;
 		left: -1.5px;
 		width: 3px;
-		position: relative;
+	}
+	.sizer.row {
+		cursor: ns-resize;
+		top: -1.5px;
+		height: 3px;
 	}
 	.sizer.disabled { pointer-events: none; }
 	.sizer:hover { background: #48e; }
@@ -28,40 +37,70 @@ const style = `
 	${tabbed.style()}
 `;
 
+const flatConfig = (config) => {
+	if(!config.children) return config;
+	return [config, ...config.children.map(flatConfig)].flat();
+};
+
 const childContent = (child) => {
-	const { iframe, children, orient="" } = child;
+	const { iframe, children, id, orient="" } = child;
 	if(iframe) return `<iframe src="${iframe}" width="100%" height="100%"></iframe>`;
 
 	if(children && orient === "tabs") return tabbed.createDom(children);
 
-	return `<iframe src="${children[0].iframe}" width="100%" height="100%"></iframe>`;
+	return `
+	<div class="layout-container ${orient}" id="${id}">
+		${children.map(childDom(child)).join('')}
+	</div>
+	`;
 };
 
-const childDom = (child, i, all) => {
+const childDom = (config) => (child, i, all) => {
+	const { orient } = config;
 	if(i === 0) return childContent(child);
 	const prev = all[i-1];
-	const sizer = prev.resize+'' !== 'false'
-		? `<div class="sizer"></div>`
-		: '<div class="sizer disabled"></div>';
+	const next = all[i+1]
+	const canResize = (() => {
+		if(prev.resize+'' === 'false') return false;
+		if(i+1 === all.length && child.resize+'' === 'false') return false;
+		return true;
+	})();
+	const sizer = canResize
+		? `<div class="sizer ${orient}"></div>`
+		: `<div class="sizer ${orient} disabled"></div>`;
 	return sizer + childContent(child);
 };
 
+const containerSizers = (containers, configFlat, onResize) => {
+	for(const [index, container] of containers.entries()){
+		const containerConfig = configFlat.find(x => x.id === container.id);
+		setSize(container, containerConfig);
+
+		const sizers = container.querySelectorAll(':scope > .sizer');
+		for(const [index, sizer] of Array.from(sizers).entries()){
+			sizer.id = randomId();
+			events.attachResizeListener(sizer, index, onResize);
+		}
+	}
+}
+
 const createDom = (layout) => {
 	const { config, onResize } = layout;
-	const { children, id } = config;
+	const { children, id, orient } = config;
 	const layoutDom = document.createElement('div');
-	layoutDom.classList.add('page-layout');
+	layoutDom.classList.add('layout-container', orient);
 	id && (layoutDom.id = id);
 
-	layoutDom.innerHTML = 
-	`<style>${style}</style>` + 
-	children.map(childDom).join('');
+	layoutDom.innerHTML = `<style>${style}</style>` + 
+		children.map(childDom(config)).join('');
 
-	const sizers = layoutDom.querySelectorAll(':scope > .sizer');
-	for(const [index, sizer] of Array.from(sizers).entries()){
-		sizer.id = Math.random().toString(16).replace('0.','');
-		events.attachResizeListener(sizer, index, onResize);
-	}
+	const configFlat = flatConfig(config);
+	const containers = layoutDom.querySelectorAll('.layout-container');
+	containerSizers(
+		[layoutDom, ...Array.from(containers)],
+		configFlat,
+		onResize
+	);
 
 	events.attachDragListener();
 	tabbed.attachEvents(layoutDom);
@@ -72,19 +111,34 @@ const parseConfig = (config) => {
 	const { children, rows, columns, tabs, ...rest } = config;
 	const _children = children || rows || columns || tabs;
 	if(_children && !(_children||[]).find(x => x.active)){
-		_children[0] && (_children[0].active = true);
+		tabs && _children[0] && (_children[0].active = true);
 	}
 
 	let orient = "column";
-	if(columns) orient = "row";
+	if(rows) orient = "row";
 	if(tabs) orient = "tabs";
+
+	if(!_children || !_children.length) return rest;
 
 	return {
 		...rest,
 		orient,
-		children: (_children||[]).map(parseConfig)
+		id: randomId(),
+		children: _children.map(parseConfig)
 	}
 };
+
+const setSize = (container, config) => {
+	if(config.orient === "column"){
+		container.style.gridTemplateColumns = config.children
+			.map(x=>x.width || '1fr')
+			.join(' 0px ');
+		return;
+	}
+	container.style.gridTemplateRows = config.children
+		.map(x=>x.height || '1fr')
+		.join(' 0px ');
+}
 
 class Layout {
 	constructor(config){
@@ -95,28 +149,54 @@ class Layout {
 			onResize: this.onResize.bind(this)
 		});
 		parent.append(this.dom);
-		this.setSize();
 	}
 	onResize(sizer, i, x, y){
-		const prev = this.config.children[i];
-		const next = this.config.children[i+1];
-		//TODO: figure out how to size them (px, %, 1fr)
-		if(prev.width && prev.width.includes('px')){
-			prev.width = Number(
-				prev.width.replace('px','')
-			) + x + 'px';
+		const orient = sizer.classList.contains("row") ? "row" : "column";
+		const configFlat = flatConfig(this.config);
+		const containerConfig = configFlat.find(x => x.id === sizer.parentNode.id);
+		const prev = containerConfig.children[i];
+		const next = containerConfig.children[i+1];
+
+		const modDim = orient === "row" ? "height": "width";
+
+		const pixelDelta = orient === "row" ? y : x;
+		const parentTotal = orient === "row" ? sizer.parentNode.clientHeight : sizer.parentNode.clientWidth
+		const fractionalDelta = pixelDelta / parentTotal;
+
+		const getDelta = (dim) => {
+			if(dim.includes('%')) return 100 * fractionalDelta;
+			return pixelDelta;
+		};
+
+		const getUnits = (dim) => {
+			if(dim.includes('%')) return '%';
+			return 'px';
+		};
+
+		let dimsChanged = false;
+
+		if(prev[modDim] && !prev[modDim].includes('fr')){
+			const units = getUnits(prev[modDim]);
+			const delta = getDelta(prev[modDim]);
+			const newDim = (
+				Number(prev[modDim].replace(units,'')) + delta
+			).toFixed(1) + units;
+			if(prev[modDim] !== newDim) dimsChanged = true;
+			prev[modDim] = newDim;
 		}
-		if(next.width && next.width.includes('px')){
-			next.width = Number(
-				next.width.replace('px','')
-			) - x + 'px';
+		if(next[modDim] && !next[modDim].includes('fr')){
+			const units = getUnits(next[modDim]);
+			const delta = getDelta(next[modDim]);
+			const newDim = (
+				Number(next[modDim].replace(units,'')) - delta
+			).toFixed(1) + units;
+			if(next[modDim] !== newDim) dimsChanged = true;
+			next[modDim] = newDim;
 		}
-		this.setSize();
-	}
-	setSize(){
-		this.dom.style.gridTemplateColumns = this.config.children
-			.map(x=>x.width || '1fr')
-			.join(' 0px ');
+
+		if(dimsChanged){
+			setSize(sizer.parentNode, containerConfig);
+		}
 	}
 };
 

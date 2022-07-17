@@ -17,9 +17,21 @@ const pointerDown = (sizer, index, resize) => (e) => {
 	document.addEventListener('pointercancel', pointerUp);
 };
 
+
+let dragging = false;
 const dragStartMessage = () => (e) => {
-	const { source, dragStart } = JSON.parse(e.data);
-	console.log(source, dragStart);
+	const { source, dragStart, pointerId } = JSON.parse(e.data);
+	//document.body.setPointerCapture(pointerId);
+	//console.log(source, dragStart);
+	dragging = true;
+	const pointerUp = () => {
+		dragging = false;
+		console.log('body: pointer up')
+		document.removeEventListener('pointerup', pointerUp);
+		document.removeEventListener('pointercancel', pointerUp);
+	};
+	document.addEventListener('pointerup', pointerUp);
+	document.addEventListener('pointercancel', pointerUp);
 };
 
 export const attachResizeListener = (sizer, index, resize) => {
@@ -31,12 +43,15 @@ export const attachDragListener = () => {
 };
 
 export const dragStart = (ev) => {
-	ev.dataTransfer.setData("text", ev.target.textContent);
+	console.log('dragging started')
+	//ev.dataTransfer.setData("text", ev.target.textContent);
 	const message = JSON.stringify({
+		pointerId: ev.pointerId,
 		dragStart: ev.target.textContent,
 		source: location.href.split('/').pop()
 	});
 	window.parent.postMessage(message, '*');
+	ev.preventDefault();
 };
 
 
@@ -49,7 +64,10 @@ const dropStyle = `
 		/*filter: hue-rotate(294deg) brightness(0.75) saturate(0.25);*/
 	}
 	.dropped { background: blue; }
-	.mouse { position: absolute; bottom: 5px; right: 5px; }
+	.mouse {
+		pointer-events: none;
+		position: absolute; bottom: 5px; right: 5px;
+	}
 	.drag-target {
 		pointer-events: none;
 		position: absolute;
@@ -94,7 +112,8 @@ export const onDrop = (handler, parent) => {
 		el.classList.remove('bottom-hover');
 	}
 
-	const dragover = (ev) => {
+	const dragover = (ev, pointermove) => {
+		if(pointermove===true) console.log('pointer move');
 		dragTarget.classList.remove('hidden');
 		ev.preventDefault();
 
@@ -156,6 +175,41 @@ export const onDrop = (handler, parent) => {
 	};
 	_parent.ondragleave = ondragleave;
 	//_parent.onpointerleave = ondragleave;
+
+	const pointermove = (e) => dragover(e,true);
+	_parent.onpointerenter = () => {
+		if(!dragging) return;
+		for(var frame of Array.from(_parent.querySelectorAll('.tabs'))){
+			frame.style.pointerEvents = "none";
+		}
+		for(var frame of Array.from(_parent.querySelectorAll('iframe'))){
+			frame.style.pointerEvents = "none";
+		}
+		_parent.addEventListener('pointermove', pointermove);
+		dragTarget.classList.remove('hidden');
+	};
+	_parent.onpointerleave = () => {
+		if(!dragging) return;
+		for(var frame of Array.from(_parent.querySelectorAll('.tabs'))){
+			frame.style.pointerEvents = undefined;
+		}
+		for(var frame of Array.from(_parent.querySelectorAll('iframe'))){
+			frame.style.pointerEvents = undefined;
+		}
+		_parent.removeEventListener('pointermove', pointermove);
+		dragTarget.classList.add('hidden');
+		if(dragging) console.log('drag exit')
+	};
+	
+	/*
+		dragging to a pane will work like this:
+		0) as soon as parent gets a message that DnD has started
+		1) all panes activate drag target containers which cover them and are mostly transparent
+		2) when a pane has been entered then the drag target itself becomes visible
+		3) as mouse moves in pane, it indicates drop locations of center, top, right, left, bottom
+		4) when any of these panes gets a pointerup event it is the drop target
+		5) DnD ends and all panes deactivate their drag target containers
+	*/
 
 	return { dragover };
 };

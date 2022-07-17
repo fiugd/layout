@@ -44,12 +44,14 @@ export const dragStart = (ev) => {
 const dropStyle = `
 	.hidden { display: none; }
 	.drag-hover {
+		pointer-events: none;
 		background: #008062 !important;
 		/*filter: hue-rotate(294deg) brightness(0.75) saturate(0.25);*/
 	}
 	.dropped { background: blue; }
 	.mouse { position: absolute; bottom: 5px; right: 5px; }
 	.drag-target {
+		pointer-events: none;
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -63,17 +65,19 @@ const dropStyle = `
 	.bottom-hover { top: 50%; }
 	.top-hover { bottom: 50%; }
 `;
-export const onDrop = (handler) => {
+export const onDrop = (handler, parent) => {
+	const _parent = parent || document.body;
+
 	const HOVER_WAIT_TIME = 750;
 
 	const mouse = document.createElement('div');
 	mouse.classList.add('mouse');
-	document.body.append(mouse);
+	_parent.append(mouse);
 
 	const dragTarget = document.createElement('div');
 	dragTarget.classList.add('drag-target', 'hidden');
 	dragTarget.innerHTML = `<style>${dropStyle}</style>`
-	document.body.append(dragTarget);
+	_parent.append(dragTarget);
 
 	let hoverClassWait;
 	function hoverClassForSplit(x,y){
@@ -95,8 +99,8 @@ export const onDrop = (handler) => {
 		ev.preventDefault();
 
 		const mousePercents = [
-			ev.clientX/document.body.clientWidth,
-			ev.clientY/document.body.clientHeight
+			ev.offsetX/_parent.clientWidth,
+			ev.offsetY/_parent.clientHeight
 		];
 		mouse.innerHTML = `${
 			hoverClassWait === "done"
@@ -124,26 +128,34 @@ export const onDrop = (handler) => {
 			dragTarget.classList.add(hoverClass);
 		}
 	};
-	//document.body.ondragover = editor.ondragover = dragover;
-	document.body.ondragover = dragover;
-	document.body.ondrop = (ev) => {
+	//_parent.ondragover = editor.ondragover = dragover;
+	// _parent.ondragenter = (ev) => {
+	// 	ev.preventDefault();
+	// 	console.log('drag enter');
+	// 	dragTarget.classList.remove('hidden');
+	// };
+	_parent.ondragover = dragover;
+	_parent.ondrop = (ev) => {
 		ev.preventDefault();
 		const data = ev.dataTransfer.getData("text");
-		//document.body.classList.remove('drag-hover');
+		//_parent.classList.remove('drag-hover');
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
 		removeHoverClasses(dragTarget);
 		hoverClassWait = undefined;
 		handler({ name: data });
 	};
-	dragTarget.ondragleave = (ev) => {
+	const ondragleave = (ev) => {
+		console.log('drag leave');
 		ev.preventDefault();
+		removeHoverClasses(dragTarget);
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
-		removeHoverClasses(dragTarget);
 		hoverClassWait = undefined;
-		//document.body.classList.remove('drag-hover');
+		//_parent.classList.remove('drag-hover');
 	};
-	
+	_parent.ondragleave = ondragleave;
+	//_parent.onpointerleave = ondragleave;
+
 	return { dragover };
 };

@@ -1,7 +1,8 @@
-import { onDrop } from './events.js';
+import * as events from './events.js';
 
 export const style = () => `
 	.tabbedPane {
+		position: relative;
 		display: flex; flex-direction: column; margin: 0;
 		font-family: sans-serif; font-size: 14px;
 	}
@@ -17,8 +18,14 @@ export const style = () => `
 	.tabbedContent { flex: 1; }
 	.tabbedContent iframe { border: 0; width: 100%; height: 100%; }
 	.active, .open, .tabbedContent iframe { background: #1e1e1e; border-color: #2a2a2a; }
-	.tab-close { display: inline-block; color: transparent; }
-	.tab-close svg {  stroke: currentColor; stroke-width: 2.5; height: 0.6em; margin-left: 0.5em; margin-right: -0.3em; }
+	.tab-close {
+		display: inline-block; color: transparent;
+		margin-left: 0.5em; margin-right: -0.3em;
+	}
+	.tab-close svg {
+		pointer-events:none;
+		stroke: currentColor; stroke-width: 2.5; height: 0.6em;
+	}
 	.active, .active .tab-close, .tab:hover .tab-close { color: white }
 `;
 
@@ -47,8 +54,32 @@ export const createDom = (children) => `
 	</div>
 `;
 
+const closeTab = (parent, tab) => {
+	console.log(parent, tab);
+	tab.remove();
+	//TODO: load last tab if exists, load associated doc
+};
+
+const openTab = () => {
+	console.log('drag end')
+};
+
 export const attachEvents = (layoutDom) => {
-	console.log('TODO: tabbed.attachEvents');
+	layoutDom.addEventListener('click', (e) => {
+		if(e.target.classList.contains('tab-close')) return closeTab(
+			e.target.closest('.tabbedPane'), e.target.closest('.tab')
+		);
+	});
+	const tabbedPanes = Array.from(layoutDom.querySelectorAll('.tabbedPane'));
+	for(const pane of tabbedPanes){
+		const iframes = Array.from(pane.querySelectorAll('iframe'));
+		const { dragover } = events.onDrop(openTab, pane);
+		for(const iframe of iframes){
+			iframe.onload = () => {
+				iframe.contentWindow.ondragover = dragover;
+			};
+		}
+	}
 	/*
 		TODO: eached tabbed pane should have its own handlers for:
 			- clicked on a tab
@@ -62,8 +93,7 @@ export const attachEvents = (layoutDom) => {
 		Should be able to DnD to entire tabbed pane OR to tab bar
 	*/
 
-	// 	const tabs = document.querySelector('.tabs');
-	// 	const editor = document.querySelector('.editor');
+
 	// 	let dragover;
 
 	// 	function upsertTab(data){
@@ -85,5 +115,5 @@ export const attachEvents = (layoutDom) => {
 	// 		editor.classList.add('open');
 	// 	}
 
-	// 	({ dragover } = onDrop(openDoc));
+	// 	({ dragover } = events.onDrop(openDoc));
 };

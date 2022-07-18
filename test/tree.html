@@ -9,6 +9,7 @@
 		margin: 5px;
 		padding: 5px 10px;
 		color: #6ac7c7;
+		cursor: grab;
 	}
 	li:hover {
 		background: #125863;
@@ -19,14 +20,20 @@
 <script type="module">
 	//import { dragStart } from "https://unpkg.com/@fiug/layout@0.0.0-6";
 	import { dragStart } from '../src/index.js';
-	window.drag = dragStart;
+	window.drag = (...args) => {
+		//document.body.classList.add('dragging');
+		dragStart(...args);
+	}
+	window.fakeDrag = (ev) => {
+		ev.preventDefault();
+	};
 </script>
 
 <ul>
-	<li id="one" onpointerdown="drag(event)">one.json</li>
-	<li id="two" onpointerdown="drag(event)">two.jpg</li>
-	<li id="three" onpointerdown="drag(event)">three.png</li>
-	<li id="four" onpointerdown="drag(event)">four.js</li>
-	<li id="five" onpointerdown="drag(event)">five.css</li>
-	<li id="six" onpointerdown="drag(event)">six.html</li>
+	<li id="one" onpointerdown="drag(event)" draggable="true" ondragstart="fakeDrag(event)">one.json</li>
+	<li id="two" onpointerdown="drag(event)" draggable="true" ondragstart="fakeDrag(event)">two.jpg</li>
+	<li id="three" onpointerdown="drag(event)" draggable="true" ondragstart="fakeDrag(event)">three.png</li>
+	<li id="four" onpointerdown="drag(event)" draggable="true" ondragstart="fakeDrag(event)">four.js</li>
+	<li id="five" onpointerdown="drag(event)" draggable="true" ondragstart="fakeDrag(event)">five.css</li>
+	<li id="six" onpointerdown="drag(event)" draggable="true" ondragstart="fakeDrag(event)">six.html</li>
 </ul>

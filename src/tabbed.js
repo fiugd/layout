@@ -1,12 +1,10 @@
 import * as events from './events.js';
 
 export const style = () => `
-	.tabbedPane {
-		position: relative;
-		display: flex; flex-direction: column; margin: 0;
+	.pane.tabbed {
+		flex-direction: column;
 		font-family: sans-serif; font-size: 14px;
 	}
-	.tabbedPane { border-top: 1px solid #262626; border-left: 1px solid #262626; }
 	.tabs { height: 30px; background: #2a2a2a; display: flex; }
 	.tab { 
 		padding: 0.55em 1.5em; cursor: pointer; color: #999;
@@ -15,9 +13,7 @@ export const style = () => `
 		border-color: transparent;
 	}
 	.tab + .tab { margin-left: 1px; }
-	.tabbedContent { flex: 1; }
-	.tabbedContent iframe { border: 0; width: 100%; height: 100%; }
-	.active, .open, .tabbedContent iframe { background: #1e1e1e; border-color: #2a2a2a; }
+	.active, .open { background: #1e1e1e; border-color: #2a2a2a; }
 	.tab-close {
 		display: inline-block; color: transparent;
 		margin-left: 0.5em; margin-right: -0.3em;
@@ -29,8 +25,8 @@ export const style = () => `
 	.active, .active .tab-close, .tab:hover .tab-close { color: white }
 `;
 
-export const createDom = (children) => `
-	<div class="tabbedPane">
+export const createDom = ({ children, drop }) => `
+	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }">
 		<div class="tabs">
 			${ children.map(x => `
 				<div
@@ -47,7 +43,7 @@ export const createDom = (children) => `
 				</div>
 			`).join('')}
 		</div>
-		<div class="tabbedContent">
+		<div class="content">
 			${/* TODO: document.html is currently hardcoded, fix this later */""}
 			<iframe src="./document.html" width="100%" height="100%"></iframe>
 		</div>
@@ -67,19 +63,9 @@ const openTab = () => {
 export const attachEvents = (layoutDom) => {
 	layoutDom.addEventListener('click', (e) => {
 		if(e.target.classList.contains('tab-close')) return closeTab(
-			e.target.closest('.tabbedPane'), e.target.closest('.tab')
+			e.target.closest('.pane.tabbed'), e.target.closest('.tab')
 		);
 	});
-	const tabbedPanes = Array.from(layoutDom.querySelectorAll('.tabbedPane'));
-	for(const pane of tabbedPanes){
-		const iframes = Array.from(pane.querySelectorAll('iframe'));
-		const { dragover } = events.onDrop(openTab, pane);
-		for(const iframe of iframes){
-			iframe.onload = () => {
-				iframe.contentWindow.ondragover = dragover;
-			};
-		}
-	}
 	/*
 		TODO: eached tabbed pane should have its own handlers for:
 			- clicked on a tab

@@ -18,20 +18,50 @@ const pointerDown = (sizer, index, resize) => (e) => {
 };
 
 
+const dragPreview = document.createElement('div');
+dragPreview.classList.add('drag-preview', 'hidden');
+document.body.append(dragPreview);
+
+
+var offX = 15;
+var offY = 15;
+function mouseX(evt) {if (!evt) evt = window.event; if (evt.pageX) return evt.pageX; else if (evt.clientX)return evt.clientX + (document.documentElement.scrollLeft ?  document.documentElement.scrollLeft : document.body.scrollLeft); else return 0;}
+function mouseY(evt) {if (!evt) evt = window.event; if (evt.pageY) return evt.pageY; else if (evt.clientY)return evt.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop); else return 0;}
+function follow(evt) {
+	var obj = dragPreview.style;
+	obj.left = (parseInt(mouseX(evt))+offX) + 'px';
+	obj.top = (parseInt(mouseY(evt))+offY) + 'px'; 
+}
+
 let dragging = false;
 const dragStartMessage = () => (e) => {
-	const { source, dragStart, pointerId } = JSON.parse(e.data);
+	const { file, source, dragStart, dragEnd, pointerId } = JSON.parse(e.data);
 	//document.body.setPointerCapture(pointerId);
-	//console.log(source, dragStart);
-	dragging = true;
-	const pointerUp = () => {
+	console.log(dragStart, dragEnd);
+
+	if(dragStart){
+		follow(e);
+		dragPreview.classList.remove('hidden');
+		dragPreview.innerHTML = file;
+		dragging = true;
+		document.addEventListener('pointermove', follow);
+	}
+	if(dragEnd){
+		dragPreview.classList.add('hidden');
+		document.removeEventListener('pointermove', follow);
 		dragging = false;
-		console.log('body: pointer up')
-		document.removeEventListener('pointerup', pointerUp);
-		document.removeEventListener('pointercancel', pointerUp);
-	};
-	document.addEventListener('pointerup', pointerUp);
-	document.addEventListener('pointercancel', pointerUp);
+	}
+	// const pointerUp = () => {
+	// 	dragging = false;
+	// 	console.log('body: pointer up');
+	// 	console.log('should know what frame got dropped on');
+	// 	console.log('for iframe, message that iframe?');
+	// 	console.log('for tabbed, message that pane?');
+	// 	document.removeEventListener('pointerup', pointerUp);
+	// 	document.removeEventListener('pointercancel', pointerUp);
+	// };
+	// document.addEventListener('pointerup', pointerUp);
+	// document.addEventListener('pointercancel', pointerUp);
 };
 
 export const attachResizeListener = (sizer, index, resize) => {
@@ -44,19 +74,33 @@ export const attachDragListener = () => {
 
 export const dragStart = (ev) => {
 	console.log('dragging started')
+	//document.body.setPointerCapture(ev.pointerId);
 	//ev.dataTransfer.setData("text", ev.target.textContent);
 	const message = JSON.stringify({
 		pointerId: ev.pointerId,
 		dragStart: ev.target.textContent,
+		file: ev.target.textContent,
 		source: location.href.split('/').pop()
 	});
 	window.parent.postMessage(message, '*');
 	ev.preventDefault();
 };
 
+export const dragEnd = ({ pane }) => {
+	dragging = false;
+	console.log('dragging ended');
+	console.log(pane)
+	const message = JSON.stringify({
+		dragEnd: true,
+		source: location.href.split('/').pop()
+	});
+	window.parent.postMessage(message, '*');
+};
+
 
 //------------------------------------------
-const dropStyle = `
+export const draggedStyle = () => `
+	.pane.dragging { cursor: grabbing; }
 	.hidden { display: none; }
 	.drag-hover {
 		pointer-events: none;
@@ -82,6 +126,13 @@ const dropStyle = `
 	.left-hover { right: 50%; }
 	.bottom-hover { top: 50%; }
 	.top-hover { bottom: 50%; }
+	.drag-preview {
+		position: absolute;
+		min-width: 50px;
+		padding: 0.25em 0.75em;
+		background: #125863;
+		z-index: 1;
+	}
 `;
 export const onDrop = (handler, parent) => {
 	const _parent = parent || document.body;
@@ -94,7 +145,7 @@ export const onDrop = (handler, parent) => {
 
 	const dragTarget = document.createElement('div');
 	dragTarget.classList.add('drag-target', 'hidden');
-	dragTarget.innerHTML = `<style>${dropStyle}</style>`
+	//dragTarget.innerHTML = `<style>${dropStyle}</style>`
 	_parent.append(dragTarget);
 
 	let hoverClassWait;
@@ -179,6 +230,7 @@ export const onDrop = (handler, parent) => {
 	const pointermove = (e) => dragover(e,true);
 	_parent.onpointerenter = () => {
 		if(!dragging) return;
+		_parent.classList.add('dragging');
 		for(var frame of Array.from(_parent.querySelectorAll('.tabs'))){
 			frame.style.pointerEvents = "none";
 		}
@@ -190,6 +242,7 @@ export const onDrop = (handler, parent) => {
 	};
 	_parent.onpointerleave = () => {
 		if(!dragging) return;
+		_parent.classList.remove('dragging');
 		for(var frame of Array.from(_parent.querySelectorAll('.tabs'))){
 			frame.style.pointerEvents = undefined;
 		}
@@ -198,9 +251,27 @@ export const onDrop = (handler, parent) => {
 		}
 		_parent.removeEventListener('pointermove', pointermove);
 		dragTarget.classList.add('hidden');
+		mouse.innerHTML = '';
 		if(dragging) console.log('drag exit')
 	};
 	
+	const pointerUp = (ev) => {
+		if(!dragging) return;
+		_parent.classList.remove('dragging');
+		_parent.removeEventListener('pointermove', pointermove);
+		ev.preventDefault();
+		dragging = false;
+		console.log('pane heard pointer up');
+		dragTarget.classList.add('hidden');
+		mouse.innerHTML = '';
+		removeHoverClasses(dragTarget);
+		hoverClassWait = undefined;
+		dragEnd({ pane: _parent });
+		return false;
+	};
+	_parent.addEventListener('pointerup', pointerUp);
+	_parent.addEventListener('pointercancel', pointerUp);
+
 	/*
 		dragging to a pane will work like this:
 		0) as soon as parent gets a message that DnD has started
@@ -213,3 +284,15 @@ export const onDrop = (handler, parent) => {
 
 	return { dragover };
 };
+
+
+const dropHandler = () => {
+	console.log('drop happened')
+};
+
+export const attachDropListener = (layoutDom) => {
+	const tabbedPanes = Array.from(layoutDom.querySelectorAll('.pane.dragTo'));
+	for(const pane of tabbedPanes){
+		const { dragover } = onDrop(dropHandler, pane);
+	}
+}

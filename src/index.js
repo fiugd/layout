@@ -15,7 +15,17 @@ const style = `
 		width: 100%;
 		height: 100%;
 	}
-	.layout-container > iframe { border: 0; }
+	.pane {
+		position: relative;
+		display: flex; 
+		margin: 0;
+		border-top: 1px solid #262626; border-left: 1px solid #262626;
+	}
+	.pane .content { flex: 1; }
+	.pane .content iframe {
+		border: 0; width: 100%; height: 100%;
+		background: #1e1e1e; border-color: #2a2a2a;
+	}
 	.sizer {
 		background: transparent;
 		box-sizing: border-box;
@@ -35,6 +45,7 @@ const style = `
 	.sizer:hover { background: #48e; }
 
 	${tabbed.style()}
+	${events.draggedStyle()}
 `;
 
 const flatConfig = (config) => {
@@ -43,10 +54,17 @@ const flatConfig = (config) => {
 };
 
 const childContent = (child) => {
-	const { iframe, children, id, orient="" } = child;
-	if(iframe) return `<iframe src="${iframe}" width="100%" height="100%"></iframe>`;
+	const { iframe, children, id, orient="", drop } = child;
+	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
+	if(iframe) return `
+		<div class="pane${dragToClass}">
+			<div class="content">
+				<iframe src="${iframe}" width="100%" height="100%"></iframe>
+			</div>
+		</div>
+	`;
 
-	if(children && orient === "tabs") return tabbed.createDom(children);
+	if(children && orient === "tabs") return tabbed.createDom(child);
 
 	return `
 	<div class="layout-container ${orient}" id="${id}">
@@ -103,7 +121,7 @@ const createDom = (layout) => {
 	);
 
 	events.attachDragListener();
-	tabbed.attachEvents(layoutDom);
+	events.attachDropListener(layoutDom);
 	return layoutDom;
 };
 

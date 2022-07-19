@@ -64,7 +64,7 @@ const childContent = (child) => {
 	const { iframe, children, id, orient="", drop } = child;
 	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
 	if(iframe) return `
-		<div class="pane${dragToClass}">
+		<div class="pane${dragToClass}" id="${randomId()}">
 			<div class="content">
 				<iframe src="${iframe}" width="100%" height="100%"></iframe>
 			</div>
@@ -229,6 +229,6 @@ class Layout {
 
 export default Layout;
 
-export const dragWarn = events.dragWarn;
+export const dragEnd = events.dragEnd;
 export const dragStart = events.dragStart;
 export const onDrop = events.onDrop;

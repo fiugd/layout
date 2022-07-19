@@ -31,29 +31,43 @@
 
 <script type="module">
 	//import { dragStart } from "https://unpkg.com/@fiug/layout@0.0.0-6";
-	import { dragStart } from '../src/index.js';
+	import { dragStart, dragEnd } from '../src/index.js';
 
 
 	// TODO: possibly, most of the following could be added to the framework
 	// attachDrag(document.body.querySelectorAll('li'));
 
-	let dragging;
+	let pointerDown, dragging;
+	const pointermove = (ev) => {
+		ev.preventDefault();
+		if(pointerDown && !dragging){
+			dragging = ev;
+			dragStart(dragging, pointerDown);
+		}
+	};
+
 	const pointerleave = (ev) => {
 		ev.preventDefault();
-		console.log('pointer left frame');
-		if(dragging){
-			dragStart(ev, dragging);
-		}
 		dragging = undefined;
+		pointerDown = undefined;
 		document.body.classList.remove('dragging');
+		document.body.removeEventListener('pointerup', pointerup);
 		document.body.removeEventListener('pointerleave', pointerleave);
+		document.body.removeEventListener('pointermove', pointermove);
+	};
+	
+	const pointerup = (ev) => {
+		dragEnd();
+		pointerleave(ev);
 	};
 
 	const drag = (ev) => {
 		ev.preventDefault();
 		document.body.classList.add('dragging');
-		dragging = ev;
+		pointerDown = ev;
+		document.body.addEventListener('pointerup', pointerup);
 		document.body.addEventListener('pointerleave', pointerleave);
+		document.body.addEventListener('pointermove', pointermove);
 	};
 
 	const draggables = Array.from(document.body.querySelectorAll('li'));

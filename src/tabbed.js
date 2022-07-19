@@ -1,5 +1,7 @@
 import * as events from './events.js';
 
+const randomId = () => Math.random().toString(16).replace('0.','');
+
 export const style = () => `
 	.pane.tabbed {
 		flex-direction: column;
@@ -30,7 +32,7 @@ export const style = () => `
 `;
 
 export const createDom = ({ children, drop }) => `
-	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }">
+	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }" id="${randomId()}">
 		<div class="tabs">
 			${ children.map(x => `
 				<div

@@ -1,3 +1,5 @@
+import * as splitting from './splitting.js';
+
 const pointerDown = (sizer, index, resize) => (e) => {
 	let { x: startX, y: startY } = e;
 	sizer.setPointerCapture(e.pointerId);
@@ -36,22 +38,37 @@ function follow(evt) {
 }
 
 let dragging = false;
+let file;
 const dragStartMessage = () => (e) => {
-	const { file, source, dragStart, dragEnd, pointerId } = JSON.parse(e.data);
+	const { file: inputFile, source, dragStart, dragEnd, pointerId, pane, splitDirection } = JSON.parse(e.data);
 	//document.body.setPointerCapture(pointerId);
-	console.log(dragStart, dragEnd);
+	file = inputFile || file;
 
 	if(dragStart){
+		dragging = true;
 		follow({ pageX: -999, pageY: -999 });
 		dragPreview.classList.remove('hidden');
 		dragPreview.innerHTML = file;
-		dragging = true;
 		document.addEventListener('pointermove', follow);
 	}
 	if(dragEnd){
+		console.log({ file, source, dragEnd, pane: pane?.id, splitDirection });
+		const dir = {
+			"top": "up",
+			"bottom": "down",
+			"left": "left",
+			"right": "right"
+		}[splitDirection];
+		const splitPane = document.getElementById(pane?.id);
+		console.log({ dir, splitPane })
+		if(dir && splitPane){
+			splitting.newPane(dir, splitPane, "document.html");
+		}
+
 		dragPreview.classList.add('hidden');
 		document.removeEventListener('pointermove', follow);
 		dragging = false;
+		file = undefined;
 	}
 	// const pointerUp = () => {
 	// 	dragging = false;
@@ -76,9 +93,6 @@ export const attachDragListener = () => {
 
 // used in the page context
 export const dragStart = (ev, draggedEv) => {
-	console.log('dragging started')
-	//document.body.setPointerCapture(ev.pointerId);
-	//ev.dataTransfer.setData("text", ev.target.textContent);
 	const message = JSON.stringify({
 		pointerId: ev.pointerId,
 		dragStart: draggedEv.target.textContent,
@@ -89,12 +103,12 @@ export const dragStart = (ev, draggedEv) => {
 	ev.preventDefault();
 };
 
-export const dragEnd = ({ pane }) => {
+// used in the page context
+export const dragEnd = ({ pane, splitDirection }={}) => {
 	dragging = false;
-	console.log('dragging ended');
-	console.log(pane)
 	const message = JSON.stringify({
 		dragEnd: true,
+		pane, splitDirection,
 		source: location.href.split('/').pop()
 	});
 	window.parent.postMessage(message, '*');
@@ -182,7 +196,6 @@ export const onDrop = (handler, parent) => {
 	}
 
 	const dragover = (ev, pointermove) => {
-		if(pointermove===true) console.log('pointer move');
 		ev.preventDefault();
 
 		if(!_parent.classList.contains('dragTo')){
@@ -239,7 +252,6 @@ export const onDrop = (handler, parent) => {
 		handler({ name: data });
 	};
 	const ondragleave = (ev) => {
-		console.log('drag leave');
 		ev.preventDefault();
 		removeHoverClasses(dragTarget);
 		dragTarget.classList.add('hidden');
@@ -268,7 +280,6 @@ export const onDrop = (handler, parent) => {
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
 		_parent.hoverClassWait = undefined;
-		if(dragging) console.log('drag exit')
 	};
 	
 	const pointerUp = (ev) => {
@@ -277,12 +288,21 @@ export const onDrop = (handler, parent) => {
 		_parent.removeEventListener('pointermove', pointermove);
 		ev.preventDefault();
 		dragging = false;
-		console.log('pane heard pointer up');
-		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
+		
+		const splitDirection = dragTarget.classList.value
+			.replace('drag-target', '')
+			.replace('-hover', '')
+			.trim();
+		dragEnd({ 
+			pane: {
+				id: _parent.id
+			},
+			splitDirection
+		});
+		dragTarget.classList.add('hidden');
 		removeHoverClasses(dragTarget);
 		_parent.hoverClassWait = undefined;
-		dragEnd({ pane: _parent });
 		return false;
 	};
 	_parent.addEventListener('pointerup', pointerUp);

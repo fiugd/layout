@@ -20,6 +20,8 @@ const pointerDown = (sizer, index, resize) => (e) => {
 
 const dragPreview = document.createElement('div');
 dragPreview.classList.add('drag-preview', 'hidden');
+dragPreview.style.left = "-999px";
+dragPreview.style.top = "-999px";
 document.body.append(dragPreview);
 
 
@@ -40,7 +42,7 @@ const dragStartMessage = () => (e) => {
 	console.log(dragStart, dragEnd);
 
 	if(dragStart){
-		follow(e);
+		follow({ pageX: -999, pageY: -999 });
 		dragPreview.classList.remove('hidden');
 		dragPreview.innerHTML = file;
 		dragging = true;
@@ -110,6 +112,7 @@ export const draggedStyle = () => `
 	.pane.noDrag .tabs {
 		pointer-events: none;
 	}
+	.pane .content { position: relative; }
 
 	.hidden { display: none; }
 	.drag-hover {
@@ -129,7 +132,7 @@ export const draggedStyle = () => `
 		top: 0;
 		bottom: 0;
 		background: #7774;
-		transition: left .3s, right .3s, top .3s, bottom .3s;
+		transition: left .2s, right .2s, top .2s, bottom .2s;
 	}
 	.right-hover { left: 50%; }
 	.left-hover { right: 50%; }
@@ -155,10 +158,15 @@ export const onDrop = (handler, parent) => {
 
 	const dragTarget = document.createElement('div');
 	dragTarget.classList.add('drag-target', 'hidden');
-	//dragTarget.innerHTML = `<style>${dropStyle}</style>`
-	_parent.append(dragTarget);
 
-	let hoverClassWait;
+	//TODO: drag target for tabs
+
+	const content = _parent.querySelector('.content');
+	if(content)	content.append(dragTarget);
+	else _parent.append(dragTarget);
+	
+	_parent.append(dragTarget)
+
 	function hoverClassForSplit(x,y){
 		if(x < 0.25) return 'left-hover';
 		if(x > 0.75) return 'right-hover';
@@ -186,7 +194,7 @@ export const onDrop = (handler, parent) => {
 			ev.offsetY/_parent.clientHeight
 		];
 		mouse.innerHTML = `${
-			hoverClassWait === "done"
+			_parent.hoverClassWait === "done"
 				? 'DONE'
 				: 'WAIT'
 		} : ${
@@ -195,14 +203,14 @@ export const onDrop = (handler, parent) => {
 			(100 * mousePercents[1]).toFixed(2)
 		}`;
 
-		if(!hoverClassWait){
-			hoverClassWait="inprogress";
+		if(!_parent.hoverClassWait){
+			_parent.hoverClassWait="inprogress";
 			setTimeout(() => {
-				if(hoverClassWait==="inprogress")
-					hoverClassWait = "done";
+				if(_parent.hoverClassWait==="inprogress")
+					_parent.hoverClassWait = "done";
 			}, HOVER_WAIT_TIME);
 		}
-		if(hoverClassWait==="inprogress") return;
+		if(_parent.hoverClassWait==="inprogress") return;
 
 		const hoverClass = hoverClassForSplit(...mousePercents);
 		if(!hoverClass) removeHoverClasses(dragTarget);
@@ -227,7 +235,7 @@ export const onDrop = (handler, parent) => {
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
 		removeHoverClasses(dragTarget);
-		hoverClassWait = undefined;
+		_parent.hoverClassWait = undefined;
 		handler({ name: data });
 	};
 	const ondragleave = (ev) => {
@@ -236,7 +244,7 @@ export const onDrop = (handler, parent) => {
 		removeHoverClasses(dragTarget);
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
-		hoverClassWait = undefined;
+		_parent.hoverClassWait = undefined;
 		//_parent.classList.remove('drag-hover');
 	};
 	_parent.ondragleave = ondragleave;
@@ -259,6 +267,7 @@ export const onDrop = (handler, parent) => {
 		_parent.removeEventListener('pointermove', pointermove);
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
+		_parent.hoverClassWait = undefined;
 		if(dragging) console.log('drag exit')
 	};
 	
@@ -272,7 +281,7 @@ export const onDrop = (handler, parent) => {
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
 		removeHoverClasses(dragTarget);
-		hoverClassWait = undefined;
+		_parent.hoverClassWait = undefined;
 		dragEnd({ pane: _parent });
 		return false;
 	};

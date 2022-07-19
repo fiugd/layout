@@ -5,11 +5,15 @@ export const style = () => `
 		flex-direction: column;
 		font-family: sans-serif; font-size: 14px;
 	}
-	.tabs { height: 30px; background: #2a2a2a; display: flex; }
+	.tabs {
+		height: 30px; background: #2a2a2a; display: flex;
+		margin-top: -0.5px;
+	}
 	.tab { 
 		padding: 0.55em 1.5em; cursor: pointer; color: #999;
+		
 		border-top-right-radius: 2px; border-top-left-radius: 2px;
-		border-left: 0.5px solid; border-right: 0.5px solid; border-top: 0.5px solid;
+		/*border-left: 0.5px solid; border-right: 0.5px solid;*/ border-top: 0.5px solid;
 		border-color: transparent;
 	}
 	.tab + .tab { margin-left: 1px; }

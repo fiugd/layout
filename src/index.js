@@ -6,6 +6,9 @@ https://css-tricks.com/snippets/css/complete-guide-grid/
 
 import * as events from './events.js';
 import * as tabbed from './tabbed.js';
+import * as splitting from './splitting.js';
+
+window.newPane = splitting.newPane;
 
 const randomId = () => Math.random().toString(16).replace('0.','');
 
@@ -20,6 +23,7 @@ const style = `
 		display: flex; 
 		margin: 0;
 		border-top: 1px solid #262626; border-left: 1px solid #262626;
+		box-sizing: border-box;
 	}
 	.pane .content { flex: 1; }
 	.pane .content iframe {
@@ -30,16 +34,19 @@ const style = `
 		background: transparent;
 		box-sizing: border-box;
 		position: relative;
+		z-index: 1;
 	}
 	.sizer.column {
 		cursor: ew-resize;
-		left: -1.5px;
+		left: -1px;
 		width: 3px;
+		margin-top: 1px;
 	}
 	.sizer.row {
 		cursor: ns-resize;
-		top: -1.5px;
+		top: -1px;
 		height: 3px;
+		margin-left: 1px;
 	}
 	.sizer.disabled { pointer-events: none; }
 	.sizer:hover { background: #48e; }

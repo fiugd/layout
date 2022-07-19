@@ -222,5 +222,6 @@ class Layout {
 
 export default Layout;
 
+export const dragWarn = events.dragWarn;
 export const dragStart = events.dragStart;
 export const onDrop = events.onDrop;

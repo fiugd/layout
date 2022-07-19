@@ -24,7 +24,7 @@ document.body.append(dragPreview);
 
 
 var offX = 15;
-var offY = 15;
+var offY = -10;
 function mouseX(evt) {if (!evt) evt = window.event; if (evt.pageX) return evt.pageX; else if (evt.clientX)return evt.clientX + (document.documentElement.scrollLeft ?  document.documentElement.scrollLeft : document.body.scrollLeft); else return 0;}
 function mouseY(evt) {if (!evt) evt = window.event; if (evt.pageY) return evt.pageY; else if (evt.clientY)return evt.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop); else return 0;}
 function follow(evt) {
@@ -72,14 +72,15 @@ export const attachDragListener = () => {
 	window.addEventListener('message', dragStartMessage());
 };
 
-export const dragStart = (ev) => {
+// used in the page context
+export const dragStart = (ev, draggedEv) => {
 	console.log('dragging started')
 	//document.body.setPointerCapture(ev.pointerId);
 	//ev.dataTransfer.setData("text", ev.target.textContent);
 	const message = JSON.stringify({
 		pointerId: ev.pointerId,
-		dragStart: ev.target.textContent,
-		file: ev.target.textContent,
+		dragStart: draggedEv.target.textContent,
+		file: draggedEv.target.textContent,
 		source: location.href.split('/').pop()
 	});
 	window.parent.postMessage(message, '*');
@@ -100,12 +101,20 @@ export const dragEnd = ({ pane }) => {
 
 //------------------------------------------
 export const draggedStyle = () => `
-	.pane.dragging { cursor: grabbing; }
+	.pane.dragging { cursor: copy; }
+	.pane.noDrag { cursor: no-drop; }
+	
+	.pane.dragging iframe,
+	.pane.dragging .tabs,
+	.pane.noDrag iframe,
+	.pane.noDrag .tabs {
+		pointer-events: none;
+	}
+
 	.hidden { display: none; }
 	.drag-hover {
 		pointer-events: none;
 		background: #008062 !important;
-		/*filter: hue-rotate(294deg) brightness(0.75) saturate(0.25);*/
 	}
 	.dropped { background: blue; }
 	.mouse {
@@ -128,10 +137,11 @@ export const draggedStyle = () => `
 	.top-hover { bottom: 50%; }
 	.drag-preview {
 		position: absolute;
-		min-width: 50px;
 		padding: 0.25em 0.75em;
-		background: #125863;
+		background: #666;
 		z-index: 1;
+		border-radius: 3px;
+		font-family: sans-serif;
 	}
 `;
 export const onDrop = (handler, parent) => {
@@ -165,8 +175,11 @@ export const onDrop = (handler, parent) => {
 
 	const dragover = (ev, pointermove) => {
 		if(pointermove===true) console.log('pointer move');
-		dragTarget.classList.remove('hidden');
 		ev.preventDefault();
+
+		if(!_parent.classList.contains('dragTo')){
+			return;
+		}
 
 		const mousePercents = [
 			ev.offsetX/_parent.clientWidth,
@@ -197,6 +210,8 @@ export const onDrop = (handler, parent) => {
 			removeHoverClasses(dragTarget);
 			dragTarget.classList.add(hoverClass);
 		}
+		dragTarget.classList.remove('hidden');
+
 	};
 	//_parent.ondragover = editor.ondragover = dragover;
 	// _parent.ondragenter = (ev) => {
@@ -230,25 +245,17 @@ export const onDrop = (handler, parent) => {
 	const pointermove = (e) => dragover(e,true);
 	_parent.onpointerenter = () => {
 		if(!dragging) return;
-		_parent.classList.add('dragging');
-		for(var frame of Array.from(_parent.querySelectorAll('.tabs'))){
-			frame.style.pointerEvents = "none";
-		}
-		for(var frame of Array.from(_parent.querySelectorAll('iframe'))){
-			frame.style.pointerEvents = "none";
-		}
 		_parent.addEventListener('pointermove', pointermove);
+		if(!_parent.classList.contains('dragTo')){
+			_parent.classList.add('noDrag');
+			return;
+		}
+		_parent.classList.add('dragging');
 		dragTarget.classList.remove('hidden');
 	};
 	_parent.onpointerleave = () => {
 		if(!dragging) return;
-		_parent.classList.remove('dragging');
-		for(var frame of Array.from(_parent.querySelectorAll('.tabs'))){
-			frame.style.pointerEvents = undefined;
-		}
-		for(var frame of Array.from(_parent.querySelectorAll('iframe'))){
-			frame.style.pointerEvents = undefined;
-		}
+		_parent.classList.remove('dragging', 'noDrag');
 		_parent.removeEventListener('pointermove', pointermove);
 		dragTarget.classList.add('hidden');
 		mouse.innerHTML = '';
@@ -257,7 +264,7 @@ export const onDrop = (handler, parent) => {
 	
 	const pointerUp = (ev) => {
 		if(!dragging) return;
-		_parent.classList.remove('dragging');
+		_parent.classList.remove('dragging', 'noDrag');
 		_parent.removeEventListener('pointermove', pointermove);
 		ev.preventDefault();
 		dragging = false;
@@ -291,7 +298,7 @@ const dropHandler = () => {
 };
 
 export const attachDropListener = (layoutDom) => {
-	const tabbedPanes = Array.from(layoutDom.querySelectorAll('.pane.dragTo'));
+	const tabbedPanes = Array.from(layoutDom.querySelectorAll('.pane'));
 	for(const pane of tabbedPanes){
 		const { dragover } = onDrop(dropHandler, pane);
 	}

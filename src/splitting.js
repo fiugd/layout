@@ -5,7 +5,15 @@
 const newPaneDomChildren = (target, tabbed) => `
 	${tabbed ? `
 		<div class="tabs">
-			<div class="tab active">${target.split("/").pop()}</div>
+			<div class="tab active" file="${target.split("/").pop()}">
+				<span>${target.split("/").pop()}</span>
+				<div class="tab-close">
+					<svg viewBox="0 0 10 10">
+						<line x1="1" y1="1" x2="9" y2="9"></line>
+						<line x1="9" y1="1" x2="1" y2="9"></line>
+					</svg>
+				</div>
+			</div>
 		</div>
 	`: ""}
 	<div class="content">

@@ -1,5 +1,3 @@
-import * as events from './events.js';
-
 const randomId = () => Math.random().toString(16).replace('0.','');
 
 export const style = () => `
@@ -31,39 +29,95 @@ export const style = () => `
 	.active, .active .tab-close, .tab:hover .tab-close { color: white }
 `;
 
+const createEmptyDom = () => `
+<html>
+	<head>
+	<meta name="color-scheme" content="dark">
+	<style>
+		body {
+			margin: 0;
+			padding: 0.75em 1em;
+			font-family: sans-serif; font-size: 14px;
+			color: #999;
+			background: #2a2a2a;
+		}
+	</style>
+	</head>
+	<body>
+	</body>
+</html>
+`.replaceAll("\r", "").replaceAll("\n", "");;
+
+
+const createTabDom = (active, filename) => `
+<div
+	class="tab${ active ? ' active' : ''}"
+	file="${filename}"
+>
+	<span>${filename}</span>
+	<div class="tab-close">
+		<svg viewBox="0 0 10 10">
+			<line x1="1" y1="1" x2="9" y2="9"></line>
+			<line x1="9" y1="1" x2="1" y2="9"></line>
+		</svg>
+	</div>
+</div>
+`;
+
+const createContentDom = ({ src, srcdoc }) => src
+? `
+	<iframe src="${src}" width="100%" height="100%"></iframe>
+`
+: `
+	<iframe srcdoc='${srcdoc}' width="100%" height="100%"></iframe>
+`
+;
+
 export const createDom = ({ children, drop }) => `
 	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }" id="${randomId()}">
 		<div class="tabs">
-			${ children.map(x => `
-				<div
-					class="tab${ x.active ? ' active' : ''}"
-					file="${x.iframe.split('/').pop()}"
-				>
-					<span>${x.iframe.split('/').pop()}</span>
-					<div class="tab-close">
-						<svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
-							<line x1="1" y1="1" x2="9" y2="9"></line>
-							<line x1="9" y1="1" x2="1" y2="9"></line>
-						</svg>
-					</div>
-				</div>
-			`).join('')}
+			${ children.map(x => createTabDom(
+					x.active,
+					x.iframe.split('/').pop()
+				)).join('')
+			}
 		</div>
 		<div class="content">
 			${/* TODO: document.html is currently hardcoded, fix this later */""}
-			<iframe src="./document.html" width="100%" height="100%"></iframe>
+			${createContentDom({ src: "document.html" })}
 		</div>
 	</div>
 `;
 
 const closeTab = (parent, tab) => {
-	console.log(parent, tab);
 	tab.remove();
-	//TODO: load last tab if exists, load associated doc
+
+	const tabs = Array.from(parent.querySelectorAll('.tab'));
+	const content = parent.querySelector('.content');
+	const lastTab = tabs && tabs[tabs.length-1];
+	const file = lastTab && lastTab.getAttribute('file');
+
+	if(file){
+		openTab(parent, file);
+	} else {
+		content.innerHTML = createContentDom({ srcdoc: createEmptyDom() });
+	}
 };
 
-const openTab = () => {
-	console.log('drag end')
+export const openTab = (parent, tab) => {
+	const content = parent.querySelector('.content');
+	/* TODO: document.html is currently hardcoded, fix this later */
+	content.innerHTML = createContentDom({ src: "document.html" });
+
+	Array.from(parent.querySelectorAll('.tab.active'))
+		.forEach(x=>x.classList.remove('active'));
+	const tabs = parent.querySelector('.tabs');
+	const found = tabs.querySelector(`.tab[file="${tab}"]`);
+	if(found){
+		found.classList.add('active');
+		return
+	}
+	tabs.innerHTML += createTabDom(true, tab);
 };
 
 export const attachEvents = (layoutDom) => {

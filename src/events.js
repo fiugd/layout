@@ -1,4 +1,5 @@
 import * as splitting from './splitting.js';
+import * as tabbed from './tabbed.js';
 
 const pointerDown = (sizer, index, resize) => (e) => {
 	let { x: startX, y: startY } = e;
@@ -60,9 +61,12 @@ const dragStartMessage = () => (e) => {
 			"right": "right"
 		}[splitDirection];
 		const splitPane = document.getElementById(pane?.id);
-		console.log({ dir, splitPane })
 		if(dir && splitPane){
 			splitting.newPane(dir, splitPane, "document.html");
+		}
+		const tabbedPane = splitPane.classList.contains('tabbed');
+		if(!dir && tabbedPane){
+			tabbed.openTab(splitPane, file);
 		}
 
 		dragPreview.classList.add('hidden');

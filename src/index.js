@@ -129,6 +129,7 @@ const createDom = (layout) => {
 
 	events.attachDragListener();
 	events.attachDropListener(layoutDom);
+	tabbed.attachEvents(layoutDom);
 	return layoutDom;
 };
 

@@ -1,13 +1,25 @@
-const newPaneDomChildren = (target) => `
-	<div class="tabs">
-		<div class="tab active">${target.split("/").pop()}</div>
-	</div>
+/*
+	TODO: iframe behavior should vary based on parent type
+	this is hardcoded right now, fix this
+*/
+const newPaneDomChildren = (target, tabbed) => `
+	${tabbed ? `
+		<div class="tabs">
+			<div class="tab active">${target.split("/").pop()}</div>
+		</div>
+	`: ""}
 	<div class="content">
-		<iframe src="${target}" width="100%" height="100%"></iframe>
+		<iframe src="${tabbed ? target : "terminal.html"}" width="100%" height="100%"></iframe>
 	</div>
 `;
-const newPaneDom = (target) => `
-	<div class="pane tabbed dragTo">
+const newPaneDom = (target, tabbed, dragTo) => `
+	<div class="${
+		[
+			"pane",
+			tabbed && "tabbed",
+			dragTo && "dragTo"
+		].filter(x=>x).join(" ")
+	}">
 		${newPaneDomChildren(target)}
 	</div>
 `;
@@ -23,9 +35,11 @@ const halfDim = (dim) => {
 const split = (node, target, append, vertical, row) => {
 	const splitter = document.createElement('div');
 	const sizerDir = row ? "column" : "row";
+	const parentTabbed = node.classList.contains('tabbed');
+	const parentDragTo = node.classList.contains('dragTo');
 	splitter.innerHTML = `
 		${ append ? `<div class="sizer ${sizerDir}"></div>` : "" }
-		${ newPaneDom(target) }
+		${ newPaneDom(target, parentTabbed, parentDragTo) }
 		${ !append ? `<div class="sizer ${sizerDir}"></div>` : "" }
 	`;
 	if(vertical){
@@ -58,8 +72,13 @@ const addPane = (node, target, append, vertical, row) => {
 	spacer.classList.add("sizer", row ? "row" : "column");
 
 	const pane = document.createElement('div');
-	pane.classList.add('pane', 'tabbed', 'dragTo');
-	pane.innerHTML = newPaneDomChildren(target);
+	pane.classList.add('pane');
+	const parentTabbed = node.classList.contains('tabbed');
+	if(parentTabbed)
+		pane.classList.add('tabbed');
+	if(node.classList.contains('dragTo'))
+		pane.classList.add('dragTo');
+	pane.innerHTML = newPaneDomChildren(target, parentTabbed);
 
 	const insertLocation = append ? 'afterend' : 'beforebegin';
 	node.insertAdjacentElement(insertLocation, pane);
@@ -68,7 +87,7 @@ const addPane = (node, target, append, vertical, row) => {
 
 /*
 TODO:
-connect sizer to listeners
+connect sizer and drop to listeners
 
 OR
 

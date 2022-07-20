@@ -11,6 +11,10 @@ export const style = () => `
 		margin-top: -0.5px;
 		overflow-x: auto;
 		overflow-y: hidden;
+		scrollbar-width: none; 
+	}
+	.tabs::-webkit-scrollbar {
+		display: none;
 	}
 	.tab { 
 		padding: 0.55em 1.5em; cursor: pointer; color: #999;

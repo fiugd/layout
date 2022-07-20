@@ -12,6 +12,14 @@ const newPaneDom = (target) => `
 	</div>
 `;
 
+const halfDim = (dim) => {
+	let unit = "";
+	if(dim.includes("px")) unit = "px";
+	if(dim.includes("fr")) unit = "fr";
+	if(dim.includes("%")) unit = "%";
+	return 0.5 * Number(dim.replace(unit,"")) + unit;
+};
+
 const split = (node, target, append, vertical, row) => {
 	const splitter = document.createElement('div');
 	const sizerDir = row ? "column" : "row";
@@ -34,6 +42,18 @@ const split = (node, target, append, vertical, row) => {
 };
 
 const addPane = (node, target, append, vertical, row) => {
+	let dims = row
+		? node.parentNode.style.gridTemplateRows.split(" ").filter(x=>x)
+		: node.parentNode.style.gridTemplateColumns.split(" ").filter(x=>x);
+	const index = Array.from(node.parentNode.children).indexOf(node);
+	const half = halfDim(dims[index]);
+	dims[index] = [half, '0px', half];
+	dims = dims.flat();
+	if(row)
+		node.parentNode.style.gridTemplateRows = dims.join(" ");
+	else
+		node.parentNode.style.gridTemplateXColumns = dims.join(" ");
+
 	const spacer = document.createElement('div');
 	spacer.classList.add("sizer", row ? "row" : "column");
 
@@ -44,16 +64,6 @@ const addPane = (node, target, append, vertical, row) => {
 	const insertLocation = append ? 'afterend' : 'beforebegin';
 	node.insertAdjacentElement(insertLocation, pane);
 	node.insertAdjacentElement(insertLocation, spacer);
-
-	if(row){
-		node.parentNode.style.gridTemplateRows = append
-			? node.parentNode.style.gridTemplateRows + " 0px 1fr"
-			: "1fr 0px " + node.parentNode.style.gridTemplateRows;
-	} else {
-		node.parentNode.style.gridTemplateColumns = append
-			? node.parentNode.style.gridTemplateColumns + " 0px 1fr"
-			: "1fr 0px " + node.parentNode.style.gridTemplateColumns;
-	}
 };
 
 /*

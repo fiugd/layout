@@ -4,22 +4,27 @@ export const style = () => `
 	.pane.tabbed {
 		flex-direction: column;
 		font-family: sans-serif; font-size: 14px;
+		overflow: hidden;
 	}
 	.tabs {
 		height: 30px; background: #2a2a2a; display: flex;
 		margin-top: -0.5px;
+		overflow-x: auto;
+		overflow-y: hidden;
 	}
 	.tab { 
 		padding: 0.55em 1.5em; cursor: pointer; color: #999;
-		
+		height: 30px;
 		border-top-right-radius: 2px; border-top-left-radius: 2px;
 		/*border-left: 0.5px solid; border-right: 0.5px solid;*/ border-top: 0.5px solid;
 		border-color: transparent;
+		white-space: nowrap;
 	}
 	.tab + .tab { margin-left: 1px; }
 	.active, .open { background: #1e1e1e; border-color: #2a2a2a; }
+	.tab span, .tab-close { display: inline; }
 	.tab-close {
-		display: inline-block; color: transparent;
+		color: transparent;
 		margin-left: 0.5em; margin-right: -0.3em;
 	}
 	.tab-close svg {

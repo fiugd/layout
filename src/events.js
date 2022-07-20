@@ -62,7 +62,7 @@ const dragStartMessage = () => (e) => {
 		}[splitDirection];
 		const splitPane = document.getElementById(pane?.id);
 		if(dir && splitPane){
-			splitting.newPane(dir, splitPane, "document.html");
+			splitting.newPane(dir, splitPane, file);
 		}
 		const tabbedPane = splitPane.classList.contains('tabbed');
 		if(!dir && tabbedPane){

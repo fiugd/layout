@@ -17,7 +17,7 @@ const newPaneDomChildren = (target, tabbed) => `
 		</div>
 	`: ""}
 	<div class="content">
-		<iframe src="${tabbed ? target : "terminal.html"}" width="100%" height="100%"></iframe>
+		<iframe src="${tabbed ? "document.html" : "terminal.html"}" width="100%" height="100%"></iframe>
 	</div>
 `;
 const newPaneDom = (target, tabbed, dragTo) => `
@@ -28,7 +28,7 @@ const newPaneDom = (target, tabbed, dragTo) => `
 			dragTo && "dragTo"
 		].filter(x=>x).join(" ")
 	}">
-		${newPaneDomChildren(target)}
+		${newPaneDomChildren(target, tabbed)}
 	</div>
 `;
 

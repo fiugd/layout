@@ -134,41 +134,13 @@ export const attachEvents = (layoutDom) => {
 		if(e.target.classList.contains('tab-close')) return closeTab(
 			e.target.closest('.pane.tabbed'), e.target.closest('.tab')
 		);
+		//TODO: switch to tab
 	});
 	/*
-		TODO: eached tabbed pane should have its own handlers for:
-			- clicked on a tab
-			- closed a tab
+		TODO:
+			- selected a tab / clicked on a tab
 			- moved a tab
-			- opened a tab: from DnD or otherwise(?)
-			- drag a tab to somewhere else
-			- selected a tab
-		This should do what editor.html does
-		This should also do what tabs do in editor in current system
-		Should be able to DnD to entire tabbed pane OR to tab bar
+			- DnD a tab to somewhere else
+			- DnD to entire tabbed pane OR to tab bar
 	*/
-
-
-	// 	let dragover;
-
-	// 	function upsertTab(data){
-	// 		Array.from(tabs.querySelectorAll('.tab.active'))
-	// 			.forEach(x=>x.classList.remove('active'));
-	// 		const found = tabs.querySelector(`.tab[file="${data}"]`);
-	// 		if(found){
-	// 			found.classList.add('active');
-	// 			return
-	// 		}
-	// 		tabs.innerHTML += `<div class="tab active" file="${data}">${data}</div>`;
-	// 	}
-	// 	function openDoc({ name }){
-	// 		upsertTab(name);
-	// 		editor.innerHTML = `
-	// 			<iframe src="./document.html" ondragover="dragover(event)"></iframe>
-	// 		`;
-	// 		editor.querySelector('iframe').contentWindow.ondragover = dragover;
-	// 		editor.classList.add('open');
-	// 	}
-
-	// 	({ dragover } = events.onDrop(openDoc));
 };

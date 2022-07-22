@@ -124,7 +124,7 @@ export const openTab = (parent, tab) => {
 	const found = tabs.querySelector(`.tab[file="${tab}"]`);
 	if(found){
 		found.classList.add('active');
-		return
+		return;
 	}
 	tabs.innerHTML += createTabDom(true, tab);
 };
@@ -134,7 +134,10 @@ export const attachEvents = (layoutDom) => {
 		if(e.target.classList.contains('tab-close')) return closeTab(
 			e.target.closest('.pane.tabbed'), e.target.closest('.tab')
 		);
-		//TODO: switch to tab
+		const isTab = e.target.classList.contains('tab');
+		const parentIsTab = e.target.parentNode.classList.contains('tab');
+		if(isTab || parentIsTab) return openTab(e.target.closest('.pane'), e.target.textContent.trim());
+		
 	});
 	/*
 		TODO:

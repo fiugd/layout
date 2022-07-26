@@ -7,7 +7,9 @@ export const style = () => `
 		overflow: hidden;
 	}
 	.tabs {
-		height: 30px; background: #2a2a2a; display: flex;
+		height: 30px;
+		min-height: 30px;
+		background: #2a2a2a; display: flex;
 		margin-top: -0.5px;
 		overflow-x: auto;
 		overflow-y: hidden;

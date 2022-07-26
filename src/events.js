@@ -320,6 +320,8 @@ export const onDrop = (handler, parent) => {
 		dragTarget.classList.add('hidden');
 		removeHoverClasses(dragTarget);
 		_parent.hoverClassWait = undefined;
+		
+		if(handler) handler();
 		return false;
 	};
 	_parent.addEventListener('pointerup', pointerUp);

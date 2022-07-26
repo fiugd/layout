@@ -241,12 +241,13 @@ class Layout {
 			const newPane = {};
 			if(!!width) newPane.width = width;
 			if(!!height) newPane.height = height;
-			newPane.id = id;
 
 			if(tabbed){
 				newPane.orient = "tabs";
+				newPane.id = id;
 				newPane.children = [{ iframe: file, active: true }];
 			} else {
+				newPane.id = id;
 				newPane.iframe = file;
 			}
 
@@ -262,7 +263,7 @@ class Layout {
 			}).flat();
 		}
 
-		console.log({ splitPane, addedPane });
+		console.log({ splitPane, addedPane, config: this.config });
 		/*
 		const paneConfig = configFlat.find(x => x.id && x.id === pane?.id);
 		const parentPaneConfig = configFlat.find(x => 

@@ -3,6 +3,8 @@
 	this is hardcoded right now, fix this
 */
 
+import * as events from './events.js';
+
 const randomId = () => Math.random().toString(16).replace('0.','');
 
 const newPaneDomChildren = (target, tabbed) => `
@@ -89,10 +91,7 @@ const addPane = (node, target, append, vertical, row) => {
 	pane.classList.add('pane');
 	const parentTabbed = node.classList.contains('tabbed');
 	const parentDragTo = node.classList.contains('dragTo');
-	if(parentTabbed)
-		pane.classList.add('tabbed');
-	if(parentDragTo)
-		pane.classList.add('dragTo');
+
 	const id = randomId();
 	pane.innerHTML = newPaneDomChildren(target, parentTabbed);
 	pane.id = id;
@@ -100,6 +99,13 @@ const addPane = (node, target, append, vertical, row) => {
 	const insertLocation = append ? 'afterend' : 'beforebegin';
 	node.insertAdjacentElement(insertLocation, pane);
 	node.insertAdjacentElement(insertLocation, spacer);
+
+	if(parentTabbed)
+		pane.classList.add('tabbed');
+	if(parentDragTo){
+		events.onDrop(undefined, pane);
+		pane.classList.add('dragTo');
+	}
 
 	const addedPane = {
 		parent: node.parentNode.id,

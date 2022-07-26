@@ -350,4 +350,4 @@ export const attachDropListener = (layoutDom) => {
 	for(const pane of tabbedPanes){
 		const { dragover } = onDrop(dropHandler, pane);
 	}
-}
+};

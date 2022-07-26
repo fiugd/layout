@@ -5,7 +5,7 @@
 
 import * as events from './events.js';
 
-const randomId = () => Math.random().toString(16).replace('0.','');
+const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
 
 const newPaneDomChildren = (target, tabbed) => `
 	${tabbed ? `
@@ -25,14 +25,16 @@ const newPaneDomChildren = (target, tabbed) => `
 		<iframe src="${tabbed ? "document.html" : "terminal.html"}" width="100%" height="100%"></iframe>
 	</div>
 `;
-const newPaneDom = (target, tabbed, dragTo) => `
+const newPaneDom = (target, tabbed, dragTo, id) => `
 	<div class="${
 		[
 			"pane",
 			tabbed && "tabbed",
 			dragTo && "dragTo"
 		].filter(x=>x).join(" ")
-	}">
+	}"
+		id="${id}"
+	>
 		${newPaneDomChildren(target, tabbed)}
 	</div>
 `;
@@ -46,28 +48,53 @@ const halfDim = (dim) => {
 };
 
 const split = (node, target, append, vertical, row) => {
-	const splitter = document.createElement('div');
+	const containerId = randomId();
+	const paneId = randomId();
+	const container = document.createElement('div');
+	container.classList.add("layout-container");
+	container.id = containerId;
+
 	const sizerDir = row ? "column" : "row";
 	const parentTabbed = node.classList.contains('tabbed');
 	const parentDragTo = node.classList.contains('dragTo');
-	splitter.innerHTML = `
+	container.innerHTML = `
 		${ append ? `<div class="sizer ${sizerDir}"></div>` : "" }
-		${ newPaneDom(target, parentTabbed, parentDragTo) }
+		${ newPaneDom(target, parentTabbed, parentDragTo, paneId) }
 		${ !append ? `<div class="sizer ${sizerDir}"></div>` : "" }
 	`;
 	if(vertical){
-		splitter.classList.add("layout-container", "row");
-		splitter.style.gridTemplateRows = "50% 0px 50%";
+		container.classList.add("row");
+		container.style.gridTemplateRows = "50% 0px 50%";
 	} else {
-		splitter.classList.add("layout-container", "column");
-		splitter.style.gridTemplateColumns = "50% 0px 50%";
+		container.classList.add("column");
+		container.style.gridTemplateColumns = "50% 0px 50%";
 	}
-	node.insertAdjacentElement('beforebegin', splitter);
+	node.insertAdjacentElement('beforebegin', container);
+
+	if(parentDragTo){
+		const pane = container.querySelector('#' + paneId);
+		events.onDrop(undefined, pane);
+	}
 
 	const insertLocation = append ? 'afterbegin' : 'beforeend';
-	splitter.insertAdjacentElement(insertLocation, node);
+	container.insertAdjacentElement(insertLocation, node);
 
-	const splitPane = {};
+	const splitPane = {
+		parent: container.parentNode.id,
+		container: containerId,
+		orient: vertical ? "row" : "column",
+		pane: paneId,
+		sibling: node.id,
+		location: insertLocation,
+		file: target,
+		tabbed: parentTabbed,
+		dragTo: parentDragTo
+	};
+	if(row){
+		splitPane.width = "50%";
+	} else {
+		splitPane.height = "50%";
+	}
 	return { splitPane };
 };
 
@@ -109,7 +136,7 @@ const addPane = (node, target, append, vertical, row) => {
 
 	const addedPane = {
 		parent: node.parentNode.id,
-		id,
+		pane: id,
 		location: insertLocation,
 		sibling: node.id,
 		file: target,
@@ -149,5 +176,4 @@ export const newPane = (direction, node, target) => {
 	if(!operation) return;
 
 	return operation(node, target, append, vertical, row)
-}
-
+};

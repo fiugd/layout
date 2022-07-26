@@ -10,7 +10,7 @@ import * as splitting from './splitting.js';
 
 window.newPane = splitting.newPane;
 
-const randomId = () => Math.random().toString(16).replace('0.','');
+const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
 
 const style = `
 	.layout-container {
@@ -234,8 +234,8 @@ class Layout {
 
 		if(addedPane){
 			const {
-				file, height, width, id, tabbed, dragTo,
-				location, parent, sibling
+				file, height, width, tabbed, dragTo,
+				pane, location, parent, sibling
 			} = addedPane;
 			const parentConfig = configFlat.find(x => x.id === parent);
 			const newPane = {};
@@ -244,11 +244,15 @@ class Layout {
 
 			if(tabbed){
 				newPane.orient = "tabs";
-				newPane.id = id;
+				newPane.id = pane;
 				newPane.children = [{ iframe: file, active: true }];
 			} else {
-				newPane.id = id;
+				newPane.id = pane;
 				newPane.iframe = file;
+			}
+
+			if(!dragTo){
+				newPane.drag = false;
 			}
 
 			parentConfig.children = parentConfig.children.map(child => {
@@ -262,8 +266,58 @@ class Layout {
 					: [newPane, child];
 			}).flat();
 		}
+		
+		if(splitPane){
+			const {
+				file, height, width, tabbed, dragTo,
+				pane, container, orient, sibling, parent
+			} = splitPane;
+			const parentConfig = configFlat.find(x => x.id === parent);
+			
+			const newPane = {};
+			if(!!width) newPane.width = width;
+			if(!!height) newPane.height = height;
+			if(tabbed){
+				newPane.orient = "tabs";
+				newPane.id = pane;
+				newPane.children = [{ iframe: file, active: true }];
+			} else {
+				newPane.id = pane;
+				newPane.iframe = file;
+			}
 
-		console.log({ splitPane, addedPane, config: this.config });
+			parentConfig.children = parentConfig.children.map(child => {
+				if(child?.id !== sibling) return child;
+
+				const children = location === "afterbegin"
+					? [newPane, child]
+					: [child, newPane];
+
+				const containerConfig = {
+					id: container,
+					orient,
+					children
+				};
+				if(child.width){
+					containerConfig.width = child.width;
+					delete child.width;
+				}
+				if(child.height){
+					containerConfig.height = child.height;
+					delete child.height;
+				}
+				if(!!width) child.width = width;
+				if(!!height) child.height = height;
+
+				return containerConfig;
+			});
+			
+			// console.log({ file, height, width, tabbed, dragTo,
+			// 	pane, container, sibling, parent })
+		}
+
+		console.log(this.config);
+		//console.log({ splitPane, addedPane, config: this.config });
 		/*
 		const paneConfig = configFlat.find(x => x.id && x.id === pane?.id);
 		const parentPaneConfig = configFlat.find(x => 

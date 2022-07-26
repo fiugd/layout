@@ -1,4 +1,4 @@
-const randomId = () => Math.random().toString(16).replace('0.','');
+const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
 
 export const style = () => `
 	.pane.tabbed {

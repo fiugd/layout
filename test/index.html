@@ -23,46 +23,29 @@
 			rows: [
 				{
 					columns: [
-						{ iframe: "action.html", width: "45px", resize: false, drop: false },
-						{ iframe: "tree.html", width: "220px", minWidth: "200px", snapWidth: "150px", drop: false },
-						{ columns: [
-							{
-								width: "32%",
-								rows: [{
-									height: "55%",
+						{
+							iframe: "action.html",
+							width: "45px",
+							resize: false,
+							drop: false
+						}, {
+							iframe: "tree.html",
+							width: "220px",
+							minWidth: "200px",
+							snapWidth: "150px",
+							drop: false
+						}, {
+							columns: [
+								{
+									width: "55%",
 									tabs: [
 										{ iframe: "six.html" },
 										{ iframe: "one.json", active: true }
-									],
-								}, {
-									tabs: [
-										{ iframe: "seven.html", active: true },
-										{ iframe: "two.json" }
-									],
-								}]
-							},
-							{
-								width: "32%",
-								tabs: [
-									{ iframe: "two.html", active: true }
-								]
-							},
-							{
-								width: "36%",
-								rows: [
-									{ iframe: "terminal.html", height: "45%" },
-									{ columns: [
-										{ iframe: "terminal.html", width: "50%", drop: false },
-										{ 
-											rows: [
-												{ iframe: "terminal.html", height: "50%" },
-												{ iframe: "terminal.html" },
-											]
-										}
-									]}
-								]
-							}
-						]}
+									]
+								},
+								{ iframe: "terminal.html" }
+							]
+						}
 					]
 				},
 				{ iframe: 'status.html', height: "22px", resize: false, drop: false }

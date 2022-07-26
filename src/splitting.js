@@ -2,6 +2,9 @@
 	TODO: iframe behavior should vary based on parent type
 	this is hardcoded right now, fix this
 */
+
+const randomId = () => Math.random().toString(16).replace('0.','');
+
 const newPaneDomChildren = (target, tabbed) => `
 	${tabbed ? `
 		<div class="tabs">
@@ -61,6 +64,9 @@ const split = (node, target, append, vertical, row) => {
 
 	const insertLocation = append ? 'afterbegin' : 'beforeend';
 	splitter.insertAdjacentElement(insertLocation, node);
+
+	const splitPane = {};
+	return { splitPane };
 };
 
 const addPane = (node, target, append, vertical, row) => {
@@ -74,7 +80,7 @@ const addPane = (node, target, append, vertical, row) => {
 	if(row)
 		node.parentNode.style.gridTemplateRows = dims.join(" ");
 	else
-		node.parentNode.style.gridTemplateXColumns = dims.join(" ");
+		node.parentNode.style.gridTemplateColumns = dims.join(" ");
 
 	const spacer = document.createElement('div');
 	spacer.classList.add("sizer", row ? "row" : "column");
@@ -82,15 +88,34 @@ const addPane = (node, target, append, vertical, row) => {
 	const pane = document.createElement('div');
 	pane.classList.add('pane');
 	const parentTabbed = node.classList.contains('tabbed');
+	const parentDragTo = node.classList.contains('dragTo');
 	if(parentTabbed)
 		pane.classList.add('tabbed');
-	if(node.classList.contains('dragTo'))
+	if(parentDragTo)
 		pane.classList.add('dragTo');
+	const id = randomId();
 	pane.innerHTML = newPaneDomChildren(target, parentTabbed);
+	pane.id = id;
 
 	const insertLocation = append ? 'afterend' : 'beforebegin';
 	node.insertAdjacentElement(insertLocation, pane);
 	node.insertAdjacentElement(insertLocation, spacer);
+
+	const addedPane = {
+		parent: node.parentNode.id,
+		id,
+		location: insertLocation,
+		sibling: node.id,
+		file: target,
+		tabbed: parentTabbed,
+		dragTo: parentDragTo
+	};
+	if(row){
+		addedPane.height = half;
+	} else {
+		addedPane.width = half;
+	}
+	return { addedPane };
 };
 
 /*

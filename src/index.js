@@ -61,10 +61,11 @@ const flatConfig = (config) => {
 };
 
 const childContent = (child) => {
+	child.id = child.id || randomId();
 	const { iframe, children, id, orient="", drop } = child;
 	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
 	if(iframe) return `
-		<div class="pane${dragToClass}" id="${randomId()}">
+		<div class="pane${dragToClass}" id="${id}">
 			<div class="content">
 				<iframe src="${iframe}" width="100%" height="100%"></iframe>
 			</div>
@@ -104,10 +105,10 @@ const containerSizers = (containers, configFlat, onResize) => {
 		const sizers = container.querySelectorAll(':scope > .sizer');
 		for(const [index, sizer] of Array.from(sizers).entries()){
 			sizer.id = randomId();
-			events.attachResizeListener(sizer, index, onResize);
 		}
 	}
-}
+	events.attachResizeListener(onResize);
+};
 
 const createDom = (layout) => {
 	const { config, onResize } = layout;
@@ -127,7 +128,7 @@ const createDom = (layout) => {
 		onResize
 	);
 
-	events.attachDragListener();
+	events.attachDragListener(layout);
 	events.attachDropListener(layoutDom);
 	tabbed.attachEvents(layoutDom);
 	return layoutDom;
@@ -172,7 +173,8 @@ class Layout {
 		const { parent, children } = this.config;
 		this.dom = createDom({
 			config: this.config,
-			onResize: this.onResize.bind(this)
+			onResize: this.onResize.bind(this),
+			onDrop: this.onDrop.bind(this)
 		});
 		parent.append(this.dom);
 	}
@@ -225,6 +227,50 @@ class Layout {
 		if(dimsChanged){
 			setSize(sizer.parentNode, containerConfig);
 		}
+	}
+	onDrop(args){
+		const { splitPane, addedPane } = args;
+		const configFlat = flatConfig(this.config);
+
+		if(addedPane){
+			const {
+				file, height, width, id, tabbed, dragTo,
+				location, parent, sibling
+			} = addedPane;
+			const parentConfig = configFlat.find(x => x.id === parent);
+			const newPane = {};
+			if(!!width) newPane.width = width;
+			if(!!height) newPane.height = height;
+			newPane.id = id;
+
+			if(tabbed){
+				newPane.orient = "tabs";
+				newPane.children = [{ iframe: file, active: true }];
+			} else {
+				newPane.iframe = file;
+			}
+
+			parentConfig.children = parentConfig.children.map(child => {
+				if(child?.id !== sibling) return child;
+
+				if(!!width && child.width) child.width = width;
+				if(!!height && child.height) child.height = height;
+
+				return location === "afterend"
+					? [child, newPane]
+					: [newPane, child];
+			}).flat();
+		}
+
+		console.log({ splitPane, addedPane });
+		/*
+		const paneConfig = configFlat.find(x => x.id && x.id === pane?.id);
+		const parentPaneConfig = configFlat.find(x => 
+			x.children && x.children.find(x => x.id && x.id === pane?.id)
+		);
+		// console.log(args, paneConfig, parentPaneConfig);
+		console.log(args);
+		*/
 	}
 };
 

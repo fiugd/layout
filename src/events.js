@@ -40,7 +40,7 @@ function follow(evt) {
 
 let dragging = false;
 let file;
-const dragStartMessage = () => (e) => {
+const dragStartMessage = (layout) => (e) => {
 	const { file: inputFile, source, dragStart, dragEnd, pointerId, pane, splitDirection } = JSON.parse(e.data);
 	//document.body.setPointerCapture(pointerId);
 	file = inputFile || file;
@@ -53,7 +53,6 @@ const dragStartMessage = () => (e) => {
 		document.addEventListener('pointermove', follow);
 	}
 	if(dragEnd){
-		console.log({ file, source, dragEnd, pane: pane?.id, splitDirection });
 		const dir = {
 			"top": "up",
 			"bottom": "down",
@@ -62,17 +61,21 @@ const dragStartMessage = () => (e) => {
 		}[splitDirection];
 		const splitPane = document.getElementById(pane?.id);
 		if(dir && splitPane){
-			splitting.newPane(dir, splitPane, file);
+			const split = splitting.newPane(dir, splitPane, file);
+			layout.onDrop({ type: "split", dir, pane, file, ...split });
 		}
 		const tabbedPane = splitPane.classList.contains('tabbed');
 		if(!dir && tabbedPane){
 			tabbed.openTab(splitPane, file);
+			layout.onDrop({ type: "tab", pane, file });
 		}
 
 		dragPreview.classList.add('hidden');
 		document.removeEventListener('pointermove', follow);
 		dragging = false;
 		file = undefined;
+
+		//TODO: adjust layout config
 	}
 	// const pointerUp = () => {
 	// 	dragging = false;
@@ -87,12 +90,22 @@ const dragStartMessage = () => (e) => {
 	// document.addEventListener('pointercancel', pointerUp);
 };
 
-export const attachResizeListener = (sizer, index, resize) => {
-	sizer.addEventListener('pointerdown', pointerDown(sizer, index, resize));
+export const attachResizeListener = (resize) => {
+	document.addEventListener('pointerdown', (e) => {
+		const isSizer = e.target.classList.contains('sizer');
+		if(!isSizer) return;
+		const container = e.target.closest('.layout-container');
+		const sizers = Array.from(container.querySelectorAll(':scope > .sizer'));
+		for(const [index, sizer] of sizers.entries()){
+			if(sizer !== e.target) continue;
+			pointerDown(sizer, index, resize)(e);
+			break;
+		}
+	});
 };
 
-export const attachDragListener = () => {
-	window.addEventListener('message', dragStartMessage());
+export const attachDragListener = (layout) => {
+	window.addEventListener('message', dragStartMessage(layout));
 };
 
 // used in the page context

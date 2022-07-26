@@ -16,7 +16,8 @@ export const style = () => `
 	.tabs::-webkit-scrollbar {
 		display: none;
 	}
-	.tab { 
+	.tab {
+		user-select: none;
 		padding: 0.55em 1.5em; cursor: pointer; color: #999;
 		height: 30px;
 		border-top-right-radius: 2px; border-top-left-radius: 2px;
@@ -82,8 +83,8 @@ const createContentDom = ({ src, srcdoc }) => src
 `
 ;
 
-export const createDom = ({ children, drop }) => `
-	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }" id="${randomId()}">
+export const createDom = ({ children, drop, id }) => `
+	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }" id="${id}">
 		<div class="tabs">
 			${ children.map(x => createTabDom(
 					x.active,

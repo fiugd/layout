@@ -49,8 +49,7 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [X] tabs, dragover and drop as part of library vs part of hosted page
 - [X] listen to resize event (or other events) in page
 - [ ] global onDrop for panes (mouseenter, mouseleave, mouseup)
-- [ ] option to use drop event as part of hosted page
-- [ ] listen to resize event (or other events) in each pane
+- [ ] listen to resize/drop event (or other events) in each pane
 - [ ] global state as medium for drag meta info
 
 ### misc 

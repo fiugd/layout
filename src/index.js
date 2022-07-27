@@ -64,13 +64,18 @@ const childContent = (child) => {
 	child.id = child.id || randomId();
 	const { iframe, children, id, orient="", drop } = child;
 	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
-	if(iframe) return `
-		<div class="pane${dragToClass}" id="${id}">
-			<div class="content">
-				<iframe src="${iframe}" width="100%" height="100%"></iframe>
+	if(iframe){
+		const _iframe = ["terminal.html", "status.html", "action.html", "tree.html"].includes(iframe)
+			? iframe
+			: "terminal.html";
+		return `
+			<div class="pane${dragToClass}" id="${id}">
+				<div class="content">
+					<iframe src="${_iframe}" width="100%" height="100%"></iframe>
+				</div>
 			</div>
-		</div>
-	`;
+		`;
+	}
 
 	if(children && orient === "tabs") return tabbed.createDom(child);
 

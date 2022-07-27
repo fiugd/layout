@@ -18,8 +18,25 @@
 		//import Layout from "https://unpkg.com/@fiug/layout@0.0.0-6";
 		import Layout from "../src/index.js";
 
-		const layoutConfig = {
-			parent: document.body,
+		function debounce(func, timeout = 500){
+			let timer;
+			return (...args) => {
+				clearTimeout(timer);
+				timer = setTimeout(() => { func.apply(this, args); }, timeout);
+			};
+		}
+		
+		const storedLayout = (() => {
+			try {
+				const s = sessionStorage.getItem('test-layout-example');
+				if(!s) return;
+				return JSON.parse(s);
+			} catch(e){
+				console.log(e);
+			}
+		})();
+
+		const layoutConfig = storedLayout || {
 			rows: [
 				{
 					columns: [
@@ -51,7 +68,16 @@
 				{ iframe: 'status.html', height: "22px", resize: false, drop: false }
 			]
 		};
-		new Layout(layoutConfig);
+
+		const layoutChange = debounce((config) => {
+			const configString = JSON.stringify(config, null, 2);
+			//console.log(configString);
+			sessionStorage.setItem('test-layout-example', configString);
+		});
+
+		const configWithParent = { ...layoutConfig, parent: document.body };
+
+		new Layout(configWithParent, layoutChange);
 	</script>
 </html>
 

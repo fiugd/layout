@@ -155,6 +155,17 @@ const parseConfig = (config) => {
 	}
 };
 
+const outputConfig = (config) => {
+	const { parent, id, orient, children, ...rest} = config;
+
+	const output = { ...rest };
+	if(orient === "row") output.rows = children.map(outputConfig);
+	if(orient === "column") output.columns = children.map(outputConfig);
+	if(orient === "tabs") output.tabs = children.map(outputConfig);
+
+	return output;
+};
+
 const setSize = (container, config) => {
 	if(config.orient === "column"){
 		container.style.gridTemplateColumns = config.children
@@ -165,11 +176,14 @@ const setSize = (container, config) => {
 	container.style.gridTemplateRows = config.children
 		.map(x=>x.height || '1fr')
 		.join(' 0px ');
-}
+};
 
 class Layout {
-	constructor(config){
+	constructor(config, onChange){
 		this.config = parseConfig(config);
+		this.onChange = () => onChange(
+			outputConfig(this.config)
+		);
 		const { parent, children } = this.config;
 		this.dom = createDom({
 			config: this.config,
@@ -224,9 +238,9 @@ class Layout {
 			next[modDim] = newDim;
 		}
 
-		if(dimsChanged){
-			setSize(sizer.parentNode, containerConfig);
-		}
+		if(!dimsChanged) return;
+		setSize(sizer.parentNode, containerConfig);
+		this.onChange();
 	}
 	onDrop(args){
 		const { splitPane, addedPane } = args;
@@ -311,21 +325,9 @@ class Layout {
 
 				return containerConfig;
 			});
-			
-			// console.log({ file, height, width, tabbed, dragTo,
-			// 	pane, container, sibling, parent })
 		}
-
-		console.log(this.config);
-		//console.log({ splitPane, addedPane, config: this.config });
-		/*
-		const paneConfig = configFlat.find(x => x.id && x.id === pane?.id);
-		const parentPaneConfig = configFlat.find(x => 
-			x.children && x.children.find(x => x.id && x.id === pane?.id)
-		);
-		// console.log(args, paneConfig, parentPaneConfig);
-		console.log(args);
-		*/
+		if(!splitPane && !addedPane) return;
+		this.onChange();
 	}
 };
 

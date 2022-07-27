@@ -34,6 +34,7 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] full screen / minimize for panes
 
 ### tabs
+- [ ] tab select should result in config change
 - [ ] tab scroll into view on activate
 - [ ] tab bar menu
 - [ ] tab re-order
@@ -46,10 +47,10 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [X] drag listener should only allow one hover target to exist at a time (one pane at a time)
 - [X] dynamically created/modified nested layouts
 - [X] tabs, dragover and drop as part of library vs part of hosted page
+- [X] listen to resize event (or other events) in page
 - [ ] global onDrop for panes (mouseenter, mouseleave, mouseup)
 - [ ] option to use drop event as part of hosted page
-- [ ] listen to resize event (or other events) in hosted page
-- [ ] listen to resize event (or other events) in host element
+- [ ] listen to resize event (or other events) in each pane
 - [ ] global state as medium for drag meta info
 
 ### misc 

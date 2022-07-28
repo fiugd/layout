@@ -9,13 +9,26 @@ const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.
 
 const newPaneDomChildren = (target, tabbed) => `
 	${tabbed ? `
-		<div class="tabs">
-			<div class="tab active" file="${target.split("/").pop()}">
-				<span>${target.split("/").pop()}</span>
-				<div class="tab-close">
+		<div class="tabs-container">
+			<div class="tabs">
+				<div class="tab active" file="${target.split("/").pop()}">
+					<span>${target.split("/").pop()}</span>
+					<div class="action-item">
+						<div class="tab-close">
+							<svg viewBox="0 0 10 10">
+								<line x1="1" y1="1" x2="9" y2="9"></line>
+								<line x1="9" y1="1" x2="1" y2="9"></line>
+							</svg>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tabs-controls">
+				<div class="action-item">
 					<svg viewBox="0 0 10 10">
-						<line x1="1" y1="1" x2="9" y2="9"></line>
-						<line x1="9" y1="1" x2="1" y2="9"></line>
+						<circle cx="1" cy="5" r="1"></circle>
+						<circle cx="5" cy="5" r="1"></circle>
+						<circle cx="9" cy="5" r="1"></circle>
 					</svg>
 				</div>
 			</div>
@@ -24,6 +37,7 @@ const newPaneDomChildren = (target, tabbed) => `
 	<div class="content">
 		<iframe src="${tabbed ? "document.html" : "terminal.html"}" width="100%" height="100%"></iframe>
 	</div>
+	<div class="tabs-menu hidden"></div>
 `;
 const newPaneDom = (target, tabbed, dragTo, id) => `
 	<div class="${

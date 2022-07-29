@@ -7,53 +7,12 @@ https://css-tricks.com/snippets/css/complete-guide-grid/
 import * as events from './events.js';
 import * as tabbed from './tabbed.js';
 import * as splitting from './splitting.js';
+import * as dom from './dom.js';
+import style from './style.js';
 
 window.newPane = splitting.newPane;
 
 const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
-
-const style = `
-	.layout-container {
-		display: grid;
-		width: 100%;
-		height: 100%;
-	}
-	.pane {
-		position: relative;
-		display: flex; 
-		margin: 0;
-		border-top: 1px solid #262626; border-left: 1px solid #262626;
-		box-sizing: border-box;
-	}
-	.pane .content { flex: 1; }
-	.pane .content iframe {
-		border: 0; width: 100%; height: 100%;
-		background: #1e1e1e; border-color: #2a2a2a;
-	}
-	.sizer {
-		background: transparent;
-		box-sizing: border-box;
-		position: relative;
-		z-index: 1;
-	}
-	.sizer.column {
-		cursor: ew-resize;
-		left: -1px;
-		width: 3px;
-		margin-top: 1px;
-	}
-	.sizer.row {
-		cursor: ns-resize;
-		top: -1px;
-		height: 3px;
-		margin-left: 1px;
-	}
-	.sizer.disabled { pointer-events: none; }
-	.sizer:hover { background: #48e; }
-
-	${tabbed.style()}
-	${events.draggedStyle()}
-`;
 
 const flatConfig = (config) => {
 	if(!config.children) return config;
@@ -77,7 +36,7 @@ const childContent = (child) => {
 		`;
 	}
 
-	if(children && orient === "tabs") return tabbed.createDom(child);
+	if(children && orient === "tabs") return dom.createPane(child);
 
 	return `
 	<div class="layout-container ${orient}" id="${id}">
@@ -122,7 +81,7 @@ const createDom = (layout) => {
 	layoutDom.classList.add('layout-container', orient);
 	id && (layoutDom.id = id);
 
-	layoutDom.innerHTML = `<style>${style}</style>` + 
+	layoutDom.innerHTML = `<style>${style()}</style>` + 
 		children.map(childDom(config)).join('');
 
 	const configFlat = flatConfig(config);

@@ -1,159 +1,13 @@
+import * as dom from './dom.js';
+
 const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
 
-export const style = () => `
-	.pane.tabbed {
-		flex-direction: column;
-		font-family: sans-serif; font-size: 14px;
-		overflow: hidden;
-	}
-	.tabs-container {
-		user-select: none;
-		height: 30px;
-		min-height: 30px;
-		background: #2a2a2a;
-		display: flex;
-	}
-	.tabs {
-		flex: 1;
-		display: flex;
-		margin-top: -1px;
-		overflow-x: auto;
-		overflow-y: hidden;
-		scrollbar-width: none;
-	}
-	.tabs::-webkit-scrollbar {
-		display: none;
-	}
-	.tabs-menu {
-		position: absolute;
-		top: 28px;
-		right: 10px;
-		width: 220px;
-		height: 200px;
-		background: #333;
-		border-radius: 3px;
-		box-shadow: 3px 3px 8px #00000073;
-	}
-	.tabs-controls {
-		height: 100%;
-		display: flex;
-		background: #2a2a2a;
-		padding: 0 0.75em;
-		justify-content: center;
-		align-items: center;
-		cursor: pointer;
-		color: #999;
-	}
-	.tabs-controls svg {
-		fill: currentColor; height: 0.9em;
-	}
-	.tab > * + * { margin-left: 0.4em; }
-	.tab {
-		padding: 0.1em 0.7em 0.1em 1.5em;
-		cursor: pointer; color: #999;
-		height: 30px;
-		border-top-right-radius: 2px; border-top-left-radius: 2px;
-		/*border-left: 0.5px solid; border-right: 0.5px solid;*/ border-top: 0.5px solid;
-		border-color: transparent;
-		white-space: nowrap;
-		display: flex;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-	.tab + .tab { margin-left: 1px; }
-	.active, .open { background: #1e1e1e; border-color: #2a2a2a; }
-	.tab span, .tab-close { display: inline; }
-	.tab-close { color: transparent; }
-	.tab-close svg {
-		stroke: currentColor; stroke-width: 1.5; height: 0.65em;
-	}
-	.active, .active .action-item, .tab:hover .action-item { color: white }
-	.action-item * { pointer-events:none; }
-	.action-item {
-		padding: 0.4em;
-		border-radius: 3px;
-		display: flex;
-	}
-	.action-item:hover, .action-item.selected {
-		color: white;
-		background: #fff2;
-	}
-`;
+export const style = dom.tabStyle;
 
-const createEmptyDom = () => `
-<html>
-	<head>
-	<meta name="color-scheme" content="dark">
-	<style>
-		body {
-			margin: 0;
-			padding: 0.75em 1em;
-			font-family: sans-serif; font-size: 14px;
-			color: #999;
-			background: #2a2a2a;
-		}
-	</style>
-	</head>
-	<body>
-	</body>
-</html>
-`.replaceAll("\r", "").replaceAll("\n", "");;
-
-
-const createTabDom = (active, filename) => `
-<div
-	class="tab${ active ? ' active' : ''}"
-	file="${filename}"
->
-	<span>${filename}</span>
-	<div class="tab-close">
-		<div class="action-item">
-			<svg viewBox="0 0 10 10">
-				<line x1="1" y1="1" x2="9" y2="9"></line>
-				<line x1="9" y1="1" x2="1" y2="9"></line>
-			</svg>
-		</div>
-	</div>
-</div>
-`;
-
-const createContentDom = ({ src, srcdoc }) => src
-? `
-	<iframe src="${src}" width="100%" height="100%"></iframe>
-`
-: `
-	<iframe srcdoc='${srcdoc}' width="100%" height="100%"></iframe>
-`
-;
-
-export const createDom = ({ children, drop, id }) => `
-	<div class="pane tabbed${ (drop+"") !== "false" ? " dragTo" : "" }" id="${id}">
-		<div class="tabs-container">
-			<div class="tabs">
-				${ children.map(x => createTabDom(
-						x.active,
-						x.iframe.split('/').pop()
-					)).join('')
-				}
-			</div>
-			<div class="tabs-controls">
-				<div class="action-item">
-					<svg viewBox="0 0 10 10">
-						<circle cx="1" cy="5" r="1"></circle>
-						<circle cx="5" cy="5" r="1"></circle>
-						<circle cx="9" cy="5" r="1"></circle>
-					</svg>
-				</div>
-			</div>
-		</div>
-		<div class="content">
-			${/* TODO: document.html is currently hardcoded, fix this later */""}
-			${createContentDom({ src: "document.html" })}
-		</div>
-		<div class="tabs-menu hidden"></div>
-	</div>
-`;
+const createEmptyDom = dom.createEmpty;
+const createTabDom = dom.createTab;
+const createContentDom = dom.createContent;
+export const createDom = dom.createPane;
 
 const closeTab = (parent, tab) => {
 	tab.remove();
@@ -191,7 +45,14 @@ export const openTab = (parent, tab) => {
 	tabs.innerHTML += createTabDom(true, tab);
 };
 
-//TODO: populate menu
+/*
+TODO: populate tabs menu
+
+Close pane
+Close tabs left, right, all
+Maximize/minimize pane
+*/
+
 const openMenu = (pane, actionEl) => {
 	const menu = pane.querySelector('.tabs-menu');
 	actionEl.classList.toggle('selected');

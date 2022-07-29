@@ -20,13 +20,11 @@ const pointerDown = (sizer, index, resize) => (e) => {
 	document.addEventListener('pointercancel', pointerUp);
 };
 
-
 const dragPreview = document.createElement('div');
 dragPreview.classList.add('drag-preview', 'hidden');
 dragPreview.style.left = "-999px";
 dragPreview.style.top = "-999px";
 document.body.append(dragPreview);
-
 
 var offX = 15;
 var offY = -10;
@@ -131,53 +129,6 @@ export const dragEnd = ({ pane, splitDirection }={}) => {
 	window.parent.postMessage(message, '*');
 };
 
-
-//------------------------------------------
-export const draggedStyle = () => `
-	.pane.dragging { cursor: copy; }
-	.pane.noDrag { cursor: no-drop; }
-	
-	.pane.dragging iframe,
-	.pane.dragging .tabs,
-	.pane.noDrag iframe,
-	.pane.noDrag .tabs {
-		pointer-events: none;
-	}
-	.pane .content { position: relative; }
-
-	.hidden { display: none; }
-	.drag-hover {
-		pointer-events: none;
-		background: #008062 !important;
-	}
-	.dropped { background: blue; }
-	.mouse {
-		pointer-events: none;
-		position: absolute; bottom: 5px; right: 5px;
-	}
-	.drag-target {
-		pointer-events: none;
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: 0;
-		bottom: 0;
-		background: #7774;
-		transition: left .2s, right .2s, top .2s, bottom .2s;
-	}
-	.right-hover { left: 50%; }
-	.left-hover { right: 50%; }
-	.bottom-hover { top: 50%; }
-	.top-hover { bottom: 50%; }
-	.drag-preview {
-		position: absolute;
-		padding: 0.25em 0.75em;
-		background: #666;
-		z-index: 1;
-		border-radius: 3px;
-		font-family: sans-serif;
-	}
-`;
 export const onDrop = (handler, parent) => {
 	const _parent = parent || document.body;
 

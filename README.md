@@ -31,7 +31,7 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [X] nested layout
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
-- [ ] full screen / minimize for panes
+- [ ] maximize / minimize for panes
 
 ### tabs
 - [ ] tab select should result in config change
@@ -41,6 +41,7 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)
 - [ ] expose option to customize look/feel of tabs
+- [ ] double-click tab bar to start new file
 
 ### refine layout events
 - [X] onDrop for pane split (versus add pane)

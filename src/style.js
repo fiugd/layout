@@ -143,10 +143,14 @@ const paneStyle = () => {
 		border-top: 1px solid #262626; border-left: 1px solid #262626;
 		box-sizing: border-box;
 	}
-	.pane .content { flex: 1; }
+	.pane.bottomDocked {
+		margin-bottom: -23px;
+		z-index: 1;
+	}
+	.pane .content { flex: 1; background: #1e1e1e; }
 	.pane .content iframe {
 		border: 0; width: 100%; height: 100%;
-		background: #1e1e1e; border-color: #2a2a2a;
+		border-color: #2a2a2a;
 	}
 	.sizer {
 		background: transparent;

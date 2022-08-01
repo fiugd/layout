@@ -24,13 +24,16 @@ const childContent = (child) => {
 	const { iframe, children, id, orient="", drop } = child;
 	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
 	if(iframe){
-		const _iframe = ["terminal.html", "status.html", "action.html", "tree.html"].includes(iframe)
+		let _iframe = ["terminal.html", "status.html", "action.html", "tree.html"].includes(iframe)
 			? iframe
 			: "terminal.html";
+		const isModule = iframe.includes('/_/modules') || iframe.includes('/dist/');
+		if(isModule) _iframe = iframe;
+		const bottomDockedClass = isModule ? " bottomDocked" : "";
 		return `
-			<div class="pane${dragToClass}" id="${id}">
+			<div class="pane${dragToClass}${bottomDockedClass}" id="${id}">
 				<div class="content">
-					<iframe src="${_iframe}" width="100%" height="100%"></iframe>
+					<iframe src="${_iframe}" allowtransparency=”true” width="100%" height="100%"></iframe>
 				</div>
 			</div>
 		`;

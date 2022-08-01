@@ -1,0 +1,24 @@
+---
+rows:
+  - columns:
+    - iframe: action.html
+      width: 45px
+      resize: false
+      drop: false
+    - iframe: tree.html
+      width: 220px
+      minWidth: 200px
+      snapWidth: 150px
+      drop: false
+    - columns:
+      - width: 55%
+        tabs:
+          - iframe: one.json
+          - iframe: two.jpg
+          - iframe: six.html
+            active: true
+      - iframe: terminal.html
+  - iframe: status.html
+    height: 22px
+    resize: false
+    drop: false

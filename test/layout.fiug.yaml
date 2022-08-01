@@ -1,0 +1,24 @@
+---
+rows:
+  - columns:
+    - iframe: action.html
+      width: 45px
+      resize: false
+      drop: false
+    - iframe: /fiugd/beta/dist/tree.html
+      width: 220px
+      minWidth: 200px
+      snapWidth: 150px
+      drop: false
+    - columns:
+      - width: 55%
+        tabs:
+          - iframe: /dist/editor.html?file=src/dom.js
+          - iframe: /dist/editor.html?file=README.md
+          - iframe: /dist/editor.html?file=LICENSE
+            active: true
+      - iframe: /fiugd/beta/dist/terminal.html
+  - iframe: status.html
+    height: 22px
+    resize: false
+    drop: false

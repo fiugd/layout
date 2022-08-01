@@ -16,33 +16,42 @@ const closeTab = (parent, tab) => {
 	const tabs = Array.from(parent.querySelectorAll('.tab'));
 	const content = parent.querySelector('.content');
 	const lastTab = tabs && tabs[tabs.length-1];
-	const file = lastTab && lastTab.getAttribute('file');
 
-	if(file){
-		openTab(parent, file);
-	} else {
-		tabsContainer.classList.add('hidden');
-		content.innerHTML = createContentDom({ srcdoc: createEmptyDom() });
-	}
+	const src = lastTab && lastTab.getAttribute('source');
+	if(src) return  openTab(parent, src);
+
+	tabsContainer.classList.add('hidden');
+	content.innerHTML = createContentDom({
+		srcdoc: createEmptyDom(),
+		childrenOnly: true
+	});
 };
 
-export const openTab = (parent, tab) => {
+const getFilename = (target) => {
+	let filename = target.split("/").pop();
+	if(filename.includes("?file="))
+		filename = filename.split("?file=").pop();
+	return filename;
+};
+
+export const openTab = (parent, src) => {
+	const filename = getFilename(src);
 	const content = parent.querySelector('.content');
 	const tabsContainer = parent.querySelector('.tabs-container');
 
 	/* TODO: document.html is currently hardcoded, fix this later */
-	content.innerHTML = createContentDom({ src: "document.html" });
+	content.innerHTML = createContentDom({ src, childrenOnly: true });
 
 	Array.from(parent.querySelectorAll('.tab.active'))
 		.forEach(x=>x.classList.remove('active'));
 	const tabs = parent.querySelector('.tabs');
-	const found = tabs.querySelector(`.tab[file="${tab}"]`);
+	const found = tabs.querySelector(`.tab[file="${filename}"]`);
 	if(found){
 		found.classList.add('active');
 		return;
 	}
 	tabsContainer.classList.remove('hidden');
-	tabs.innerHTML += createTabDom(true, tab);
+	tabs.innerHTML += createTabDom(true, src);
 };
 
 /*
@@ -72,7 +81,10 @@ export const attachEvents = (layoutDom) => {
 		}
 		const isTab = e.target.classList.contains('tab');
 		const parentIsTab = parent.classList.contains('tab');
-		if(isTab || parentIsTab)
-			return openTab(pane, e.target.textContent.trim());
+		if(isTab || parentIsTab){
+			let filename = e.target.parentNode.getAttribute("source")
+			filename = filename || e.target.textContent.trim()
+			return openTab(pane, filename);
+		}
 	});
 };

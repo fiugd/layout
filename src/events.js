@@ -103,7 +103,15 @@ export const attachResizeListener = (resize) => {
 };
 
 export const attachDragListener = (layout) => {
-	window.addEventListener('message', dragStartMessage(layout));
+	const dragListener = dragStartMessage(layout);
+	window.addEventListener('message', (e) => {
+		try{
+			JSON.parse(e.data);
+		}catch(e){
+			return;
+		}
+		dragListener(e);
+	});
 };
 
 // used in the page context

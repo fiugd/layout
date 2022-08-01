@@ -16,6 +16,18 @@ const halfDim = (dim) => {
 	return 0.5 * Number(dim.replace(unit,"")) + unit;
 };
 
+export const setSize = (container, config) => {
+	if(config.orient === "column"){
+		container.style.gridTemplateColumns = config.children
+			.map(x=>x.width || '1fr')
+			.join(' 0px ');
+		return;
+	}
+	container.style.gridTemplateRows = config.children
+		.map(x=>x.height || '1fr')
+		.join(' 0px ');
+};
+
 const split = (node, target, append, vertical, row) => {
 	const containerId = randomId();
 	const paneId = randomId();

@@ -88,10 +88,25 @@ const dragStartMessage = (layout) => (e) => {
 	// document.addEventListener('pointercancel', pointerUp);
 };
 
+// used by document pointerdown & iframe message that it was clicked
+const setPaneActive = (parentPane) => {
+	const activePane = document.querySelector('.pane.active');
+	if(activePane) activePane.classList.toggle('active');
+	parentPane.classList.toggle('active');
+	const parentContentIframe = parentPane.querySelector('.content iframe');
+	//if(!parentContentIframe) return console.log('no iframe found');
+	//parentContentIframe.contentWindow.focus();
+};
+
 export const attachResizeListener = (resize) => {
 	document.addEventListener('pointerdown', (e) => {
 		const isSizer = e.target.classList.contains('sizer');
-		if(!isSizer) return;
+		if(!isSizer) {
+			const parentPane = e.target.closest('.pane');
+			if(!parentPane) return;
+			setPaneActive(parentPane);
+			return;
+		}
 		const container = e.target.closest('.layout-container');
 		const sizers = Array.from(container.querySelectorAll(':scope > .sizer'));
 		for(const [index, sizer] of sizers.entries()){

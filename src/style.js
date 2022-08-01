@@ -148,6 +148,18 @@ const paneStyle = () => {
 		margin-bottom: -23px;
 		/*z-index: 1;*/
 	}
+	.pane.active:after {
+		content: "";
+		position: absolute;
+		right: 0;
+		top: 0;
+		box-shadow: inset 0 0 3px #00bcff;
+		left: 1px;
+		bottom: 23px;
+		pointer-events: none;
+		display: block;
+		box-sizing: border-box;
+	}
 	.pane .content { flex: 1; }
 	.pane .content iframe {
 		border: 0; width: 100%; height: 100%;

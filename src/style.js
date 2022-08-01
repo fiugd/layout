@@ -147,7 +147,7 @@ const paneStyle = () => {
 		margin-bottom: -23px;
 		z-index: 1;
 	}
-	.pane .content { flex: 1; background: #1e1e1e; }
+	.pane .content { flex: 1; }
 	.pane .content iframe {
 		border: 0; width: 100%; height: 100%;
 		border-color: #2a2a2a;

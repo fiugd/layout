@@ -140,12 +140,13 @@ const paneStyle = () => {
 		position: relative;
 		display: flex; 
 		margin: 0;
-		border-top: 1px solid #262626; border-left: 1px solid #262626;
+		/*border-top: 1px solid #262626;*/
+		/*border-left: 1px solid #262626;*/
 		box-sizing: border-box;
 	}
 	.pane.bottomDocked {
 		margin-bottom: -23px;
-		z-index: 1;
+		/*z-index: 1;*/
 	}
 	.pane .content { flex: 1; }
 	.pane .content iframe {
@@ -157,6 +158,7 @@ const paneStyle = () => {
 		box-sizing: border-box;
 		position: relative;
 		z-index: 2;
+		color: #2d2d2d;
 	}
 	.sizer.column {
 		cursor: col-resize;
@@ -170,8 +172,23 @@ const paneStyle = () => {
 		height: 3px;
 		margin-left: 1px;
 	}
-	.sizer.disabled { pointer-events: none; }
-	.sizer:hover { background: #48e; }
+	.sizer:after {
+		content: '';
+		display: block;
+		background: currentColor;
+	}
+	.sizer.column:after {
+		height: 100%;
+		width: 1px;
+		margin-left: 1px;
+	}
+	.sizer.row:after {
+		width: 100%;
+		height: 1px;
+		margin-top: 1px;
+	}
+	.sizer.disabled { pointer-events: none; color:transparent; }
+	.sizer:hover { background: #48e; color: transparent; }
 	`;
 };
 

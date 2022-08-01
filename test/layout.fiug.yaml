@@ -11,13 +11,20 @@ rows:
       snapWidth: 150px
       drop: false
     - columns:
-      - width: 55%
+      - width: 35%
         tabs:
           - iframe: /dist/editor.html?file=src/dom.js
           - iframe: /dist/editor.html?file=README.md
           - iframe: /dist/editor.html?file=LICENSE
             active: true
-      - iframe: /fiugd/beta/dist/terminal.html
+      - width: 35%
+        tabs:
+          - iframe: /dist/editor.html?file=src/dom.js
+      - width: 30%
+        rows:
+          - iframe: /fiugd/beta/dist/terminal.html
+          - iframe: /fiugd/beta/dist/terminal.html
+            height: 50%
   - iframe: status.html
     height: 22px
     resize: false

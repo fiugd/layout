@@ -73,7 +73,6 @@ export const createContent = ({ src, srcdoc, childrenOnly }) => {
 
 export const createPane = ({ children, drop, id }) => {
 	const active = children.find(x => x.active);
-	console.log(children)
 	const isModule = children.find(x => x.iframe.includes('/_/modules') || x.iframe.includes('/dist/'))
 	const dropClass =  (drop+"") !== "false" ? " dragTo" : "";
 	const bottomDockedClass = isModule ? " bottomDocked" : "";

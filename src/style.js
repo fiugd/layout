@@ -159,13 +159,13 @@ const paneStyle = () => {
 		z-index: 1;
 	}
 	.sizer.column {
-		cursor: ew-resize;
+		cursor: col-resize;
 		left: -1px;
 		width: 3px;
 		margin-top: 1px;
 	}
 	.sizer.row {
-		cursor: ns-resize;
+		cursor: row-resize;
 		top: -1px;
 		height: 3px;
 		margin-left: 1px;

@@ -2,8 +2,6 @@ import * as dom from './dom.js';
 
 const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
 
-export const style = dom.tabStyle;
-
 const createEmptyDom = dom.createEmpty;
 const createTabDom = dom.createTab;
 const createContentDom = dom.createContent;

@@ -156,7 +156,7 @@ const paneStyle = () => {
 		background: transparent;
 		box-sizing: border-box;
 		position: relative;
-		z-index: 1;
+		z-index: 2;
 	}
 	.sizer.column {
 		cursor: col-resize;

@@ -23,16 +23,46 @@ const tabStyle = () => {
 	.tabs::-webkit-scrollbar {
 		display: none;
 	}
+
 	.tabs-menu {
 		position: absolute;
 		top: 28px;
 		right: 10px;
-		width: 220px;
-		height: 200px;
+		min-width: 220px;
+		min-height: 200px;
 		background: #333;
 		border-radius: 3px;
 		box-shadow: 3px 3px 8px #00000073;
 	}
+	.tabs-menu ul {
+		list-style: none;
+		user-select: none;
+		padding-left: 0;
+		margin: 0;
+		margin-top: 0.5em;
+		margin-bottom: 0.5em;
+	}
+	.tabs-menu ul li {
+		padding: 0.5em 1em;
+	}
+	.tabs-menu ul li.disabled {
+		color: #666;
+	}
+	.tabs-menu ul li:not(.disabled) {
+		cursor: pointer;
+	}
+	.tabs-menu ul li + li {}
+	.tabs-menu ul li:not(.disabled):hover {
+		background: #38495b;
+	}
+	.tabs-menu .seperator {
+		width: 100%;
+		background: #4f4f4f;
+		height: 1px;
+		margin-top: 0.25em;
+		margin-bottom: 0.25em;
+	}
+
 	.tabs-controls {
 		height: 100%;
 		display: flex;
@@ -147,18 +177,6 @@ const paneStyle = () => {
 	.pane.bottomDocked {
 		margin-bottom: -23px;
 		/*z-index: 1;*/
-	}
-	.pane.active:after {
-		content: "";
-		position: absolute;
-		right: 0;
-		top: 0;
-		box-shadow: inset 0 0 3px #00bcff;
-		left: 1px;
-		bottom: 23px;
-		pointer-events: none;
-		display: block;
-		box-sizing: border-box;
 	}
 	.pane .content { flex: 1; }
 	.pane .content iframe {

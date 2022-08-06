@@ -1,5 +1,3 @@
-const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
-
 const tabControls = () => `
 	<div class="tabs-controls">
 		<div class="action-item">
@@ -23,11 +21,52 @@ const tabClose = () => `
 	</div>
 `;
 
-const tabsMenu = () => `
+const tabMenuActions = [{
+	title: 'Fullscreen'
+}, {
+	title: 'Restore',
+	disabled: true
+}, {
+	seperator: true
+}, {
+	title: 'Close All Tabs',
+	disabled: true
+}, {
+	title: 'Close Inactive Tabs',
+	disabled: true
+}, {
+	title: 'Close Inactive Left',
+	disabled: true
+}, {
+	title: 'Close Inactive Right',
+	disabled: true
+}];
+
+const tabMenuItem = (i) => {
+	if(i.seperator) return `<div class="seperator"></div>`;
+
+	return `
+		<li class="${
+			[
+				i.hidden && "hidden",
+				i.disabled && "disabled"
+			].filter(x=>x).join(" ")
+		}">
+			${i.title}
+		</li>
+	`;
+};
+
+const tabsMenu = (items) => {
+	items = items || [];
+	return `
 	<div class="tabs-menu hidden">
-		<i>todo: menu items</i>
+		<ul>
+			${items.map(tabMenuItem).join('')}
+		</ul>
 	</div>
-`;
+	`;
+};
 
 const getFilename = (target) => {
 	let filename = target.split("/").pop();
@@ -73,29 +112,24 @@ export const createContent = ({ src, srcdoc, childrenOnly }) => {
 	return `<div class="content">${iframe}</div>`;
 };
 
-export const createPane = ({ orient, children, drop, id, active: paneActive }) => {
+export const createPane = ({ children, drop, id }) => {
 	const active = children.find(x => x.active);
 	const isModule = children.find(x => x.iframe.includes('/_/modules') || x.iframe.includes('/dist/'))
 	const dropClass =  (drop+"") !== "false" ? " dragTo" : "";
 	const bottomDockedClass = isModule ? " bottomDocked" : "";
-	const activeClass = paneActive ? " active" : "";
-	const tabbedClass = orient === "tabs" ? " tabbed" : "";
 	return `
-	<div class="pane${tabbedClass}${dropClass}${bottomDockedClass}${activeClass}" id="${id}">
-		${ orient === "tabs"
-			? `<div class="tabs-container">
-					<div class="tabs">
-						${ children.map(x => createTab(
-								x.active, x.iframe
-							)).join('')
-						}
-					</div>
-					${tabControls()}
-				</div>`
-			: ""
-		}
+	<div class="pane tabbed${dropClass}${bottomDockedClass}" id="${id}">
+		<div class="tabs-container">
+			<div class="tabs">
+				${ children.map(x => createTab(
+						x.active, x.iframe
+					)).join('')
+				}
+			</div>
+			${tabControls()}
+		</div>
 		${createContent({ src: active.iframe })}
-		${tabsMenu()}
+		${tabsMenu(tabMenuActions)}
 	</div>
 	`;
 };
@@ -112,7 +146,7 @@ export const newPaneChildren = (target, tabbed) => {
 		: ""
 	}
 	${createContent({ src: tabbed ? "document.html" : "terminal.html" })}
-	${ tabbed && tabsMenu()}
+	${ tabbed && tabsMenu(tabMenuActions)}
 	`;
 };
 
@@ -167,42 +201,5 @@ export const createEmpty = () => `
 		</svg>
 	</body>
 </html>
-`.replaceAll("\r", "").replaceAll("\n", "");
+`.replaceAll("\r", "").replaceAll("\n", "");;
 
-export const childContent = (child) => {
-	child.id = child.id || randomId();
-	const { iframe, children, id, orient="", drop } = child;
-	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
-	if(iframe){
-		let _iframe = ["terminal.html", "status.html", "action.html", "tree.html"].includes(iframe)
-			? iframe
-			: "terminal.html";
-		const isModule = iframe.includes('/_/modules') || iframe.includes('/dist/');
-		if(isModule) _iframe = iframe;
-		return createPane({ ...child, children: [{ iframe: _iframe, active: true }] })
-	}
-
-	if(children && orient === "tabs") return createPane(child);
-
-	return `
-	<div class="layout-container ${orient}" id="${id}">
-		${children.map(childDom(child)).join('')}
-	</div>
-	`;
-};
-
-export const childDom = (config) => (child, i, all) => {
-	const { orient } = config;
-	if(i === 0) return childContent(child);
-	const prev = all[i-1];
-	const next = all[i+1]
-	const canResize = (() => {
-		if(prev.resize+'' === 'false') return false;
-		if(i+1 === all.length && child.resize+'' === 'false') return false;
-		return true;
-	})();
-	const sizer = canResize
-		? `<div class="sizer ${orient}"></div>`
-		: `<div class="sizer ${orient} disabled"></div>`;
-	return sizer + childContent(child);
-};

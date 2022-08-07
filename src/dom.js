@@ -24,12 +24,15 @@ const tabClose = () => `
 const tabMenuActions = [{
 	title: 'Fullscreen'
 }, {
-	title: 'Restore',
-	disabled: true
+	title: 'Exit Fullscreen',
+	hidden: true
 }, {
 	seperator: true
 }, {
 	title: 'Close All Tabs',
+	disabled: true
+}, {
+	title: 'Close Pane',
 	disabled: true
 }, {
 	title: 'Close Inactive Tabs',
@@ -51,7 +54,9 @@ const tabMenuItem = (i) => {
 				i.hidden && "hidden",
 				i.disabled && "disabled"
 			].filter(x=>x).join(" ")
-		}">
+		}"
+			data-action="${i.title.replace(" ", "").toLowerCase()}"
+		>
 			${i.title}
 		</li>
 	`;

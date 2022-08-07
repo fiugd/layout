@@ -32,7 +32,7 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [X] nested layout
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
-- [ ] maximize / minimize for panes
+- [X] maximize / minimize for panes (settled on fullscreen for now)
 
 ### tabs
 - [ ] tab select should result in config change

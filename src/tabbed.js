@@ -52,23 +52,77 @@ export const openTab = (parent, src) => {
 	tabs.innerHTML += createTabDom(true, src);
 };
 
-/*
-TODO: populate tabs menu
-
-Close pane
-Close tabs left, right, all
-Maximize/minimize pane
-*/
-
 const openMenu = (pane, actionEl) => {
 	const menu = pane.querySelector('.tabs-menu');
 	actionEl.classList.toggle('selected');
 	menu.classList.toggle('hidden');
-	//TODO: set up pointerdown listener so that menu disappears after clicks
+	menu.classList.add('menu-open');
+};
+
+const closeAllMenus = () => {
+	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
+	for(const menu of Array.from(openMenus)){
+		menu.classList.remove('menu-open');
+		menu.classList.add('hidden');
+	}
+	const selectedActions = document.querySelectorAll('.action-item.selected');
+	for(const action of Array.from(selectedActions)){
+		action.classList.remove('selected');
+	}
+};
+
+const fullscreenChangeHandler = () => {
+	const fsElement = document.fullscreenElement;
+	const allActions = document.querySelectorAll('.tabs-menu li');
+	for(const actionNode of Array.from(allActions)){
+		const { action } = actionNode.dataset;
+		if(action === 'fullscreen' && fsElement){
+			actionNode.classList.add('hidden');
+			continue;
+		}
+		if(action === 'fullscreen' && !fsElement){
+			actionNode.classList.remove('hidden');
+			continue;
+		}
+		if(action === 'exitfullscreen' && fsElement){
+			actionNode.classList.remove('hidden');
+			continue;
+		}
+		if(action === 'exitfullscreen' && !fsElement){
+			actionNode.classList.add('hidden');
+			continue;
+		}
+	}
+};
+
+const fullscreenExit = (e) => {
+	if(!document.fullscreenElement || !document.exitFullscreen) return;
+	document.exitFullscreen();
+};
+
+const fullscreenPane = (e) => {
+	const pane = e.target.closest('.pane');
+	if (!pane || document.fullscreenElement) return;
+	pane.requestFullscreen();
+};
+
+const handleMenuClick = (e) => {
+	closeAllMenus();
+	const pane = e.target.closest('.pane.tabbed');
+	const {action} = e.target.dataset;
+	if(!action) return;
+
+	if(action === "fullscreen") return fullscreenPane(e);
+	if(action === "exitfullscreen") return fullscreenExit(e);
 };
 
 export const attachEvents = (layoutDom) => {
+	document.addEventListener('fullscreenchange', fullscreenChangeHandler);
+
 	layoutDom.addEventListener('click', (e) => {
+		const isMenuClick = e.target.tagName === "LI" && e.target.closest('.tabs-menu');
+		if(isMenuClick) return handleMenuClick(e);
+		closeAllMenus();
 		const pane = e.target.closest('.pane.tabbed');
 		const parent = e.target.parentNode;
 		if(e.target.classList.contains('action-item')){

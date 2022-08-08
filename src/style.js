@@ -91,13 +91,13 @@ const tabStyle = () => {
 		justify-content: space-between;
 	}
 	.tab + .tab { margin-left: 1px; }
-	.active, .open { background: #1e1e1e; border-color: #2a2a2a; }
+	.tab.active, .tab.open { background: #1e1e1e; border-color: #2a2a2a; }
 	.tab span, .tab-close { display: inline; }
 	.tab-close { color: transparent; }
 	.tab-close svg {
 		stroke: currentColor; stroke-width: 1.5; height: 0.65em;
 	}
-	.active, .active .action-item, .tab:hover .action-item { color: white }
+	.tab.active, .tab.active .action-item, .tab:hover .action-item { color: white }
 	.action-item * { pointer-events:none; }
 	.action-item {
 		padding: 0.4em;
@@ -184,26 +184,24 @@ const paneStyle = () => {
 		border-color: #2a2a2a;
 	}
 	.pane.active:after {
-		/*
 		content: "";
 		position: absolute;
+		pointer-events: none;
+		display: block;
+		box-sizing: border-box;
+		/*
 		right: 0;
 		top: 0;
 		box-shadow: inset 0 0 3px #00bcff;
 		left: 1px;
 		bottom: 23px;
-		pointer-events: none;
-		display: block;
-		box-sizing: border-box;
 		*/
-		content: "ACTIVE PANE";
-		position: absolute;
 		right: 11px;
 		bottom: 28px;
-		pointer-events: none;
-		display: block;
-		box-sizing: border-box;
-		color: #779997;
+		background: #779997;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
 	}
 	.sizer {
 		background: transparent;

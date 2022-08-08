@@ -26,25 +26,25 @@ It is written from scratch to be simple, flexible, and dependency-free.
 
 ## TODO
 
-### refine visual layout
+### layout
 - [X] move tab-related code out of editor.html and into module
 - [X] root-level column or rows layout
 - [X] nested layout
+- [X] maximize / minimize for panes (settled on fullscreen for now)
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
-- [X] maximize / minimize for panes (settled on fullscreen for now)
 
 ### tabs
+- [X] tab bar menu
 - [ ] tab select should result in config change
 - [ ] tab scroll into view on activate
-- [ ] tab bar menu
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)
 - [ ] expose option to customize look/feel of tabs
 - [ ] double-click tab bar to start new file
 
-### refine layout events
+### events
 - [X] onDrop for pane split (versus add pane)
 - [X] drag listener should only allow one hover target to exist at a time (one pane at a time)
 - [X] dynamically created/modified nested layouts
@@ -53,6 +53,9 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] global onDrop for panes (mouseenter, mouseleave, mouseup)
 - [ ] listen to resize/drop event (or other events) in each pane
 - [ ] global state as medium for drag meta info
+
+### iframes
+- [ ] report click events to parent
 
 ### misc 
 - [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)

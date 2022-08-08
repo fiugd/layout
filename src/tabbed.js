@@ -57,6 +57,18 @@ const openMenu = (pane, actionEl) => {
 	actionEl.classList.toggle('selected');
 	menu.classList.toggle('hidden');
 	menu.classList.toggle('menu-open');
+	
+	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
+	for(const menu of Array.from(openMenus)){
+		if(pane.contains(menu)) continue;
+		menu.classList.remove('menu-open');
+		menu.classList.add('hidden');
+	}
+	const selectedActions = document.querySelectorAll('.action-item.selected');
+	for(const action of Array.from(selectedActions)){
+		if(pane.contains(action)) continue;
+		action.classList.remove('selected');
+	}
 };
 
 const closeAllMenus = () => {

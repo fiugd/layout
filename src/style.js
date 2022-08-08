@@ -183,6 +183,28 @@ const paneStyle = () => {
 		border: 0; width: 100%; height: 100%;
 		border-color: #2a2a2a;
 	}
+	.pane.active:after {
+		/*
+		content: "";
+		position: absolute;
+		right: 0;
+		top: 0;
+		box-shadow: inset 0 0 3px #00bcff;
+		left: 1px;
+		bottom: 23px;
+		pointer-events: none;
+		display: block;
+		box-sizing: border-box;
+		*/
+		content: "ACTIVE PANE";
+		position: absolute;
+		right: 11px;
+		bottom: 28px;
+		pointer-events: none;
+		display: block;
+		box-sizing: border-box;
+		color: #779997;
+	}
 	.sizer {
 		background: transparent;
 		box-sizing: border-box;

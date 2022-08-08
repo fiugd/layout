@@ -1,3 +1,5 @@
+const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
+
 const tabControls = () => `
 	<div class="tabs-controls">
 		<div class="action-item">
@@ -117,22 +119,27 @@ export const createContent = ({ src, srcdoc, childrenOnly }) => {
 	return `<div class="content">${iframe}</div>`;
 };
 
-export const createPane = ({ children, drop, id }) => {
+export const createPane = ({ orient, children, drop, id, active: paneActive }) => {
 	const active = children.find(x => x.active);
 	const isModule = children.find(x => x.iframe.includes('/_/modules') || x.iframe.includes('/dist/'))
 	const dropClass =  (drop+"") !== "false" ? " dragTo" : "";
 	const bottomDockedClass = isModule ? " bottomDocked" : "";
+	const activeClass = paneActive ? " active" : "";
+	const tabbedClass = orient === "tabs" ? " tabbed" : "";
 	return `
-	<div class="pane tabbed${dropClass}${bottomDockedClass}" id="${id}">
-		<div class="tabs-container">
-			<div class="tabs">
-				${ children.map(x => createTab(
-						x.active, x.iframe
-					)).join('')
-				}
-			</div>
-			${tabControls()}
-		</div>
+	<div class="pane${tabbedClass}${dropClass}${bottomDockedClass}${activeClass}" id="${id}">
+		${ orient === "tabs"
+			? `<div class="tabs-container">
+					<div class="tabs">
+						${ children.map(x => createTab(
+								x.active, x.iframe
+							)).join('')
+						}
+					</div>
+					${tabControls()}
+				</div>`
+			: ""
+		}
 		${createContent({ src: active.iframe })}
 		${tabsMenu(tabMenuActions)}
 	</div>
@@ -169,6 +176,44 @@ export const newPane = (target, tabbed, dragTo, id, bottomDocked) => `
 		${newPaneChildren(target, tabbed)}
 	</div>
 `;
+
+export const childContent = (child) => {
+	child.id = child.id || randomId();
+	const { iframe, children, id, orient="", drop } = child;
+	const dragToClass = (drop+"") !== "false" ? " dragTo" : "";
+	if(iframe){
+		let _iframe = ["terminal.html", "status.html", "action.html", "tree.html"].includes(iframe)
+			? iframe
+			: "terminal.html";
+		const isModule = iframe.includes('/_/modules') || iframe.includes('/dist/');
+		if(isModule) _iframe = iframe;
+		return createPane({ ...child, children: [{ iframe: _iframe, active: true }] })
+	}
+
+	if(children && orient === "tabs") return createPane(child);
+
+	return `
+	<div class="layout-container ${orient}" id="${id}">
+		${children.map(childDom(child)).join('')}
+	</div>
+	`;
+};
+
+export const childDom = (config) => (child, i, all) => {
+	const { orient } = config;
+	if(i === 0) return childContent(child);
+	const prev = all[i-1];
+	const next = all[i+1]
+	const canResize = (() => {
+		if(prev.resize+'' === 'false') return false;
+		if(i+1 === all.length && child.resize+'' === 'false') return false;
+		return true;
+	})();
+	const sizer = canResize
+		? `<div class="sizer ${orient}"></div>`
+		: `<div class="sizer ${orient} disabled"></div>`;
+	return sizer + childContent(child);
+};
 
 export const createEmpty = () => `
 <html>

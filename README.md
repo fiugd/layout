@@ -57,3 +57,8 @@ It is written from scratch to be simple, flexible, and dependency-free.
 ### misc 
 - [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
 - [ ] react wrapper
+
+
+### reference
+[iframe reports clicks to parent](https://itecnote.com/tecnote/javascript-how-to-get-iframe-to-listen-to-same-events-as-parent-and-fire-the-same-handlers/)
+[iframe reports clicks to parent](https://stackoverflow.com/questions/10226448/detecting-click-inside-iframe-using-invisible-div)

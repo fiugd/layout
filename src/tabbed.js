@@ -56,7 +56,7 @@ const openMenu = (pane, actionEl) => {
 	const menu = pane.querySelector('.tabs-menu');
 	actionEl.classList.toggle('selected');
 	menu.classList.toggle('hidden');
-	menu.classList.add('menu-open');
+	menu.classList.toggle('menu-open');
 };
 
 const closeAllMenus = () => {
@@ -119,7 +119,6 @@ export const attachEvents = (layoutDom) => {
 	layoutDom.addEventListener('click', (e) => {
 		const isMenuClick = e.target.tagName === "LI" && e.target.closest('.tabs-menu');
 		if(isMenuClick) return handleMenuClick(e);
-		closeAllMenus();
 		const pane = e.target.closest('.pane.tabbed');
 		const parent = e.target.parentNode;
 		if(e.target.classList.contains('action-item')){
@@ -132,6 +131,7 @@ export const attachEvents = (layoutDom) => {
 			if(e.target.dataset.action === "exitfullscreen")
 				return fullscreenExit(e.target);
 		}
+		closeAllMenus();
 		const isTab = e.target.classList.contains('tab');
 		const parentIsTab = parent.classList.contains('tab');
 		if(isTab || parentIsTab){

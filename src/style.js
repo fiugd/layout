@@ -73,8 +73,11 @@ const tabStyle = () => {
 		cursor: pointer;
 		color: #999;
 	}
-	.tabs-controls svg {
+	.tabs-controls svg.fill {
 		fill: currentColor; height: 0.9em;
+	}
+	.tabs-controls svg.stroke {
+		stroke: currentColor; height: 0.9em;
 	}
 	.tab > * + * { margin-left: 0.4em; }
 	.tab {

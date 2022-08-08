@@ -2,8 +2,22 @@ const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.
 
 const tabControls = () => `
 	<div class="tabs-controls">
-		<div class="action-item">
-			<svg viewBox="0 0 10 10">
+		<div class="action-item" data-action="fullscreen">
+			<svg viewBox="0 0 10 10" class="icon stroke">
+				<line x1="1" y1="1" x2="9" y2="1"></line>
+				<line x1="1" y1="2" x2="9" y2="2"></line>
+				<line x1="1" y1="1" x2="1" y2="9"></line>
+				<line x1="9" y1="1" x2="9" y2="9"></line>
+				<line x1="1" y1="9" x2="9" y2="9"></line>
+			</svg>
+		</div>
+		<div class="action-item hidden" data-action="exitfullscreen">
+			<svg viewBox="0 0 10 10" class="icon stroke">
+				<line x1="1" y1="9" x2="9" y2="9"></line>
+			</svg>
+		</div>
+		<div class="action-item" data-action="menu">
+			<svg viewBox="0 0 10 10" class="icon fill">
 				<circle cx="1" cy="5" r="1"></circle>
 				<circle cx="5" cy="5" r="1"></circle>
 				<circle cx="9" cy="5" r="1"></circle>
@@ -15,7 +29,7 @@ const tabControls = () => `
 const tabClose = () => `
 	<div class="tab-close">
 		<div class="action-item">
-			<svg viewBox="0 0 10 10">
+			<svg viewBox="0 0 10 10" class="icon fill">
 				<line x1="1" y1="1" x2="9" y2="9"></line>
 				<line x1="9" y1="1" x2="1" y2="9"></line>
 			</svg>
@@ -24,10 +38,8 @@ const tabClose = () => `
 `;
 
 const tabMenuActions = [{
-	title: 'Fullscreen'
-}, {
-	title: 'Exit Fullscreen',
-	hidden: true
+	title: 'todo',
+	disabled: true
 }, {
 	seperator: true
 }, {

@@ -72,8 +72,9 @@ const closeAllMenus = () => {
 };
 
 const fullscreenChangeHandler = () => {
+	closeAllMenus();
 	const fsElement = document.fullscreenElement;
-	const allActions = document.querySelectorAll('.tabs-menu li');
+	const allActions = document.querySelectorAll('.tabs-menu li, .action-item');
 	for(const actionNode of Array.from(allActions)){
 		const { action } = actionNode.dataset;
 		if(action === 'fullscreen' && fsElement){
@@ -100,8 +101,7 @@ const fullscreenExit = (e) => {
 	document.exitFullscreen();
 };
 
-const fullscreenPane = (e) => {
-	const pane = e.target.closest('.pane');
+const fullscreenPane = (pane, e) => {
 	if (!pane || document.fullscreenElement) return;
 	pane.requestFullscreen();
 };
@@ -111,9 +111,6 @@ const handleMenuClick = (e) => {
 	const pane = e.target.closest('.pane.tabbed');
 	const {action} = e.target.dataset;
 	if(!action) return;
-
-	if(action === "fullscreen") return fullscreenPane(e);
-	if(action === "exitfullscreen") return fullscreenExit(e);
 };
 
 export const attachEvents = (layoutDom) => {
@@ -128,8 +125,12 @@ export const attachEvents = (layoutDom) => {
 		if(e.target.classList.contains('action-item')){
 			if(parent.classList.contains('tab-close'))
 				return closeTab(pane, e.target.closest('.tab'));
-			if(parent.classList.contains('tabs-controls'))
+			if(e.target.dataset.action === "menu")
 				return openMenu(pane, e.target);
+			if(e.target.dataset.action === "fullscreen")
+				return fullscreenPane(pane, e.target);
+			if(e.target.dataset.action === "exitfullscreen")
+				return fullscreenExit(e.target);
 		}
 		const isTab = e.target.classList.contains('tab');
 		const parentIsTab = parent.classList.contains('tab');

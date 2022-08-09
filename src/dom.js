@@ -89,6 +89,8 @@ const tabsMenu = (items) => {
 
 const getFilename = (target) => {
 	let filename = target.split("/").pop();
+	if(filename.includes("&paneid="))
+		filename = filename.split("&paneid=").shift()
 	if(filename.includes("?file="))
 		filename = filename.split("?file=").pop();
 	return filename;
@@ -117,13 +119,21 @@ const dummyFiles = [
 	"six.html",
 ];
 
-export const createContent = ({ src, srcdoc, childrenOnly }) => {
+const iframeAddPaneId = (iframe, id) => {
+	const isModule = iframe.includes('/_/modules') || iframe.includes('/dist/');
+	if(!isModule) return iframe;
+	return iframe.includes("?file")
+		? iframe + "&paneid=" + id
+		: iframe + "?paneid=" + id;
+};
+
+export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
 	const _src = dummyFiles.includes(src)
 		? "document.html"
 		: src;
 	const sandbox = "allow-same-origin allow-scripts allow-popups allow-modals allow-downloads allow-forms allow-top-navigation allow-popups-to-escape-sandbox"
 	const iframe = src
-		? `<iframe src="${_src}" allowtransparency=”true” sandbox="${sandbox}" width="100%" height="100%"></iframe>`
+		? `<iframe src="${paneid ? iframeAddPaneId(_src, paneid) : _src}" allowtransparency=”true” sandbox="${sandbox}" width="100%" height="100%"></iframe>`
 		: `<iframe srcdoc='${srcdoc}' allowtransparency=”true” sandbox="${sandbox}" width="100%" height="100%"></iframe>`;
 
 	if(childrenOnly) return iframe;
@@ -133,18 +143,19 @@ export const createContent = ({ src, srcdoc, childrenOnly }) => {
 
 export const createPane = ({ orient, children, drop, id, active: paneActive }) => {
 	const active = children.find(x => x.active);
-	const isModule = children.find(x => x.iframe.includes('/_/modules') || x.iframe.includes('/dist/'))
+	const isModule = children.find(x => x.iframe.includes('/_/modules') || x.iframe.includes('/dist/'));
 	const dropClass =  (drop+"") !== "false" ? " dragTo" : "";
 	const bottomDockedClass = isModule ? " bottomDocked" : "";
 	const activeClass = paneActive ? " active" : "";
 	const tabbedClass = orient === "tabs" ? " tabbed" : "";
+
 	return `
 	<div class="pane${tabbedClass}${dropClass}${bottomDockedClass}${activeClass}" id="${id}">
 		${ orient === "tabs"
 			? `<div class="tabs-container">
 					<div class="tabs">
 						${ children.map(x => createTab(
-								x.active, x.iframe
+								x.active, iframeAddPaneId(x.iframe, id)
 							)).join('')
 						}
 					</div>
@@ -152,7 +163,7 @@ export const createPane = ({ orient, children, drop, id, active: paneActive }) =
 				</div>`
 			: ""
 		}
-		${createContent({ src: active.iframe })}
+		${createContent({ src: active.iframe, paneid: id })}
 		${tabsMenu(tabMenuActions)}
 	</div>
 	`;
@@ -198,7 +209,9 @@ export const childContent = (child) => {
 			? iframe
 			: "terminal.html";
 		const isModule = iframe.includes('/_/modules') || iframe.includes('/dist/');
-		if(isModule) _iframe = iframe;
+		if(isModule) _iframe = iframe.includes("?file")
+			? iframe + "&paneid=" + child.id
+			: iframe + "?paneid=" + child.id;
 		return createPane({ ...child, children: [{ iframe: _iframe, active: true }] })
 	}
 

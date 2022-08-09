@@ -29,6 +29,8 @@ const getFilename = (target) => {
 	let filename = target.split("/").pop();
 	if(filename.includes("?file="))
 		filename = filename.split("?file=").pop();
+	if(filename.includes("&paneid="))
+		filename = filename.split("&paneid=").shift();
 	return filename;
 };
 

@@ -16,7 +16,7 @@ rows:
           - active: true
             width: 35%
             tabs:
-              - iframe: /dist/editor.html?file=src/dom.js
+              - iframe: /dist/editor.html?file=src/index.js
               - iframe: /dist/editor.html?file=README.md
               - iframe: /dist/editor.html?file=LICENSE
                 active: true

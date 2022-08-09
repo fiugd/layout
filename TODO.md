@@ -1,16 +1,16 @@
-## TODO
+# TODO
 
-### iframes
+## iframes
 - [ ] **report events to parent
 - [ ] **use this reporting in:
 	- terminal.html
 	- editor.html
 	- maybe even status and action bars
 
-### tree
+## tree
 - [ ] **support drag and drop
 
-### tabs
+## tabs
 - [X] tab bar menu
 - [ ] **tab select should result in config change
 - [ ] **tab scroll into view on activate
@@ -20,12 +20,12 @@
 - [ ] option to customize look/feel of tabs
 - [ ] double-click tab bar to start new file
 
-### misc 
+## misc 
 - [ ] **wire up events in test/index.html
 - [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
 - [ ] react wrapper
 
-### layout
+## layout
 - [X] move tab-related code out of editor.html and into module
 - [X] root-level column or rows layout
 - [X] nested layout
@@ -33,7 +33,7 @@
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
 
-### events
+## events
 - [X] onDrop for pane split (versus add pane)
 - [X] drag listener allows only one pane hover target at a time
 - [X] dynamically created/modified nested layouts

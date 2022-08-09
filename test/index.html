@@ -67,7 +67,54 @@
 
 		const configWithParent = { ...layoutConfig, parent: document.body };
 
-		new Layout(configWithParent, layoutChange);
+		const layout = new Layout(configWithParent, layoutChange);
+		/*
+
+		layout.on('change', layoutChange);
+			- do this instead of how it's done above
+			- when a file is closed, notify global
+		layout.on('open', ({ file, pane }) => {
+			- a file has been dropped onto a pane
+			- a tabbed frame is opened in a pane
+			- what kind of pane is that (terminal, editor, etc)? 
+		});
+		*/
+
+		const fileSelect = (e) => {
+			console.log(`active pane should open: ${e.src} (and should probably ack request)`);
+			console.log(e);
+			/*
+				- if file is open in allPanes, activate that pane and file
+				- open/activate a tab in the active pane
+			*/
+		};
+
+		window.addEventListener('message', (event) => {
+			const { triggerEvent, subscribe } = event.data;
+			if(triggerEvent?.type === "fileSelect") return fileSelect(triggerEvent?.detail);
+
+			if(triggerEvent) return console.log(`event triggered: `, triggerEvent);
+			if(subscribe) return console.log(`request to subscribe: ${subscribe}`);
+
+			console.log(event.data);
+
+			/*
+			- document gets message
+			- do something with layout
+
+			- paneClose
+				- for example, terminal has requested to be closed
+			- fileSelect (see above)
+			- fileChange
+				- if file is open in allPanes, update its status, ie. orange bar at top
+			- fileClose
+				- if file is open in allPanes, close it
+				- if file was active, activate the next tab
+			- fileDelete
+				- if file is open in allPanes, close it
+				- if file was active, activate the next tab
+			*/
+		});
 	</script>
 </html>
 

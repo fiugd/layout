@@ -77,7 +77,8 @@ const tabStyle = () => {
 		fill: currentColor; height: 0.9em;
 	}
 	.tabs-controls svg.stroke {
-		stroke: currentColor; height: 0.9em;
+		stroke: currentColor;
+		height: 0.9em;
 	}
 	.tab > * + * { margin-left: 0.4em; }
 	.tab {
@@ -94,20 +95,34 @@ const tabStyle = () => {
 		justify-content: space-between;
 	}
 	.tab + .tab { margin-left: 1px; }
-	.tab.active, .tab.open { background: #1e1e1e; border-color: #2a2a2a; }
+	.tab.active, .tab.open {
+		background: #222;
+		background: linear-gradient(0deg, #1e1e1e 0%, #2a2a2a 70%);
+	}
+	.tab.active:hover,
+	.pane.active .tab.active,
+	.pane.active .tab.open {
+		background: #1e1e1e;
+	}
 	.tab span, .tab-close { display: inline; }
 	.tab-close { color: transparent; }
 	.tab-close svg {
 		stroke: currentColor; stroke-width: 1.5; height: 0.65em;
 	}
-	.tab.active, .tab.active .action-item, .tab:hover .action-item { color: white }
+	.pane.active .tab.active,
+	.pane.active .tab.active .action-item,
+	.tab.active:hover,
+	.tab:hover .action-item {
+		color: white;
+	}
 	.action-item * { pointer-events:none; }
 	.action-item {
 		padding: 0.4em;
 		border-radius: 3px;
 		display: flex;
 	}
-	.action-item:hover, .action-item.selected {
+	.action-item:hover,
+	.action-item.selected {
 		color: white;
 		background: #fff2;
 	}
@@ -126,6 +141,13 @@ const draggedStyle = () => {
 		pointer-events: none;
 	}
 	.pane .content { position: relative; }
+
+	.pane {
+		background: #222;
+	}
+	.pane.active {
+		background: #1e1e1e;
+	}
 
 	.hidden { display: none; }
 	.drag-hover {

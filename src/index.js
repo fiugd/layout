@@ -1,9 +1,3 @@
-/*
-https://blog.jim-nielsen.com/2021/css-system-colors/
-
-https://css-tricks.com/snippets/css/complete-guide-grid/
-*/
-
 import * as events from './events.js';
 import * as tabbed from './tabbed.js';
 import * as splitting from './splitting.js';
@@ -12,7 +6,8 @@ import style from './style.js';
 
 window.newPane = splitting.newPane;
 
-const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
+const randomId = (prefix="_") =>
+	prefix + Math.random().toString(16).replace('0.','');
 
 const flatConfig = (config) => {
 	if(!config.children) return config;
@@ -21,7 +16,8 @@ const flatConfig = (config) => {
 
 const containerSizers = (containers, configFlat) => {
 	for(const [index, container] of containers.entries()){
-		const containerConfig = configFlat.find(x => x.id === container.id);
+		const containerConfig = configFlat
+			.find(x => x.id === container.id);
 		splitting.setSize(container, containerConfig);
 
 		const sizers = container.querySelectorAll(':scope > .sizer');
@@ -42,7 +38,8 @@ const createDom = (layout) => {
 		children.map(dom.childDom(config)).join('');
 
 	const configFlat = flatConfig(config);
-	const containers = layoutDom.querySelectorAll('.layout-container');
+	const containers = layoutDom
+		.querySelectorAll('.layout-container');
 	containerSizers(
 		[layoutDom, ...Array.from(containers)],
 		configFlat
@@ -80,9 +77,12 @@ const outputConfig = (config) => {
 	const { parent, id, orient, children, ...rest} = config;
 
 	const output = { ...rest };
-	if(orient === "row") output.rows = children.map(outputConfig);
-	if(orient === "column") output.columns = children.map(outputConfig);
-	if(orient === "tabs") output.tabs = children.map(outputConfig);
+	if(orient === "row")
+		output.rows = children.map(outputConfig);
+	if(orient === "column")
+		output.columns = children.map(outputConfig);
+	if(orient === "tabs")
+		output.tabs = children.map(outputConfig);
 
 	return output;
 };
@@ -104,16 +104,20 @@ class Layout {
 	onResize(sizer, i, x, y){
 		//TODO: sizers should be stored in Layout state when created
 		//data gathering is too much to be doing while resizing
-		const orient = sizer.classList.contains("row") ? "row" : "column";
+		const orient = sizer.classList
+			.contains("row") ? "row" : "column";
 		const configFlat = flatConfig(this.config);
-		const containerConfig = configFlat.find(x => x.id === sizer.parentNode.id);
+		const containerConfig = configFlat
+			.find(x => x.id === sizer.parentNode.id);
 		const prev = containerConfig.children[i];
 		const next = containerConfig.children[i+1];
 
 		const modDim = orient === "row" ? "height": "width";
 
 		const pixelDelta = orient === "row" ? y : x;
-		const parentTotal = orient === "row" ? sizer.parentNode.clientHeight : sizer.parentNode.clientWidth
+		const parentTotal = orient === "row"
+			? sizer.parentNode.clientHeight
+			: sizer.parentNode.clientWidth
 		const fractionalDelta = pixelDelta / parentTotal;
 
 		const getDelta = (dim) => {
@@ -160,7 +164,8 @@ class Layout {
 				file, height, width, tabbed, dragTo,
 				pane, location, parent, sibling
 			} = addedPane;
-			const parentConfig = configFlat.find(x => x.id === parent);
+			const parentConfig = configFlat
+				.find(x => x.id === parent);
 			const newPane = {};
 			if(!!width) newPane.width = width;
 			if(!!height) newPane.height = height;
@@ -178,7 +183,8 @@ class Layout {
 				newPane.drag = false;
 			}
 
-			parentConfig.children = parentConfig.children.map(child => {
+			parentConfig.children = parentConfig.children
+			.map(child => {
 				if(child?.id !== sibling) return child;
 
 				if(!!width && child.width) child.width = width;
@@ -195,8 +201,9 @@ class Layout {
 				file, height, width, tabbed, dragTo,
 				pane, container, orient, sibling, parent
 			} = splitPane;
-			const parentConfig = configFlat.find(x => x.id === parent);
-			
+			const parentConfig = configFlat
+				.find(x => x.id === parent);
+
 			const newPane = {};
 			if(!!width) newPane.width = width;
 			if(!!height) newPane.height = height;
@@ -209,7 +216,8 @@ class Layout {
 				newPane.iframe = file;
 			}
 
-			parentConfig.children = parentConfig.children.map(child => {
+			parentConfig.children = parentConfig.children
+			.map(child => {
 				if(child?.id !== sibling) return child;
 
 				const children = location === "afterbegin"

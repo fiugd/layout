@@ -1,8 +1,3 @@
-/*
-	TODO: iframe behavior should vary based on parent type
-	this is hardcoded right now, fix this
-*/
-
 import * as events from './events.js';
 import * as dom from './dom.js';
 

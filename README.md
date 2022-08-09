@@ -70,6 +70,8 @@ It is written from scratch to be simple, flexible, and dependency-free.
 ### reference
 [iframe reports clicks to parent](https://itecnote.com/tecnote/javascript-how-to-get-iframe-to-listen-to-same-events-as-parent-and-fire-the-same-handlers/)
 [iframe reports clicks to parent](https://stackoverflow.com/questions/10226448/detecting-click-inside-iframe-using-invisible-div)
+[css-system-colors](https://blog.jim-nielsen.com/2021/css-system-colors/)
+[complete-guide-grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
 
 #### frame communication
 [comlink](https://github.com/GoogleChromeLabs/comlink)

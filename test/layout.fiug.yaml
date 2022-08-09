@@ -6,7 +6,7 @@ rows:
         width: 45px
         resize: false
         drop: false
-      - iframe: /fiugd/beta/dist/tree.html
+      - iframe: /dist/tree.html
         width: 220px
         minWidth: 200px
         snapWidth: 150px
@@ -25,8 +25,8 @@ rows:
               - iframe: /dist/editor.html?file=src/dom.js
           - width: 30%
             rows:
-              - iframe: /fiugd/beta/dist/terminal.html
-              - iframe: /fiugd/beta/dist/terminal.html
+              - iframe: /dist/terminal.html
+              - iframe: /dist/terminal.html
                 height: 50%
   - iframe: status.html
     height: 22px

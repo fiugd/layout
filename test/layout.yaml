@@ -18,6 +18,7 @@ rows:
               - iframe: one.json
               - iframe: two.jpg
               - iframe: six.html
+              - iframe: /dist/editor.html?file=src/dom.js
                 active: true
           - iframe: terminal.html
   - iframe: status.html

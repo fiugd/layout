@@ -25,13 +25,15 @@ It is written from scratch to be simple, flexible, and dependency-free.
 
 ## TODO
 
-### layout
-- [X] move tab-related code out of editor.html and into module
-- [X] root-level column or rows layout
-- [X] nested layout
-- [X] maximize / minimize for panes (settled on fullscreen for now)
-- [ ] min/max height/width for panes
-- [ ] snapping for panes
+### iframes
+- [ ] **report events to parent
+- [ ] **use this reporting in:
+	- terminal.html
+	- editor.html
+	- maybe even status and action bars
+
+### tree
+- [ ] **support drag and drop
 
 ### tabs
 - [X] tab bar menu
@@ -43,6 +45,19 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] option to customize look/feel of tabs
 - [ ] double-click tab bar to start new file
 
+### misc 
+- [ ] **wire up events in test/index.html
+- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
+- [ ] react wrapper
+
+### layout
+- [X] move tab-related code out of editor.html and into module
+- [X] root-level column or rows layout
+- [X] nested layout
+- [X] maximize / minimize for panes (settled on fullscreen for now)
+- [ ] min/max height/width for panes
+- [ ] snapping for panes
+
 ### events
 - [X] onDrop for pane split (versus add pane)
 - [X] drag listener allows only one pane hover target at a time
@@ -53,29 +68,13 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] listen to resize/drop event (or other events) in each pane
 - [ ] global state as medium for drag meta info
 
-### iframes
-- [ ] **report events to parent
-- [ ] **use this reporting in:
-	- terminal.html
-	- editor.html
-	- maybe even status and action bars
-
-### tree
-- [ ] **support drag and drop
-
-### misc 
-- [ ] **wire up events in test/index.html
-- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
-- [ ] react wrapper
-
-
-### reference
+## reference
 [iframe reports clicks to parent](https://itecnote.com/tecnote/javascript-how-to-get-iframe-to-listen-to-same-events-as-parent-and-fire-the-same-handlers/)
 [iframe reports clicks to parent](https://stackoverflow.com/questions/10226448/detecting-click-inside-iframe-using-invisible-div)
 [css-system-colors](https://blog.jim-nielsen.com/2021/css-system-colors/)
 [complete-guide-grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
 
-#### frame communication
+### frame communication
 [comlink](https://github.com/GoogleChromeLabs/comlink)
 [comlink experiment](https://github.com/fiugd/incubator/tree/d44c82640df1a2175c236a0c7dc55a0f082059f1/xterm-tui/comlink)
 [postmate](https://github.com/dollarshaveclub/postmate)

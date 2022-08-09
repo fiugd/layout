@@ -11,6 +11,7 @@
 - [ ] **support drag and drop
 
 ## tabs
+- [ ] **tab close results in config change
 - [ ] **tab scroll into view on activate
 - [X] tab bar menu
 - [X] tab select should result in config change

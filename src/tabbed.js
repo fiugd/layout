@@ -154,7 +154,9 @@ export const attachEvents = (layout) => {
 		const isTab = e.target.classList.contains('tab');
 		const parentIsTab = parent.classList.contains('tab');
 		if(isTab || parentIsTab){
-			let file = e.target.parentNode.getAttribute("source");
+			let file = parentIsTab
+				? e.target.parentNode.getAttribute("source")
+				: e.target.getAttribute("source");
 			file = file || e.target.textContent.trim();
 			openTab(pane, file);
 			activate({

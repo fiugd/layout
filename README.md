@@ -23,7 +23,6 @@ see <a href="./test/index.html">test/index.html</a> for a more involved example
 This layout system uses css grid to position elements.   
 It is written from scratch to be simple, flexible, and dependency-free.   
 
-
 ## TODO
 
 ### layout
@@ -41,12 +40,12 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)
-- [ ] expose option to customize look/feel of tabs
+- [ ] option to customize look/feel of tabs
 - [ ] double-click tab bar to start new file
 
 ### events
 - [X] onDrop for pane split (versus add pane)
-- [X] drag listener should only allow one hover target to exist at a time (one pane at a time)
+- [X] drag listener allows only one pane hover target at a time
 - [X] dynamically created/modified nested layouts
 - [X] tabs, dragover and drop as part of library vs part of hosted page
 - [X] listen to resize event (or other events) in page
@@ -56,7 +55,10 @@ It is written from scratch to be simple, flexible, and dependency-free.
 
 ### iframes
 - [*] report events to parent
-- [*] use this reporting in terminal.html, editor.html (maybe even status and action bars)
+- [*] use this reporting in:
+	- terminal.html
+	- editor.html
+	- maybe even status and action bars
 
 ### tree
 - [*] support drag and drop

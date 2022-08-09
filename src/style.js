@@ -85,8 +85,13 @@ const tabStyle = () => {
 		padding: 0.1em 0.7em 0.1em 1.5em;
 		cursor: pointer; color: #999;
 		height: 30px;
-		border-top-right-radius: 2px; border-top-left-radius: 2px;
-		/*border-left: 0.5px solid; border-right: 0.5px solid;*/ border-top: 0.5px solid;
+		border-top-right-radius: 2px;
+		border-top-left-radius: 2px;
+		/*
+		border-left: 0.5px solid;
+		border-right: 0.5px solid;
+		*/
+		border-top: 0.5px solid;
 		border-color: transparent;
 		white-space: nowrap;
 		display: flex;
@@ -202,6 +207,15 @@ const paneStyle = () => {
 	.pane.bottomDocked {
 		margin-bottom: -23px;
 		/*z-index: 1;*/
+	}
+	.pane.maximum {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		z-index: 9;
+		margin-bottom: 0;
 	}
 	.pane .content { flex: 1; }
 	.pane .content iframe {

@@ -34,22 +34,22 @@ const getFilename = (target) => {
 	return filename;
 };
 
+
 export const openTab = (parent, src) => {
 	const filename = getFilename(src);
 	const content = parent.querySelector('.content');
 	const tabsContainer = parent.querySelector('.tabs-container');
-
-	/* TODO: document.html is currently hardcoded, fix this later */
 	content.innerHTML = createContentDom({ src, childrenOnly: true });
 
-	Array.from(parent.querySelectorAll('.tab.active'))
-		.forEach(x=>x.classList.remove('active'));
+	// Array.from(parent.querySelectorAll('.tab.active'))
+	// 	.forEach(x=>x.classList.remove('active'));
 	const tabs = parent.querySelector('.tabs');
 	const found = tabs.querySelector(`.tab[file="${filename}"]`);
-	if(found){
-		found.classList.add('active');
-		return;
-	}
+	if(found) return;
+	// if(found){
+	// 	found.classList.add('active');
+	// 	return;
+	// }
 	tabsContainer.classList.remove('hidden');
 	tabs.innerHTML += createTabDom(true, src);
 };
@@ -73,7 +73,7 @@ const openMenu = (pane, actionEl) => {
 	}
 };
 
-const closeAllMenus = () => {
+export const closeAllMenus = () => {
 	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
 	for(const menu of Array.from(openMenus)){
 		menu.classList.remove('menu-open');
@@ -85,9 +85,9 @@ const closeAllMenus = () => {
 	}
 };
 
-const fullscreenChangeHandler = () => {
+const fullscreenChangeHandler = (fsElement) => {
 	closeAllMenus();
-	const fsElement = document.fullscreenElement;
+	//const fsElement = document.fullscreenElement;
 	const allActions = document.querySelectorAll('.tabs-menu li, .action-item');
 	for(const actionNode of Array.from(allActions)){
 		const { action } = actionNode.dataset;
@@ -110,14 +110,18 @@ const fullscreenChangeHandler = () => {
 	}
 };
 
-const fullscreenExit = (e) => {
-	if(!document.fullscreenElement || !document.exitFullscreen) return;
-	document.exitFullscreen();
+const fullscreenExit = (pane, e) => {
+	//if(!document.fullscreenElement || !document.exitFullscreen) return;
+	//document.exitFullscreen();
+	pane.classList.remove('maximum');
+	fullscreenChangeHandler(false);
 };
 
 const fullscreenPane = (pane, e) => {
-	if (!pane || document.fullscreenElement) return;
-	pane.requestFullscreen();
+	//if (!pane || document.fullscreenElement) return;
+	//pane.requestFullscreen();
+	pane.classList.add('maximum');
+	fullscreenChangeHandler(true);
 };
 
 const handleMenuClick = (e) => {
@@ -127,8 +131,9 @@ const handleMenuClick = (e) => {
 	if(!action) return;
 };
 
-export const attachEvents = (layoutDom) => {
-	document.addEventListener('fullscreenchange', fullscreenChangeHandler);
+export const attachEvents = (layout) => {
+	const { dom: layoutDom, activate } = layout;
+	//document.addEventListener('fullscreenchange', fullscreenChangeHandler);
 
 	layoutDom.addEventListener('click', (e) => {
 		const isMenuClick = e.target.tagName === "LI" && e.target.closest('.tabs-menu');
@@ -143,15 +148,20 @@ export const attachEvents = (layoutDom) => {
 			if(e.target.dataset.action === "fullscreen")
 				return fullscreenPane(pane, e.target);
 			if(e.target.dataset.action === "exitfullscreen")
-				return fullscreenExit(e.target);
+				return fullscreenExit(pane, e.target);
 		}
 		closeAllMenus();
 		const isTab = e.target.classList.contains('tab');
 		const parentIsTab = parent.classList.contains('tab');
 		if(isTab || parentIsTab){
-			let filename = e.target.parentNode.getAttribute("source")
-			filename = filename || e.target.textContent.trim()
-			return openTab(pane, filename);
+			let file = e.target.parentNode.getAttribute("source");
+			file = file || e.target.textContent.trim();
+			openTab(pane, file);
+			activate({
+				pane: pane.id,
+				file: file.split('&paneid=').shift(),
+				//debug: true
+			});
 		}
 	});
 };

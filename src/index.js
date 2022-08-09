@@ -28,7 +28,7 @@ const containerSizers = (containers, configFlat) => {
 };
 
 const createDom = (layout) => {
-	const { config, onResize } = layout;
+	const { config } = layout;
 	const { children, id, orient } = config;
 	const layoutDom = document.createElement('div');
 	layoutDom.classList.add('layout-container', orient);
@@ -44,12 +44,15 @@ const createDom = (layout) => {
 		[layoutDom, ...Array.from(containers)],
 		configFlat
 	);
+	return layoutDom;
+};
 
+const attachEvents = (layout) => {
+	const { dom, onResize } = layout;
 	events.attachResizeListener(onResize);
 	events.attachDragListener(layout);
-	events.attachDropListener(layoutDom);
-	tabbed.attachEvents(layoutDom);
-	return layoutDom;
+	events.attachDropListener(dom);
+	tabbed.attachEvents(layout);
 };
 
 const parseConfig = (config) => {
@@ -87,19 +90,67 @@ const outputConfig = (config) => {
 	return output;
 };
 
+const getConfigById = (config, predicate) => {
+	const configFlat = flatConfig(config);
+	return configFlat.find(predicate);
+};
+
+const activate = ({ layout, pane, file, debug }) => {
+	tabbed.closeAllMenus();
+
+	const paneDom = layout.dom.querySelector('#' + pane);
+	const activePaneDom = layout.dom.querySelector('.pane.active');
+	const tabDom = (paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
+	const activeTabDom = (paneDom) && paneDom.querySelector('.tab.active');
+
+	const paneAlreadyActive = (paneDom) && paneDom === activePaneDom;
+	const tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
+
+	if(debug){
+		console.log({ paneDom, activePaneDom, tabDom, activeTabDom });
+		return;
+	}
+
+	if(paneAlreadyActive && tabAlreadyActive) return;
+
+	if(!paneAlreadyActive){
+		const paneConfig = getConfigById(layout.config, x => x.id === pane);
+		const activePaneConfig = activePaneDom && getConfigById(
+			layout.config,
+			x => x.id === activePaneDom.id
+		);
+		activePaneDom && activePaneDom.classList.toggle('active');
+		paneDom.classList.toggle('active');
+		paneConfig.active = true;
+		delete activePaneConfig.active;
+	}
+	if(!tabAlreadyActive){
+		const tabConfig = getConfigById(layout.config, x => x.iframe === file);
+		const activeTabConfig = activeTabDom && getConfigById(
+			layout.config,
+			x => activeTabDom.getAttribute("source").startsWith(x.iframe)
+		);
+		activeTabDom && activeTabDom.classList.toggle('active');
+		tabDom.classList.toggle('active');
+		tabConfig.active = true;
+		delete activeTabConfig.active;
+	}
+	layout.onChange();
+};
+
 class Layout {
 	constructor(config, onChange){
 		this.config = parseConfig(config);
 		this.onChange = () => onChange(
 			outputConfig(this.config)
 		);
-		const { parent, children } = this.config;
-		this.dom = createDom({
-			config: this.config,
-			onResize: this.onResize.bind(this),
-			onDrop: this.onDrop.bind(this)
-		});
+		this.activate = (args) => activate({ ...args, layout: this });
+		const { parent } = this.config;
+		this.onResize = this.onResize.bind(this);
+		this.onDrop = this.onDrop.bind(this);
+		this.dom = createDom(this);
 		parent.append(this.dom);
+		attachEvents(this);
 	}
 	onResize(sizer, i, x, y){
 		//TODO: sizers should be stored in Layout state when created

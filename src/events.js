@@ -102,9 +102,9 @@ export const attachResizeListener = (resize) => {
 	document.addEventListener('pointerdown', (e) => {
 		const isSizer = e.target.classList.contains('sizer');
 		if(!isSizer) {
-			const parentPane = e.target.closest('.pane');
-			if(!parentPane) return;
-			setPaneActive(parentPane);
+			// const parentPane = e.target.closest('.pane');
+			// if(!parentPane) return;
+			// setPaneActive(parentPane);
 			return;
 		}
 		const container = e.target.closest('.layout-container');

@@ -1,6 +1,24 @@
 const randomId = (prefix = "_") =>
 	prefix + Math.random().toString(16).replace("0.", "");
 
+const getFilename = (target) => {
+	let filename = target.split("/").pop();
+	if (filename.includes("&paneid="))
+		filename = filename.split("&paneid=").shift();
+	if (filename.includes("?file="))
+		filename = filename.split("?file=").pop();
+	return filename;
+};
+
+const getFilepath = (target) => {
+	let filename = target;
+	if (filename.includes("&paneid="))
+		filename = filename.split("&paneid=").shift();
+	if (filename.includes("?file="))
+		filename = filename.split("?file=").pop();
+	return filename;
+};
+
 const tabControls = () => `
 	<div class="tabs-controls">
 		<div class="action-item" data-action="fullscreen">
@@ -40,7 +58,7 @@ const tabClose = () => `
 
 const tabMenuActions = [
 	{
-		title: "todo",
+		title: "TODO:",
 		disabled: true,
 	},
 	{
@@ -93,22 +111,15 @@ const tabsMenu = (items) => {
 	`;
 };
 
-const getFilename = (target) => {
-	let filename = target.split("/").pop();
-	if (filename.includes("&paneid="))
-		filename = filename.split("&paneid=").shift();
-	if (filename.includes("?file="))
-		filename = filename.split("?file=").pop();
-	return filename;
-};
-
 export const createTab = (active, iframe) => {
 	const filename = getFilename(iframe);
+	const filepath = getFilepath(iframe);
 	return `
 	<div
 		class="tab${active ? " active" : ""}"
 		source="${iframe}"
 		file="${filename}"
+		path="${filepath}"
 	>
 		<span>${filename}</span>
 		${tabClose()}
@@ -278,7 +289,7 @@ export const childDom = (config) => (child, i, all) => {
 	const next = all[i + 1];
 	const canResize = (() => {
 		if (prev.resize + "" === "false") return false;
-		if (i === all.length - 1 && child.resize + "" === "false") return false;
+		if (i + 1 === all.length && child.resize + "" === "false") return false;
 		return true;
 	})();
 	const sizer = canResize

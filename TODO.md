@@ -1,19 +1,19 @@
 # TODO
 
 ## iframes
-- [ ] **report events to parent
+- [X] report events to parent
 - [ ] **use this reporting in:
-	- terminal.html
-	- editor.html
-	- maybe even status and action bars
+	- [ ] terminal.html
+	- [X] editor.html
+	- [ ] maybe even status and action bars
 
 ## tree
 - [ ] **support drag and drop
 
 ## tabs
-- [X] tab bar menu
-- [ ] **tab select should result in config change
 - [ ] **tab scroll into view on activate
+- [X] tab bar menu
+- [X] tab select should result in config change
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)

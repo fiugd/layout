@@ -35,8 +35,8 @@ It is written from scratch to be simple, flexible, and dependency-free.
 
 ### tabs
 - [X] tab bar menu
-- [ ] tab select should result in config change
-- [ ] tab scroll into view on activate
+- [ ] **tab select should result in config change
+- [ ] **tab scroll into view on activate
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)

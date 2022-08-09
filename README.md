@@ -54,17 +54,17 @@ It is written from scratch to be simple, flexible, and dependency-free.
 - [ ] global state as medium for drag meta info
 
 ### iframes
-- [*] report events to parent
-- [*] use this reporting in:
+- [ ] **report events to parent
+- [ ] **use this reporting in:
 	- terminal.html
 	- editor.html
 	- maybe even status and action bars
 
 ### tree
-- [*] support drag and drop
+- [ ] **support drag and drop
 
 ### misc 
-- [*] wire up events in test/index.html
+- [ ] **wire up events in test/index.html
 - [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
 - [ ] react wrapper
 

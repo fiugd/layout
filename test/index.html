@@ -1,14 +1,14 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>Layout Test</title>
-		<meta charset="utf-8">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
-		<link rel="stylesheet" href="index.css" >
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon" />
+		<link rel="stylesheet" href="index.css" />
 	</head>
 
 	<style>
@@ -18,44 +18,50 @@
 				color: white;
 			}
 		}
+		html,
+		body {
+			overscroll-behavior-x: none;
+		}
 	</style>
 
 	<body></body>
 
 	<script type="module">
-		import YAML from 'https://cdn.skypack.dev/yaml';
+		import YAML from "https://cdn.skypack.dev/yaml";
 
 		//import Layout from "https://unpkg.com/@fiug/layout@0.0.0-6";
 		import Layout from "../src/index.js";
 
-		function debounce(func, timeout = 500){
+		function debounce(func, timeout = 500) {
 			let timer;
 			return (...args) => {
 				clearTimeout(timer);
-				timer = setTimeout(() => { func.apply(this, args); }, timeout);
+				timer = setTimeout(() => {
+					func.apply(this, args);
+				}, timeout);
 			};
 		}
 
 		const storedLayout = (() => {
 			try {
-				const s = sessionStorage.getItem('test-layout-example');
-				if(!s) return;
+				const s = sessionStorage.getItem("test-layout-example");
+				if (!s) return;
 				return JSON.parse(s);
-			} catch(e){
+			} catch (e) {
 				console.log(e);
 			}
 		})();
 
-		let layoutConfig = storedLayout || 'layout.fiug.yaml';
+		let layoutConfig = storedLayout || "layout.fiug.yaml";
 		//layoutConfig = 'layout.fiug.yaml';
 
-		if(typeof layoutConfig !== "object"){
+		if (typeof layoutConfig !== "object") {
 			const url = layoutConfig;
-			const source = await fetch(layoutConfig).then(r => r.text());
-			if(url.includes('.json')){
+			const source = await fetch(layoutConfig).then((r) => r.text());
+			if (url.includes(".json")) {
 				layoutConfig = JSON.parse(source);
 			}
-			if(url.includes('.yml') || url.includes('.yaml')){
+			if (url.includes(".yml") || url.includes(".yaml")) {
 				layoutConfig = YAML.parse(source);
 			}
 		}
@@ -63,7 +69,7 @@
 		const layoutChange = debounce((config) => {
 			const configString = JSON.stringify(config, null, 2);
 			//console.log(configString);
-			sessionStorage.setItem('test-layout-example', configString);
+			sessionStorage.setItem("test-layout-example", configString);
 		});
 
 		const configWithParent = { ...layoutConfig, parent: document.body };
@@ -72,7 +78,8 @@
 		/*
 		layout.on('change', layoutChange);
 			- do this instead of how it's done above
-			- when a file is closed, notify global of what new file is selected (so tree can select it)
+			- when a file is closed, notify global
+			of what new file is selected (so tree can select it)
 		layout.on('open', ({ file, pane }) => {
 			- a file has been dropped onto a pane
 			- a tabbed frame is opened in a pane
@@ -81,7 +88,9 @@
 		*/
 
 		const fileSelect = (e) => {
-			console.log(`active pane should open: ${e.src} (and should probably ack request)`);
+			console.log(
+				`active pane should open: ${e.src} (and should probably ack request)`
+			);
 			console.log(e);
 			/*
 				- if file is open in allPanes, activate that pane and file
@@ -89,18 +98,23 @@
 			*/
 		};
 		const cursorActivity = (e) => {
-			const pane = e.source.location.href.split('&paneid=').pop();
-			const file = e.source.location.href.split('&paneid=').shift().split("?file=").pop();
+			const pane = e.source.location.href.split("&paneid=").pop();
+			const file = e.source.location.href
+				.split("&paneid=")
+				.shift()
+				.split("?file=")
+				.pop();
 			console.log(`activate pane (${pane}) & file (${file})`);
 		};
 
-		window.addEventListener('message', (event) => {
+		window.addEventListener("message", (event) => {
 			const { triggerEvent, subscribe } = event.data;
-			if(triggerEvent?.type === "fileSelect") return fileSelect(triggerEvent?.detail);
-			if(triggerEvent?.type === "cursorActivity") return cursorActivity(event);
+			if (triggerEvent?.type === "fileSelect")
+				return fileSelect(triggerEvent?.detail);
+			if (triggerEvent?.type === "cursorActivity") return cursorActivity(event);
 
-			if(triggerEvent) return console.log(`event triggered: `, triggerEvent);
-			if(subscribe) return console.log(`request to subscribe: ${subscribe}`);
+			if (triggerEvent) return console.log(`event triggered: `, triggerEvent);
+			if (subscribe) return console.log(`request to subscribe: ${subscribe}`);
 
 			console.log(event.data);
 
@@ -123,4 +137,3 @@
 		});
 	</script>
 </html>
-

@@ -135,7 +135,9 @@ const iframeAddPaneId = (iframe, id) => {
 };
 
 export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
-	const _src = dummyFiles.includes(src) ? "document.html" : src;
+	const _src = dummyFiles.includes(src)
+		? "document.html"
+		: src;
 	const sandbox = [
 		"allow-same-origin",
 		"allow-scripts",
@@ -180,7 +182,7 @@ export const createPane = ({
 	const bottomDockedClass = isModule ? " bottomDocked" : "";
 	const activeClass = paneActive ? " active" : "";
 	const tabbedClass = orient === "tabs" ? " tabbed" : "";
-	const classes = `${tabbedClass}${dropClass}${bottomDockedClass}${activeClass}`;
+	const classes = tabbedClass + dropClass + bottomDockedClass + activeClass;
 
 	return `
 	<div class="pane${classes}" id="${id}">
@@ -276,7 +278,7 @@ export const childDom = (config) => (child, i, all) => {
 	const next = all[i + 1];
 	const canResize = (() => {
 		if (prev.resize + "" === "false") return false;
-		if (i + 1 === all.length && child.resize + "" === "false") return false;
+		if (i === all.length - 1 && child.resize + "" === "false") return false;
 		return true;
 	})();
 	const sizer = canResize

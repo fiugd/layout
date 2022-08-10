@@ -73,12 +73,12 @@
 
 		let activeEditor = document.querySelector('.pane.active')?.id;
 
+		// INTERNAL
 		layout.on('change', debounce((config) => {
 			const configString = JSON.stringify(config, null, 2);
 			//console.log(configString);
 			sessionStorage.setItem("test-layout-example", configString);
 		}));
-
 		layout.on('open', ({ file, pane }) => {
 			// - a file has been dropped onto a pane
 			// - a tabbed frame is opened in a pane
@@ -96,6 +96,7 @@
 			console.log(`selected: ${file}`);
 		});
 
+		// EXTERNAL
 		const fileSelect = (e) => {
 			const pane = activeEditor || document.querySelector('.pane.tabbed').id;
 			const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;

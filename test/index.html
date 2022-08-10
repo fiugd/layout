@@ -98,11 +98,11 @@
 			*/
 		};
 		const cursorActivity = (e) => {
-			const pane = e.source.location.href.split("&paneid=").pop();
+			const pane = e.source.location.href.split("paneid=").pop();
 			const params = new Proxy(new URLSearchParams(e.source.location.search), {
 				get: (searchParams, prop) => searchParams.get(prop),
 			});
-			const file = e.source.location.pathname + `?file=${params.file}`;
+			const file = params.file && e.source.location.pathname + `?file=${params.file}`;
 			layout.activate({ pane, file });
 		};
 

@@ -1,14 +1,8 @@
 # TODO
 
-## iframes
-- [X] report events to parent
-- [ ] **use this reporting in:
-	- [ ] terminal.html
-	- [X] editor.html
-	- [ ] maybe even status and action bars
-
 ## tree
 - [ ] **support drag and drop
+- [ ] **fileSelect event
 
 ## tabs
 - [ ] **tab close results in config change
@@ -43,3 +37,10 @@
 - [ ] global onDrop for panes (mouseenter, mouseleave, mouseup)
 - [ ] listen to resize/drop event (or other events) in each pane
 - [ ] global state as medium for drag meta info
+
+## iframes
+- [X] report events to parent
+- [X] use this reporting in:
+	- [X] terminal.html
+	- [X] editor.html
+	- [X] maybe even status and action bars

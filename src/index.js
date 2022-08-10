@@ -100,8 +100,8 @@ const activate = ({ layout, pane, file, debug }) => {
 
 	const paneDom = layout.dom.querySelector('#' + pane);
 	const activePaneDom = layout.dom.querySelector('.pane.active');
-	const tabDom = (paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
-	const activeTabDom = (paneDom) && paneDom.querySelector('.tab.active');
+	const tabDom = (file && paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
+	const activeTabDom = (file && paneDom) && paneDom.querySelector('.tab.active');
 
 	const paneAlreadyActive = (paneDom) && paneDom === activePaneDom;
 	const tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
@@ -124,7 +124,7 @@ const activate = ({ layout, pane, file, debug }) => {
 		paneConfig.active = true;
 		delete activePaneConfig.active;
 	}
-	if(!tabAlreadyActive){
+	if(file && !tabAlreadyActive){
 		const tabConfig = getConfigById(layout.config, x => x.iframe === file);
 		const activeTabConfig = activeTabDom && getConfigById(
 			layout.config,

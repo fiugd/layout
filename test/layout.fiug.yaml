@@ -6,7 +6,7 @@ rows:
         width: 45px
         resize: false
         drop: false
-      - iframe: /dist/tree.html
+      - iframe: /fiugd/beta/dist/tree.html
         width: 220px
         minWidth: 200px
         snapWidth: 150px
@@ -16,17 +16,17 @@ rows:
           - active: true
             width: 35%
             tabs:
-              - iframe: /dist/editor.html?file=src/index.js
-              - iframe: /dist/editor.html?file=README.md
-              - iframe: /dist/editor.html?file=LICENSE
+              - iframe: /fiugd/beta/dist/editor.html?file=src/index.js
+              - iframe: /fiugd/beta/dist/editor.html?file=README.md
+              - iframe: /fiugd/beta/dist/editor.html?file=LICENSE
                 active: true
           - width: 35%
             tabs:
-              - iframe: /dist/editor.html?file=src/dom.js
+              - iframe: /fiugd/beta/dist/editor.html?file=src/dom.js
           - width: 30%
             rows:
-              - iframe: /dist/terminal.html
-              - iframe: /dist/terminal.html
+              - iframe: /fiugd/beta/dist/terminal.html
+              - iframe: /fiugd/beta/dist/terminal.html
                 height: 50%
   - iframe: status.html
     height: 22px

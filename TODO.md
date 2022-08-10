@@ -2,11 +2,11 @@
 
 ## tree
 - [ ] **support drag and drop
-- [ ] **fileSelect event
+- [X] fileSelect event
 
 ## tabs
 - [ ] **tab close results in config change
-- [ ] **tab scroll into view on activate
+- [X] tab scroll into view on activate
 - [X] tab bar menu
 - [X] tab select should result in config change
 - [ ] tab re-order
@@ -15,12 +15,8 @@
 - [ ] option to customize look/feel of tabs
 - [ ] double-click tab bar to start new file
 
-## misc 
-- [ ] **wire up events in test/index.html
-- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
-- [ ] react wrapper
-
 ## layout
+- [ ] **wire up events in test/index.html
 - [X] move tab-related code out of editor.html and into module
 - [X] root-level column or rows layout
 - [X] nested layout
@@ -44,3 +40,7 @@
 	- [X] terminal.html
 	- [X] editor.html
 	- [X] maybe even status and action bars
+
+## misc 
+- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
+- [ ] react wrapper

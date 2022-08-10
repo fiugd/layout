@@ -141,8 +141,15 @@ export const attachEvents = (layout) => {
 		const pane = e.target.closest('.pane.tabbed');
 		const parent = e.target.parentNode;
 		if(e.target.classList.contains('action-item')){
-			if(parent.classList.contains('tab-close'))
-				return closeTab(pane, e.target.closest('.tab'));
+			if(parent.classList.contains('tab-close')){
+				layout.onClose({
+					pane,
+					file: e.target.closest('.tab').getAttribute("source").split('&paneid=').shift()
+				});
+				closeTab(pane, e.target.closest('.tab'));
+				console.log('TODO: select next tab + update config');
+				return;
+			}
 			if(e.target.dataset.action === "menu")
 				return openMenu(pane, e.target);
 			if(e.target.dataset.action === "fullscreen")
@@ -158,11 +165,13 @@ export const attachEvents = (layout) => {
 				? e.target.parentNode.getAttribute("source")
 				: e.target.getAttribute("source");
 			file = file || e.target.textContent.trim();
-			openTab(pane, file);
 			activate({
 				pane: pane.id,
 				file: file.split('&paneid=').shift(),
-				//debug: true
+			});
+			layout.onSelect({
+				pane: pane.id,
+				file: file.split('&paneid=').shift(),
 			});
 		}
 	});

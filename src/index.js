@@ -9,11 +9,6 @@ window.newPane = splitting.newPane;
 const randomId = (prefix="_") =>
 	prefix + Math.random().toString(16).replace('0.','');
 
-const flatConfig = (config) => {
-	if(!config.children) return config;
-	return [config, ...config.children.map(flatConfig)].flat();
-};
-
 const containerSizers = (containers, configFlat) => {
 	for(const [index, container] of containers.entries()){
 		const containerConfig = configFlat
@@ -45,6 +40,11 @@ const createDom = (layout) => {
 		configFlat
 	);
 	return layoutDom;
+};
+
+const focusAllActiveTabs = (layoutDom) => {
+	const activeTabs = Array.from(layoutDom.querySelectorAll('.tab.active'));
+	activeTabs.forEach(t => t.scrollIntoView());
 };
 
 const attachEvents = (layout) => {
@@ -90,7 +90,15 @@ const outputConfig = (config) => {
 	return output;
 };
 
-const getConfigById = (config, predicate) => {
+const flatConfig = (config, parent) => {
+	if(!config.children) return config;
+	return [
+		config,
+		...config.children.map((x) => flatConfig(x, config))
+	].flat();
+};
+
+const getConfigNode = (config, predicate) => {
 	const configFlat = flatConfig(config);
 	return configFlat.find(predicate);
 };
@@ -111,52 +119,71 @@ const activate = ({ layout, pane, file, debug }) => {
 		return;
 	}
 
-	if(paneAlreadyActive && tabAlreadyActive) return;
+	if(paneAlreadyActive && tabAlreadyActive) return tabDom && tabDom.scrollIntoView();
+
+	const paneConfig = getConfigNode(layout.config, x => x.id === pane);
 
 	if(!paneAlreadyActive){
-		const paneConfig = getConfigById(layout.config, x => x.id === pane);
-		const activePaneConfig = activePaneDom && getConfigById(
+		const activePaneConfig = activePaneDom && getConfigNode(
 			layout.config,
 			x => x.id === activePaneDom.id
 		);
 		activePaneDom && activePaneDom.classList.toggle('active');
 		paneDom.classList.toggle('active');
 		paneConfig.active = true;
-		delete activePaneConfig.active;
+		activePaneConfig && delete activePaneConfig.active;
 	}
 	if(paneDom && file && !tabDom){
-		const paneConfig = getConfigById(layout.config, x => x.id === pane);
-		tabbed.openTab(paneDom, file);
-		tabDom = paneDom.querySelector(`.tab[source^="${file}"]`);
 		paneConfig.children.push({iframe: file });
-		tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
 	}
 	if(file && !tabAlreadyActive){
-		const tabConfig = getConfigById(layout.config, x => x.iframe === file);
-		const activeTabConfig = activeTabDom && getConfigById(
-			layout.config,
-			x => activeTabDom.getAttribute("source").startsWith(x.iframe)
+		const tabConfig = getConfigNode(
+			paneConfig,
+			x => file.startsWith(x.iframe)
 		);
+		const activeTabConfig = activeTabDom && getConfigNode(
+			paneConfig,
+			(x) => activeTabDom.getAttribute("source").startsWith(x.iframe)
+		);
+		tabbed.openTab(paneDom, file + `&paneid=${pane}`);
+		tabDom = paneDom.querySelector(`.tab[source^="${file}"]`);
+
 		activeTabDom && activeTabDom.classList.toggle('active');
-		tabDom.classList.toggle('active');
+		tabDom.classList.add('active');
+
 		tabConfig.active = true;
-		delete activeTabConfig.active;
+		activeTabConfig && delete activeTabConfig.active;
 	}
+	tabDom && tabDom.scrollIntoView();
 	layout.onChange();
 };
 
 class Layout {
-	constructor(config, onChange){
+	constructor(config){
+		this.events = {};
+		this.on = (eventName, handler) => {
+			this.events[eventName] = this.events[eventName] || [];
+			this.events[eventName].push(handler);
+		};
 		this.config = parseConfig(config);
-		this.onChange = () => onChange(
-			outputConfig(this.config)
-		);
+		this.onChange = () => this.events['change']
+			.forEach(handler => handler(
+				outputConfig(this.config)
+			));
+		this.onOpen = (args) => this.events['open']
+			.forEach(handler => handler(args));
+		this.onClose = (args) => this.events['close']
+			.forEach(handler => handler(args));
+		this.onSelect = (args) => this.events['select']
+			.forEach(handler => handler(args));
+
 		this.activate = (args) => activate({ ...args, layout: this });
 		const { parent } = this.config;
 		this.onResize = this.onResize.bind(this);
 		this.onDrop = this.onDrop.bind(this);
 		this.dom = createDom(this);
 		parent.append(this.dom);
+		focusAllActiveTabs(this.dom);
 		attachEvents(this);
 	}
 	onResize(sizer, i, x, y){
@@ -303,6 +330,7 @@ class Layout {
 		}
 		if(!splitPane && !addedPane) return;
 		this.onChange();
+		//TODO: this.open({ pane, file });
 	}
 };
 

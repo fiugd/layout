@@ -66,28 +66,36 @@
 			}
 		}
 
-		const layoutChange = debounce((config) => {
+		const layout = new Layout({
+			...layoutConfig,
+			parent: document.body
+		});
+
+		let activeEditor = document.querySelector('.pane.active')?.id;
+
+		layout.on('change', debounce((config) => {
 			const configString = JSON.stringify(config, null, 2);
 			//console.log(configString);
 			sessionStorage.setItem("test-layout-example", configString);
-		});
+		}));
 
-		const configWithParent = { ...layoutConfig, parent: document.body };
-
-		const layout = new Layout(configWithParent, layoutChange);
-		/*
-		layout.on('change', layoutChange);
-			- do this instead of how it's done above
-			- when a file is closed, notify global
-			of what new file is selected (so tree can select it)
 		layout.on('open', ({ file, pane }) => {
-			- a file has been dropped onto a pane
-			- a tabbed frame is opened in a pane
-			- what kind of pane is that (terminal, editor, etc)? 
+			// - a file has been dropped onto a pane
+			// - a tabbed frame is opened in a pane
+			console.log(`opened: ${file}`);
 		});
-		*/
+		layout.on('close', ({ file, pane }) => {
+			// - a tab has been closed
+			// - a pane has been closed
+			console.log(`closed: ${file}`);
+		});
+		layout.on('select', ({ file, pane }) => {
+			// - a tab has been selected
+			// - a pane has been selected
+			// - set activeEditor to pane (if tabbed)
+			console.log(`selected: ${file}`);
+		});
 
-		let activeEditor;
 		const fileSelect = (e) => {
 			const pane = activeEditor || document.querySelector('.pane.tabbed').id;
 			const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;
@@ -96,7 +104,7 @@
 		const cursorActivity = (e) => {
 			const { location } = e.source;
 			const pane = location.href.split("paneid=").pop();
-			if( location.href.includes("/editor.html") ){
+			if(location.href.includes("/editor.html") ){
 				activeEditor = pane;
 			}
 			const params = new Proxy(new URLSearchParams(e.source.location.search), {

@@ -100,11 +100,11 @@ const activate = ({ layout, pane, file, debug }) => {
 
 	const paneDom = layout.dom.querySelector('#' + pane);
 	const activePaneDom = layout.dom.querySelector('.pane.active');
-	const tabDom = (file && paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
+	let tabDom = (file && paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
 	const activeTabDom = (file && paneDom) && paneDom.querySelector('.tab.active');
 
 	const paneAlreadyActive = (paneDom) && paneDom === activePaneDom;
-	const tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
+	let tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
 
 	if(debug){
 		console.log({ paneDom, activePaneDom, tabDom, activeTabDom });
@@ -123,6 +123,13 @@ const activate = ({ layout, pane, file, debug }) => {
 		paneDom.classList.toggle('active');
 		paneConfig.active = true;
 		delete activePaneConfig.active;
+	}
+	if(paneDom && file && !tabDom){
+		const paneConfig = getConfigById(layout.config, x => x.id === pane);
+		tabbed.openTab(paneDom, file);
+		tabDom = paneDom.querySelector(`.tab[source^="${file}"]`);
+		paneConfig.children.push({iframe: file });
+		tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
 	}
 	if(file && !tabAlreadyActive){
 		const tabConfig = getConfigById(layout.config, x => x.iframe === file);

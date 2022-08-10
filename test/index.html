@@ -87,18 +87,18 @@
 		});
 		*/
 
+		let activeEditor;
 		const fileSelect = (e) => {
-			console.log(
-				`active pane should open: ${e.src} (and should probably ack request)`
-			);
-			console.log(e);
-			/*
-				- if file is open in allPanes, activate that pane and file
-				- open/activate a tab in the active pane
-			*/
+			const pane = activeEditor || document.querySelector('.pane.tabbed').id;
+			const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;
+			layout.activate({ pane, file });
 		};
 		const cursorActivity = (e) => {
-			const pane = e.source.location.href.split("paneid=").pop();
+			const { location } = e.source;
+			const pane = location.href.split("paneid=").pop();
+			if( location.href.includes("/editor.html") ){
+				activeEditor = pane;
+			}
 			const params = new Proxy(new URLSearchParams(e.source.location.search), {
 				get: (searchParams, prop) => searchParams.get(prop),
 			});
@@ -110,7 +110,8 @@
 			const { triggerEvent, subscribe } = event.data;
 			if (triggerEvent?.type === "fileSelect")
 				return fileSelect(triggerEvent?.detail);
-			if (triggerEvent?.type === "cursorActivity") return cursorActivity(event);
+			if (triggerEvent?.type === "cursorActivity")
+				return cursorActivity(event);
 
 			if (triggerEvent) return console.log(`event triggered: `, triggerEvent);
 			if (subscribe) return console.log(`request to subscribe: ${subscribe}`);

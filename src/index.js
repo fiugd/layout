@@ -170,11 +170,16 @@ class Layout {
 			.forEach(handler => handler(
 				outputConfig(this.config)
 			));
+
+		//TODO: also trigger onChange for these (and do not do it in activate)
 		this.onOpen = (args) => this.events['open']
 			.forEach(handler => handler(args));
-		this.onClose = (args) => this.events['close']
-			.forEach(handler => handler(args));
 		this.onSelect = (args) => this.events['select']
+			.forEach(handler => handler(args));
+		//TODO: do not trigger change unless there is nothing open in pane or pane closes
+		//      instead, modify config & trigger an open which will trigger onChange
+		//      possibly still trigger an open (because another pane/file may go active)
+		this.onClose = (args) => this.events['close']
 			.forEach(handler => handler(args));
 
 		this.activate = (args) => activate({ ...args, layout: this });

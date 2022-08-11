@@ -34,32 +34,47 @@ const getFilename = (target) => {
 	return filename;
 };
 
+export const closeAllMenus = () => {
+	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
+	for(const menu of Array.from(openMenus)){
+		menu.classList.remove('menu-open');
+		menu.classList.add('hidden');
+	}
+	const selectedActions = document.querySelectorAll('.action-item.selected');
+	for(const action of Array.from(selectedActions)){
+		action.classList.remove('selected');
+	}
+};
 
 export const openTab = (parent, src) => {
+	closeAllMenus();
 	const filename = getFilename(src);
 	const content = parent.querySelector('.content');
 	const tabsContainer = parent.querySelector('.tabs-container');
 	content.innerHTML = createContentDom({ src, childrenOnly: true });
 
-	// Array.from(parent.querySelectorAll('.tab.active'))
-	// 	.forEach(x=>x.classList.remove('active'));
+	Array.from(parent.querySelectorAll('.tab.active'))
+		.forEach(x=>x.classList.remove('active'));
 	const tabs = parent.querySelector('.tabs');
 	const found = tabs.querySelector(`.tab[file="${filename}"]`);
-	if(found) return;
-	// if(found){
-	// 	found.classList.add('active');
-	// 	return;
-	// }
+	//if(found) return;
+	if(found){
+		found.classList.add('active');
+		found.scrollIntoViewIfNeeded({inline: "center"})
+		return;
+	}
 	tabsContainer.classList.remove('hidden');
-	tabs.innerHTML += createTabDom(true, src);
+	tabs.insertAdjacentHTML('beforeend', createTabDom(true, src));
+	const tab = tabs.querySelector('.tab:last-child');
+	tab.scrollIntoView({inline: "center"})
 };
 
-const openMenu = (pane, actionEl) => {
+const menuToggleAction = (pane, target, layout) => {
 	const menu = pane.querySelector('.tabs-menu');
-	actionEl.classList.toggle('selected');
+	target.classList.toggle('selected');
 	menu.classList.toggle('hidden');
 	menu.classList.toggle('menu-open');
-	
+
 	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
 	for(const menu of Array.from(openMenus)){
 		if(pane.contains(menu)) continue;
@@ -73,20 +88,7 @@ const openMenu = (pane, actionEl) => {
 	}
 };
 
-export const closeAllMenus = () => {
-	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
-	for(const menu of Array.from(openMenus)){
-		menu.classList.remove('menu-open');
-		menu.classList.add('hidden');
-	}
-	const selectedActions = document.querySelectorAll('.action-item.selected');
-	for(const action of Array.from(selectedActions)){
-		action.classList.remove('selected');
-	}
-};
-
 const fullscreenChangeHandler = (fsElement) => {
-	closeAllMenus();
 	//const fsElement = document.fullscreenElement;
 	const allActions = document.querySelectorAll('.tabs-menu li, .action-item');
 	for(const actionNode of Array.from(allActions)){
@@ -110,69 +112,43 @@ const fullscreenChangeHandler = (fsElement) => {
 	}
 };
 
-const fullscreenExit = (pane, e) => {
+const fullscreenExitAction = (pane, target, layout) => {
 	//if(!document.fullscreenElement || !document.exitFullscreen) return;
 	//document.exitFullscreen();
 	pane.classList.remove('maximum');
 	fullscreenChangeHandler(false);
 };
 
-const fullscreenPane = (pane, e) => {
+const fullscreenAction = (pane, target, layout) => {
 	//if (!pane || document.fullscreenElement) return;
 	//pane.requestFullscreen();
 	pane.classList.add('maximum');
 	fullscreenChangeHandler(true);
 };
 
-const handleMenuClick = (e) => {
-	closeAllMenus();
-	const pane = e.target.closest('.pane.tabbed');
-	const {action} = e.target.dataset;
-	if(!action) return;
+const tabCloseAction = (pane, target, layout) => {
+	const { onClose } = layout;
+	const tab = target.closest('.tab');
+	const file = tab.getAttribute("source")
+		.split('&paneid=').shift();
+	onClose({ pane: pane.id, file });
+	closeTab(pane, tab);
 };
 
-export const attachEvents = (layout) => {
-	const { dom: layoutDom, activate } = layout;
-	//document.addEventListener('fullscreenchange', fullscreenChangeHandler);
-
-	layoutDom.addEventListener('click', (e) => {
-		const isMenuClick = e.target.tagName === "LI" && e.target.closest('.tabs-menu');
-		if(isMenuClick) return handleMenuClick(e);
-		const pane = e.target.closest('.pane.tabbed');
-		const parent = e.target.parentNode;
-		if(e.target.classList.contains('action-item')){
-			if(parent.classList.contains('tab-close')){
-				layout.onClose({
-					pane,
-					file: e.target.closest('.tab').getAttribute("source").split('&paneid=').shift()
-				});
-				closeTab(pane, e.target.closest('.tab'));
-				console.log('TODO: select next tab + update config');
-				return;
-			}
-			if(e.target.dataset.action === "menu")
-				return openMenu(pane, e.target);
-			if(e.target.dataset.action === "fullscreen")
-				return fullscreenPane(pane, e.target);
-			if(e.target.dataset.action === "exitfullscreen")
-				return fullscreenExit(pane, e.target);
-		}
-		closeAllMenus();
-		const isTab = e.target.classList.contains('tab');
-		const parentIsTab = parent.classList.contains('tab');
-		if(isTab || parentIsTab){
-			let file = parentIsTab
-				? e.target.parentNode.getAttribute("source")
-				: e.target.getAttribute("source");
-			file = file || e.target.textContent.trim();
-			activate({
-				pane: pane.id,
-				file: file.split('&paneid=').shift(),
-			});
-			layout.onSelect({
-				pane: pane.id,
-				file: file.split('&paneid=').shift(),
-			});
-		}
-	});
+const tabSelectAction = (pane, target, layout) => {
+	const { activate, onSelect } = layout;
+	let file = target.getAttribute("source");
+	file = file || target.textContent.trim();
+	file = file.split('&paneid=').shift();
+	activate({ pane: pane.id, file });
+	onSelect({ pane: pane.id, file });
 };
+
+export const actionHandlers = {
+	menuToggle: menuToggleAction,
+	fullscreen: fullscreenAction,
+	exitfullscreen: fullscreenExitAction,
+	tabClose: tabCloseAction,
+	tabSelect: tabSelectAction
+};
+

@@ -44,7 +44,7 @@ const createDom = (layout) => {
 
 const focusAllActiveTabs = (layoutDom) => {
 	const activeTabs = Array.from(layoutDom.querySelectorAll('.tab.active'));
-	activeTabs.forEach(t => t.scrollIntoView());
+	activeTabs.forEach(t => t.scrollIntoView({inline: "center"}));
 };
 
 const attachEvents = (layout) => {
@@ -52,7 +52,7 @@ const attachEvents = (layout) => {
 	events.attachResizeListener(onResize);
 	events.attachDragListener(layout);
 	events.attachDropListener(dom);
-	tabbed.attachEvents(layout);
+	events.attachClickListener(layout);
 };
 
 const parseConfig = (config) => {
@@ -104,8 +104,6 @@ const getConfigNode = (config, predicate) => {
 };
 
 const activate = ({ layout, pane, file, debug }) => {
-	tabbed.closeAllMenus();
-
 	const paneDom = layout.dom.querySelector('#' + pane);
 	const activePaneDom = layout.dom.querySelector('.pane.active');
 	let tabDom = (file && paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
@@ -119,7 +117,7 @@ const activate = ({ layout, pane, file, debug }) => {
 		return;
 	}
 
-	if(paneAlreadyActive && tabAlreadyActive) return tabDom && tabDom.scrollIntoView();
+	if(paneAlreadyActive && tabAlreadyActive) return tabDom && tabDom.scrollIntoViewIfNeeded({inline: "center"});
 
 	const paneConfig = getConfigNode(layout.config, x => x.id === pane);
 
@@ -148,13 +146,13 @@ const activate = ({ layout, pane, file, debug }) => {
 		tabbed.openTab(paneDom, file + `&paneid=${pane}`);
 		tabDom = paneDom.querySelector(`.tab[source^="${file}"]`);
 
-		activeTabDom && activeTabDom.classList.toggle('active');
-		tabDom.classList.add('active');
+		//activeTabDom && activeTabDom.classList.toggle('active');
+		//tabDom.classList.add('active');
 
 		tabConfig.active = true;
 		activeTabConfig && delete activeTabConfig.active;
 	}
-	tabDom && tabDom.scrollIntoView();
+	tabDom && tabDom.scrollIntoViewIfNeeded({inline: "center"});
 	layout.onChange();
 };
 
@@ -179,8 +177,12 @@ class Layout {
 		//TODO: do not trigger change unless there is nothing open in pane or pane closes
 		//      instead, modify config & trigger an open which will trigger onChange
 		//      possibly still trigger an open (because another pane/file may go active)
-		this.onClose = (args) => this.events['close']
-			.forEach(handler => handler(args));
+		this.onClose = (args) => {
+			console.log(args);
+			console.log('TODO: select next tab + update config');
+			this.events['close']
+				.forEach(handler => handler(args));
+		};
 
 		this.activate = (args) => activate({ ...args, layout: this });
 		const { parent } = this.config;

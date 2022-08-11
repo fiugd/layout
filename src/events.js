@@ -325,3 +325,24 @@ export const attachDropListener = (layoutDom) => {
 		const { dragover } = onDrop(dropHandler, pane);
 	}
 };
+
+export const attachClickListener = (layout) => {
+	//document.addEventListener('fullscreenchange', fullscreenChangeHandler);
+
+	layout.dom.addEventListener('click', ({ target }) => {
+		if(target.classList.contains('disabled')) return;
+		const { action } = target.dataset;
+
+		if(action !== 'menuToggle') tabbed.closeAllMenus();
+		if(!action) return;
+
+		const pane = target.closest('.pane.tabbed');
+		const handler = tabbed.actionHandlers[action];
+
+		if(handler)
+			return handler(pane, target, layout);
+
+		if(action)
+			return console.log(`UNHANDLED: ${action}`)
+	});
+};

@@ -109,7 +109,8 @@ const tabStyle = () => {
 	.pane.active .tab.open {
 		background: #1e1e1e;
 	}
-	.tab span, .tab-close { display: inline; }
+	.tab > span { pointer-events: none; }
+	.tab > span, .tab-close { display: inline; }
 	.tab-close { color: transparent; }
 	.tab-close svg {
 		stroke: currentColor; stroke-width: 1.5; height: 0.65em;

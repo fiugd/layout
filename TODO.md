@@ -9,6 +9,7 @@
 - [X] tab scroll into view on activate
 - [X] tab bar menu
 - [X] tab select should result in config change
+- [ ] scrolled indicators
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)

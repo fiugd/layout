@@ -35,7 +35,7 @@ const tabControls = () => `
 				<line x1="1" y1="9" x2="9" y2="9"></line>
 			</svg>
 		</div>
-		<div class="action-item" data-action="menu">
+		<div class="action-item" data-action="menuToggle">
 			<svg viewBox="0 0 10 10" class="icon fill">
 				<circle cx="1" cy="5" r="1"></circle>
 				<circle cx="5" cy="5" r="1"></circle>
@@ -47,7 +47,7 @@ const tabControls = () => `
 
 const tabClose = () => `
 	<div class="tab-close">
-		<div class="action-item">
+		<div class="action-item" data-action="tabClose">
 			<svg viewBox="0 0 10 10" class="icon fill">
 				<line x1="1" y1="1" x2="9" y2="9"></line>
 				<line x1="9" y1="1" x2="1" y2="9"></line>
@@ -93,7 +93,7 @@ const tabMenuItem = (i) => {
 		<li class="${[i.hidden && "hidden", i.disabled && "disabled"]
 			.filter((x) => x)
 			.join(" ")}"
-			data-action="${i.title.replace(" ", "").toLowerCase()}"
+			data-action="${i.title.replaceAll(" ", "").toLowerCase()}"
 		>
 			${i.title}
 		</li>
@@ -120,6 +120,7 @@ export const createTab = (active, iframe) => {
 		source="${iframe}"
 		file="${filename}"
 		path="${filepath}"
+		data-action="tabSelect"
 	>
 		<span>${filename}</span>
 		${tabClose()}

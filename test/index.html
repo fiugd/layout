@@ -71,7 +71,7 @@
 			parent: document.body
 		});
 
-		let activeEditor = document.querySelector('.pane.active')?.id;
+		let activeEditor = document.querySelector('.pane.tabbed.active')?.id;
 
 		layout.on('change', debounce((config) => {
 			const configString = JSON.stringify(config, null, 2);
@@ -92,15 +92,39 @@
 			// - a tab has been selected
 			// - a pane has been selected
 			// - set activeEditor to pane (if tabbed)
-			console.log(`selected: ${file}`);
+			if(file && file.includes("/editor.html") ){
+				activeEditor = pane;
+			}
 		});
 
 		const fileSelect = (e) => {
-			const pane = activeEditor || document.querySelector('.pane.tabbed').id;
 			const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;
+			const allPanes = Array.from(document.querySelectorAll('.pane.tabbed'));
+			const panesWithFileOpen = [];
+			const panesWithFileActive = [];
+			for(const pane of allPanes){
+				const fileTab = pane.querySelector(`.tab[path^="${e.src}"]`);
+				if(!fileTab) continue;
+				panesWithFileOpen.push(pane.id);
+				if(!fileTab.classList.contains('active')) continue;
+				panesWithFileActive.push(pane.id);
+			}
+			let pane = activeEditor || document.querySelector('.pane.tabbed')?.id;
+			if(panesWithFileOpen.length){
+				pane = activeEditor && panesWithFileOpen.includes(activeEditor)
+					? activeEditor
+					: panesWithFileOpen[0];
+			}
+			if(panesWithFileActive.length){
+				pane = activeEditor && panesWithFileActive.includes(activeEditor)
+					? activeEditor
+					: panesWithFileActive[0];
+			}
+			activeEditor = pane;
 			layout.activate({ pane, file });
 		};
 		const cursorActivity = (e) => {
+			if(!e.source) return;
 			const { location } = e.source;
 			const pane = location.href.split("paneid=").pop();
 			if(location.href.includes("/editor.html") ){

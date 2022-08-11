@@ -1,8 +1,13 @@
 {
 	"name": "@fiug/layout",
-	"version": "0.0.0-6",
+	"version": "0.0.1",
 	"description": "page layout for browser applications",
 	"main": "dist/layout.js",
+        "exports": {
+                ".": { 
+                     "import": "dist/layout.js"
+                 },
+        },
 	"scripts": {
 		"prepublishOnly": "npm run build",
 		"build": "rm -rf dist && rollup -c"

@@ -73,6 +73,7 @@
 
 		let activeEditor = document.querySelector('.pane.tabbed.active')?.id;
 
+		// INTERNAL
 		layout.on('change', debounce((config) => {
 			const configString = JSON.stringify(config, null, 2);
 			//console.log(configString);
@@ -97,6 +98,7 @@
 			}
 		});
 
+		// EXTERNAL
 		const fileSelect = (e) => {
 			const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;
 			const allPanes = Array.from(document.querySelectorAll('.pane.tabbed'));
@@ -123,6 +125,20 @@
 			activeEditor = pane;
 			layout.activate({ pane, file });
 		};
+		const fileRemove = (e) => {
+			/*
+				- if file is open in allPanes, close it
+				- if file was active, activate the next tab
+			*/
+			console.log('handle file being closed from outside layout');
+		};
+		const fileChange = (e) => {
+			/*
+				- if file is open in allPanes, update its status, ie. orange bar at top
+				- if a file was renamed?
+			*/
+			console.log('handle file being changed outside layout');
+		};
 		const cursorActivity = (e) => {
 			if(!e.source) return;
 			const { location } = e.source;
@@ -141,30 +157,19 @@
 			const { triggerEvent, subscribe } = event.data;
 			if (triggerEvent?.type === "fileSelect")
 				return fileSelect(triggerEvent?.detail);
+			if (triggerEvent?.type === "fileClose")
+				return fileRemove(triggerEvent?.detail);
+			if (triggerEvent?.type === "fileDelete")
+				return fileRemove(triggerEvent?.detail);
+			if (triggerEvent?.type === "fileChange")
+				return fileChange(triggerEvent?.detail);
+
 			if (triggerEvent?.type === "cursorActivity")
 				return cursorActivity(event);
 
 			if (triggerEvent) return console.log(`event triggered: `, triggerEvent);
 			if (subscribe) return console.log(`request to subscribe: ${subscribe}`);
-
 			console.log(event.data);
-
-			/*
-			- document gets message
-			- do something with layout
-
-			- paneClose
-				- for example, terminal has requested to be closed
-			- fileSelect (see above)
-			- fileChange
-				- if file is open in allPanes, update its status, ie. orange bar at top
-			- fileClose
-				- if file is open in allPanes, close it
-				- if file was active, activate the next tab
-			- fileDelete
-				- if file is open in allPanes, close it
-				- if file was active, activate the next tab
-			*/
 		});
 	</script>
 </html>

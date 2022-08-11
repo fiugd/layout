@@ -6,7 +6,7 @@
         "exports": {
                 ".": { 
                      "import": "dist/layout.js"
-                 },
+                 }
         },
 	"scripts": {
 		"prepublishOnly": "npm run build",

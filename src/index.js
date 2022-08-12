@@ -103,7 +103,9 @@ const getConfigNode = (config, predicate) => {
 	return configFlat.find(predicate);
 };
 
-const activate = ({ layout, pane, file, debug }) => {
+const activate = ({ layout, pane, file }) => {
+	tabbed.closeAllMenus();
+
 	const paneDom = layout.dom.querySelector('#' + pane);
 	const activePaneDom = layout.dom.querySelector('.pane.active');
 	let tabDom = (file && paneDom) && paneDom.querySelector(`.tab[source^="${file}"]`);
@@ -111,11 +113,6 @@ const activate = ({ layout, pane, file, debug }) => {
 
 	const paneAlreadyActive = (paneDom) && paneDom === activePaneDom;
 	let tabAlreadyActive = (tabDom) && tabDom === activeTabDom;
-
-	if(debug){
-		console.log({ paneDom, activePaneDom, tabDom, activeTabDom });
-		return;
-	}
 
 	if(paneAlreadyActive && tabAlreadyActive) return tabDom && tabDom.scrollIntoViewIfNeeded({inline: "center"});
 
@@ -245,6 +242,7 @@ class Layout {
 
 		if(!dimsChanged) return;
 		splitting.setSize(sizer.parentNode, containerConfig);
+		focusAllActiveTabs(this.dom);
 		this.onChange();
 	}
 	onDrop(args){

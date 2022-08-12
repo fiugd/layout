@@ -95,6 +95,20 @@
 			// - set activeEditor to pane (if tabbed)
 			if(file && file.includes("/editor.html") ){
 				activeEditor = pane;
+				const path = file.split('file=').pop().split("pane=").shift();
+				const name = path.split('/').pop();
+				const parent = path.replace("/"+name, "");
+				const treeFrame = document.querySelector('iframe[src*="dist/tree.html"]');
+				treeFrame.contentWindow.postMessage({
+					type: "fileSelect",
+					detail: {
+						name,
+						parent,
+						service: "fiugd/layout",
+						source: "Tabs",
+						data: {},
+					}
+				}, location);
 			}
 		});
 
@@ -154,6 +168,7 @@
 		};
 
 		window.addEventListener("message", (event) => {
+			if(event.source === window) return;
 			const { triggerEvent, subscribe } = event.data;
 			if (triggerEvent?.type === "fileSelect")
 				return fileSelect(triggerEvent?.detail);

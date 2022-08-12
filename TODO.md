@@ -1,20 +1,20 @@
 # TODO
 
 ## tree
-- [ ] **support drag and drop
+- [ ] **wire up drag and drop
 - [X] fileSelect event
 
 ## tabs
-- [ ] **tab close results in config change
+- [ ] **tab close results in config change << #1
+- [ ] option to customize look/feel of tabs
 - [X] tab scroll into view on activate
 - [X] tab bar menu
 - [X] tab select should result in config change
+- [ ] double-click tab bar to start new file
 - [ ] scrolled indicators
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)
-- [ ] option to customize look/feel of tabs
-- [ ] double-click tab bar to start new file
 
 ## layout
 - [ ] **wire up events in test/index.html
@@ -45,3 +45,16 @@
 ## misc 
 - [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
 - [ ] react wrapper
+
+
+## fiug v0.4.6 (@fiug/layout) versus fiug v0.4.5
+(layout)
+- file icons for tabs
+- changed status indicator for tabs
+- explorer snap behavior
+- responds to fileDelete/fileClose
+(other)
+- action bar
+- status bar
+- wired up to service worker
+- menus

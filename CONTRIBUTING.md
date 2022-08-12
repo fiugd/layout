@@ -18,7 +18,7 @@ flowchart TD
         MB_L((" "))
         MB_MB((" "))
     end
-    classDef msg fill:#cc0,stroke-width:0;
+    classDef msg fill:#888,stroke-width:0;
     class MB_F,MB_S,MB_M,MB_L,MB_MB msg;
 
     subgraph FRAMES[" "]

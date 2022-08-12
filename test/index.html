@@ -114,6 +114,7 @@
 
 		// EXTERNAL
 		const fileSelect = (e) => {
+			//TODO: something like this belongs in the module, not sure how to do it
 			const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;
 			const allPanes = Array.from(document.querySelectorAll('.pane.tabbed'));
 			const panesWithFileOpen = [];
@@ -137,7 +138,7 @@
 					: panesWithFileActive[0];
 			}
 			activeEditor = pane;
-			layout.activate({ pane, file });
+			layout.openTab({ pane, file });
 		};
 		const fileRemove = (e) => {
 			/*
@@ -164,7 +165,8 @@
 				get: (searchParams, prop) => searchParams.get(prop),
 			});
 			const file = params.file && e.source.location.pathname + `?file=${params.file}`;
-			layout.activate({ pane, file });
+			if(!file) return;
+			layout.openTab({ pane, file });
 		};
 
 		window.addEventListener("message", (event) => {

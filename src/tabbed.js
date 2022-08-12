@@ -71,7 +71,7 @@ export const openTab = (parent, src) => {
 	tabsContainer.classList.remove('hidden');
 	tabs.insertAdjacentHTML('beforeend', createTabDom(true, src));
 	const tab = tabs.querySelector('.tab:last-child');
-	tab.scrollIntoView({inline: "center"})
+	tab.scrollIntoView({inline: "center"});
 };
 
 const menuToggleAction = (pane, target, layout) => {

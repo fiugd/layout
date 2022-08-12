@@ -1,12 +1,23 @@
 # TODO
 
 ## tree
-- [ ] **wire up drag and drop
+- [ ] **wire up drag and drop**
 - [X] fileSelect event
 
+## layout
+- [ ] **wire up events in test/index.html**
+	- [ ] respond to terminal's fileOpen event
+- [X] move tab-related code out of editor.html and into module
+- [X] root-level column or rows layout
+- [X] nested layout
+- [X] maximize / minimize for panes (settled on fullscreen for now)
+- [ ] min/max height/width for panes
+- [ ] snapping for panes
+
+
 ## tabs
-- [ ] **tab close results in config change << #1
 - [ ] option to customize look/feel of tabs
+- [X] tab close results in config change
 - [X] tab scroll into view on activate
 - [X] tab bar menu
 - [X] tab select should result in config change
@@ -15,15 +26,6 @@
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly do not do)
-
-## layout
-- [ ] **wire up events in test/index.html
-- [X] move tab-related code out of editor.html and into module
-- [X] root-level column or rows layout
-- [X] nested layout
-- [X] maximize / minimize for panes (settled on fullscreen for now)
-- [ ] min/max height/width for panes
-- [ ] snapping for panes
 
 ## events
 - [X] onDrop for pane split (versus add pane)

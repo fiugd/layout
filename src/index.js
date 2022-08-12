@@ -15,6 +15,7 @@ class Layout {
 		};
 
 		this.splitting = splitting;
+		this.tabbed = tabbed;
 
 		this.config = state.parseConfig(config);
 		this.onChange = state.onChange(this);
@@ -26,9 +27,18 @@ class Layout {
 
 		this.activate = (args) => state.activate({ ...args, layout: this });
 		this.focusAllActiveTabs = () => tabbed.focusAllActiveTabs(this.dom);
-		this.openTab = tabbed.openTab;
 		this.closeAllMenus = tabbed.closeAllMenus;
 		this.flatConfig = () => state.flatConfig(this.config);
+
+		//EXTERNAL
+		this.openTab = (args) => {
+			this.activate(args);
+			this.onChange();
+		};
+		this.closeTab = (args) => {
+			this.activate(args);
+			this.onChange();
+		};
 
 		this.dom = dom.createDom(this);
 		this.config.parent.append(this.dom);

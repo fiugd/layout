@@ -86,7 +86,7 @@ export const activate = ({ layout, pane, file }) => {
 			paneConfig,
 			(x) => activeTabDom.getAttribute("source").startsWith(x.iframe)
 		);
-		layout.openTab(paneDom, file + `&paneid=${pane}`);
+		layout.tabbed.openTab(paneDom, file + `&paneid=${pane}`);
 		tabDom = paneDom.querySelector(`.tab[source^="${file}"]`);
 
 		//activeTabDom && activeTabDom.classList.toggle('active');
@@ -105,7 +105,6 @@ export const onChange = (layout) => (args) => {
 		));
 };
 
-//TODO: also trigger onChange for these (and do not do it in activate)
 export const onSelect = (layout) => (args) => {
 	layout.activate(args);
 	layout.onChange();
@@ -130,21 +129,22 @@ export const onClose = (layout) => (args) => {
 	const fileConfig = paneConfig.children.find(x => x.iframe.startsWith(file))
 	const fileIsActive = fileConfig && fileConfig.active;
 	paneConfig.children = paneConfig.children.filter(x => !x.iframe.startsWith(file));
-	const lastChild = paneConfig.children[paneConfig.children.length-1];
 
+	//TODO: keep track of files in a stack based on when opened, pop from that
+	const lastChild = paneConfig.children[paneConfig.children.length-1];
 	if(fileIsActive && lastChild){
 		lastChild.active = true;
 	}
 
 	layout.events['close'].forEach(handler => handler(args));
 
-	//TODO: should maybe be activating the next pane
 	if(!lastChild){
+		//TODO: should maybe be activating the next pane
 		layout.onChange();
 		return;
 	}
 
-	//if this pane was not active, does it make sense to activate it (instead of just the file)?
+	//TODO: if this pane was not active, does it make sense to activate it (instead of just the file)?
 	layout.onSelect({
 		pane, file: lastChild.iframe
 	});

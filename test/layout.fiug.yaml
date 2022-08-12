@@ -18,7 +18,7 @@ rows:
             tabs:
               - iframe: /fiugd/beta/dist/editor.html?file=src/index.js
               - iframe: /fiugd/beta/dist/editor.html?file=README.md
-              - iframe: /fiugd/beta/dist/editor.html?file=LICENSE
+              - iframe: /fiugd/beta/dist/editor.html?file=TODO.md
                 active: true
           - width: 35%
             tabs:

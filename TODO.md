@@ -48,12 +48,14 @@
 
 
 ## fiug v0.4.6 (@fiug/layout) versus fiug v0.4.5
-(layout)
+
+### missing in @fiug/layout
 - file icons for tabs
 - changed status indicator for tabs
 - explorer snap behavior
 - responds to fileDelete/fileClose
-(other)
+
+### missing from v0.4.6
 - action bar
 - status bar
 - wired up to service worker

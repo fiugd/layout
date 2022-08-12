@@ -1,5 +1,6 @@
 src/
 test/
+.github/
 TODO.md
 REFERENCES.md
 rollup.config.js

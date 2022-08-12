@@ -346,3 +346,11 @@ export const attachClickListener = (layout) => {
 			return console.log(`UNHANDLED: ${action}`)
 	});
 };
+
+export const attachEvents = (layout) => {
+	const { dom, onResize } = layout;
+	attachResizeListener(onResize);
+	attachDragListener(layout);
+	attachDropListener(dom);
+	attachClickListener(layout);
+};

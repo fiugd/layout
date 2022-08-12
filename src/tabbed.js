@@ -7,6 +7,11 @@ const createTabDom = dom.createTab;
 const createContentDom = dom.createContent;
 export const createDom = dom.createPane;
 
+export const focusAllActiveTabs = (layoutDom) => {
+	const activeTabs = Array.from(layoutDom.querySelectorAll('.tab.active'));
+	activeTabs.forEach(t => t.scrollIntoView({inline: "center"}));
+};
+
 const closeTab = (parent, tab) => {
 	tab.remove();
 
@@ -140,7 +145,6 @@ const tabSelectAction = (pane, target, layout) => {
 	let file = target.getAttribute("source");
 	file = file || target.textContent.trim();
 	file = file.split('&paneid=').shift();
-	activate({ pane: pane.id, file });
 	onSelect({ pane: pane.id, file });
 };
 

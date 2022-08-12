@@ -1,3 +1,5 @@
+import style from './style.js';
+
 const randomId = (prefix = "_") =>
 	prefix + Math.random().toString(16).replace("0.", "");
 
@@ -339,3 +341,37 @@ export const createEmpty = () =>
 `
 		.replaceAll("\r", "")
 		.replaceAll("\n", "");
+
+
+const containerSizers = (layout, containers, configFlat) => {
+	for(const [index, container] of containers.entries()){
+		const containerConfig = configFlat
+			.find(x => x.id === container.id);
+		layout.splitting.setSize(container, containerConfig);
+
+		const sizers = container.querySelectorAll(':scope > .sizer');
+		for(const [index, sizer] of Array.from(sizers).entries()){
+			sizer.id = randomId();
+		}
+	}
+};
+
+export const createDom = (layout) => {
+	const { flatConfig, config } = layout;
+	const { children, id, orient } = config;
+	const layoutDom = document.createElement('div');
+	layoutDom.classList.add('layout-container', orient);
+	id && (layoutDom.id = id);
+
+	layoutDom.innerHTML = `<style>${style()}</style>` + 
+		children.map(childDom(config)).join('');
+
+	const containers = layoutDom
+		.querySelectorAll('.layout-container');
+	containerSizers(
+		layout,
+		[layoutDom, ...Array.from(containers)],
+		flatConfig()
+	);
+	return layoutDom;
+};

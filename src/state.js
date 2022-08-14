@@ -30,7 +30,7 @@ export const flatConfig = (config) => {
 	].flat();
 };
 
-const getConfigNode = (config, predicate) => {
+export const getConfigNode = (config, predicate) => {
 	const configFlat = flatConfig(config);
 	return configFlat.find(predicate);
 };

@@ -4,6 +4,7 @@
 - [ ] close pane
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
+- [ ] media query functionality for responsiveness across mobile/desktop
 - [X] move tab-related code out of editor.html and into module
 - [X] root-level column or rows layout
 - [X] nested layout

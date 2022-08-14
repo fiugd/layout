@@ -30,7 +30,7 @@
 </ul>
 
 <script type="module">
-	//import { dragStart } from "https://unpkg.com/@fiug/layout@0.0.0-6";
+	//import { dragStart } from "https://unpkg.com/@fiug/layout@0.0.2";
 	import { dragStart, dragEnd } from '../src/index.js';
 
 
@@ -55,7 +55,7 @@
 		document.body.removeEventListener('pointerleave', pointerleave);
 		document.body.removeEventListener('pointermove', pointermove);
 	};
-	
+
 	const pointerup = (ev) => {
 		dragEnd();
 		pointerleave(ev);

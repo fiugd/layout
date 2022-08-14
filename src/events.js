@@ -47,7 +47,7 @@ const dragStartMessage = (layout) => (e) => {
 		dragging = true;
 		follow({ pageX: -999, pageY: -999 });
 		dragPreview.classList.remove('hidden');
-		dragPreview.innerHTML = file;
+		dragPreview.innerHTML = file.split('/').pop();
 		document.addEventListener('pointermove', follow);
 	}
 	if(dragEnd){
@@ -64,8 +64,11 @@ const dragStartMessage = (layout) => (e) => {
 		}
 		const tabbedPane = splitPane.classList.contains('tabbed');
 		if(!dir && tabbedPane){
-			tabbed.openTab(splitPane, file);
-			layout.onDrop({ type: "tab", pane, file });
+			const editorFile = `/fiugd/beta/dist/editor.html?file=${file}`;
+			layout.openTab({
+				pane: splitPane.id,
+				file: editorFile
+			});
 		}
 
 		dragPreview.classList.add('hidden');

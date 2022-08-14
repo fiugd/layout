@@ -165,7 +165,7 @@
 				get: (searchParams, prop) => searchParams.get(prop),
 			});
 			const file = params.file && e.source.location.pathname + `?file=${params.file}`;
-			if(!file) return;
+			if(!file) return layout.activate({ pane });
 			layout.openTab({ pane, file });
 		};
 

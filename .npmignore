@@ -3,4 +3,5 @@ test/
 .github/
 TODO.md
 REFERENCES.md
+CONTRIBUTING.md
 rollup.config.js

@@ -59,8 +59,15 @@ const dragStartMessage = (layout) => (e) => {
 		}[splitDirection];
 		const splitPane = document.getElementById(pane?.id);
 		if(dir && splitPane){
-			const split = splitting.newPane(dir, splitPane, file);
-			layout.onDrop({ type: "split", dir, pane, file, ...split });
+			const editorFile = `/fiugd/beta/dist/editor.html?file=${file}`;
+			const split = splitting.newPane(dir, splitPane, editorFile);
+			layout.onDrop({
+				type: "split",
+				dir,
+				pane,
+				file: editorFile,
+				...split,
+			});
 		}
 		const tabbedPane = splitPane.classList.contains('tabbed');
 		if(!dir && tabbedPane){

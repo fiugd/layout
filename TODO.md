@@ -7,6 +7,7 @@
 - [ ] react wrapper
 
 ## layout
+- [ ] close pane
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
 - [X] move tab-related code out of editor.html and into module

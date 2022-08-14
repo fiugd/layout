@@ -168,7 +168,8 @@ export const onDrop = (layout) => (args) => {
 		if(tabbed){
 			newPane.orient = "tabs";
 			newPane.id = pane;
-			newPane.children = [{ iframe: file, active: true }];
+			newPane.children = [];
+			//newPane.children = [{ iframe: file }];
 		} else {
 			newPane.id = pane;
 			newPane.iframe = file;
@@ -179,16 +180,18 @@ export const onDrop = (layout) => (args) => {
 		}
 
 		parentConfig.children = parentConfig.children
-		.map(child => {
-			if(child?.id !== sibling) return child;
+			.map(child => {
+				if(child?.id !== sibling) return child;
 
-			if(!!width && child.width) child.width = width;
-			if(!!height && child.height) child.height = height;
+				if(!!width && child.width) child.width = width;
+				if(!!height && child.height) child.height = height;
 
-			return location === "afterend"
-				? [child, newPane]
-				: [newPane, child];
-		}).flat();
+				return location === "afterend"
+					? [child, newPane]
+					: [newPane, child];
+			}).flat();
+
+		layout.activate({ pane, file });
 	}
 
 	if(splitPane){
@@ -205,42 +208,45 @@ export const onDrop = (layout) => (args) => {
 		if(tabbed){
 			newPane.orient = "tabs";
 			newPane.id = pane;
-			newPane.children = [{ iframe: file, active: true }];
+			newPane.children = [];
+			//newPane.children = [{ iframe: file }];
 		} else {
 			newPane.id = pane;
 			newPane.iframe = file;
 		}
 
 		parentConfig.children = parentConfig.children
-		.map(child => {
-			if(child?.id !== sibling) return child;
+			.map(child => {
+				if(child?.id !== sibling) return child;
 
-			const children = location === "afterbegin"
-				? [newPane, child]
-				: [child, newPane];
+				const children = location === "afterbegin"
+					? [newPane, child]
+					: [child, newPane];
 
-			const containerConfig = {
-				id: container,
-				orient,
-				children
-			};
-			if(child.width){
-				containerConfig.width = child.width;
-				delete child.width;
-			}
-			if(child.height){
-				containerConfig.height = child.height;
-				delete child.height;
-			}
-			if(!!width) child.width = width;
-			if(!!height) child.height = height;
+				const containerConfig = {
+					id: container,
+					orient,
+					children
+				};
+				if(child.width){
+					containerConfig.width = child.width;
+					delete child.width;
+				}
+				if(child.height){
+					containerConfig.height = child.height;
+					delete child.height;
+				}
+				if(!!width) child.width = width;
+				if(!!height) child.height = height;
 
-			return containerConfig;
-		});
+				return containerConfig;
+			});
+
+		layout.activate({ pane, file });
 	}
+
 	if(!splitPane && !addedPane) return;
 	layout.onChange();
-	//TODO: this.open({ pane, file });
 };
 
 export const onResize = (layout) => (sizer, i, x, y) => {

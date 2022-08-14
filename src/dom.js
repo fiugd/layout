@@ -233,7 +233,7 @@ export const newPaneChildren = (target, tabbed) => {
 			</div>`
 			: ""
 	}
-	${createContent({ src: tabbed ? "document.html" : "terminal.html" })}
+	${createContent({ src: tabbed ? target : "terminal.html" })}
 	${tabbed && tabsMenu(tabMenuActions)}
 	`;
 };

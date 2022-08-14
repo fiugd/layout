@@ -1,11 +1,5 @@
 # TODO
 
-## misc 
-- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
-- [ ] coupled to fiug (versus being useable elsewhere)
-	- [ ] layout should not have a concept of "editor" or "tree"
-- [ ] react wrapper
-
 ## layout
 - [ ] close pane
 - [ ] min/max height/width for panes
@@ -15,6 +9,11 @@
 - [X] nested layout
 - [X] maximize / minimize for panes (settled on fullscreen for now)
 
+## misc 
+- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
+- [ ] coupled to fiug (versus being useable elsewhere)
+	- [ ] layout should not have a concept of "editor" or "tree"
+- [ ] react wrapper
 
 ## tabs
 - [ ] option to customize look/feel of tabs

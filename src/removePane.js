@@ -19,13 +19,15 @@ const removePaneConfig = ({ layout, pane }) => {
 
 	if(paneConfig.fixed)
 		return { error: "pane is fixed, cannot be closed" }
-
+	
 	const parentConfig = getConfigNode(
 		config,
 		(node) => node.children && node.children
 			.find(c => c.id === pane)
 	);
-
+	
+	if(parentConfig.children.length === parentConfig.minChildren)
+		return { error: "cannot close pane, parent has reached minimum children limit" };
 	if(!parentConfig)
 		return { error: "pane parent config not found" };
 

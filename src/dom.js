@@ -1,6 +1,37 @@
 import style from './style.js';
 import { randomId, getFilename, getFilepath } from './utils.js';
 
+// WIP to hide tab controls when no valid actions exist
+
+// const tabControls = (menuactions=[]) => `
+// 	<div class="tabs-controls">
+// 		<div class="action-item" data-action="fullscreen">
+// 			<svg viewBox="0 0 10 10" class="icon stroke">
+// 				<line x1="1" y1="1" x2="9" y2="1"></line>
+// 				<line x1="1" y1="2" x2="9" y2="2"></line>
+// 				<line x1="1" y1="1" x2="1" y2="9"></line>
+// 				<line x1="9" y1="1" x2="9" y2="9"></line>
+// 				<line x1="1" y1="9" x2="9" y2="9"></line>
+// 			</svg>
+// 		</div>
+// 		<div class="action-item hidden" data-action="exitfullscreen">
+// 			<svg viewBox="0 0 10 10" class="icon stroke">
+// 				<line x1="1" y1="9" x2="9" y2="9"></line>
+// 			</svg>
+// 		</div>
+// 		${ menuactions.filter(x=>!x.disabled).length
+// 			? `<div class="action-item" data-action="menuToggle">
+// 					<svg viewBox="0 0 10 10" class="icon fill">
+// 						<circle cx="1" cy="5" r="1"></circle>
+// 						<circle cx="5" cy="5" r="1"></circle>
+// 						<circle cx="9" cy="5" r="1"></circle>
+// 					</svg>
+// 				</div>`
+// 			: ""
+// 		}
+// 	</div>
+// `;
+
 const tabControls = (menuactions=[]) => `
 	<div class="tabs-controls">
 		<div class="action-item" data-action="fullscreen">
@@ -17,16 +48,13 @@ const tabControls = (menuactions=[]) => `
 				<line x1="1" y1="9" x2="9" y2="9"></line>
 			</svg>
 		</div>
-		${ menuactions.filter(x=>!x.disabled).length
-			? `<div class="action-item" data-action="menuToggle">
-					<svg viewBox="0 0 10 10" class="icon fill">
-						<circle cx="1" cy="5" r="1"></circle>
-						<circle cx="5" cy="5" r="1"></circle>
-						<circle cx="9" cy="5" r="1"></circle>
-					</svg>
-				</div>`
-			: ""
-		}
+		<div class="action-item" data-action="menuToggle">
+			<svg viewBox="0 0 10 10" class="icon fill">
+				<circle cx="1" cy="5" r="1"></circle>
+				<circle cx="5" cy="5" r="1"></circle>
+				<circle cx="9" cy="5" r="1"></circle>
+			</svg>
+		</div>
 	</div>
 `;
 
@@ -41,10 +69,10 @@ const tabClose = () => `
 	</div>
 `;
 
-const tabMenuActions = (pane) => [
+const tabMenuActions = (pane={}) => [
 	{
 		title: "Close Pane",
-		disabled: pane.fixed
+		disabled: pane.fixed === true
 	},
 	// {
 	// 	title: "TODO:",

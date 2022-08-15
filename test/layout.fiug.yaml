@@ -12,9 +12,10 @@ rows:
         snapWidth: 150px
         drop: false
       - activate: false
+        minChildren: 2
         columns:
           - active: true
-            fixed: true
+            # fixed: true
             width: 35%
             tabs:
               - iframe: /fiugd/beta/dist/editor.html?file=TODO.md
@@ -25,7 +26,9 @@ rows:
           - width: 30%
             rows:
               - iframe: /fiugd/beta/dist/terminal.html
+                drop: false
               - iframe: /fiugd/beta/dist/terminal.html
+                drop: false
                 height: 50%
   - iframe: status.html
     height: 22px

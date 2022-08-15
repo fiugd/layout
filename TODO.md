@@ -1,11 +1,24 @@
 # TODO
 
+## tabs
+- [ ] option to customize look/feel of tabs
+	- [ ] status indicators
+	- [ ] file icons
+- [ ] double-click tab bar to start new tab (file)
+- [ ] scrolled indicators
+- [ ] tab re-order
+- [ ] tab drag to another frame
+- [ ] tab bar as drop target (possibly defer or reject this)
+- [X] tab close results in config change
+- [X] tab scroll into view on activate
+- [X] tab bar menu
+- [X] tab select should result in config change
+
 ## layout
-- [ ] close pane
-- [ ] render empty panes
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
 - [ ] media query functionality for responsiveness across mobile/desktop
+- [X] close pane
 - [X] move tab-related code out of editor.html and into module
 - [X] root-level column or rows layout
 - [X] nested layout
@@ -16,18 +29,6 @@
 - [ ] coupled to fiug (versus being useable elsewhere)
 	- [ ] layout should not have a concept of "editor" or "tree"
 - [ ] react wrapper
-
-## tabs
-- [ ] option to customize look/feel of tabs
-- [ ] double-click tab bar to start new tab (file)
-- [ ] scrolled indicators
-- [ ] tab re-order
-- [ ] tab drag to another frame
-- [ ] tab bar as drop target (possibly defer or reject this)
-- [X] tab close results in config change
-- [X] tab scroll into view on activate
-- [X] tab bar menu
-- [X] tab select should result in config change
 
 ## fiug-specific
 - [ ] wire up events in test/index.html (for fiug example)

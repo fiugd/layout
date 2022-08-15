@@ -25,10 +25,11 @@
 - [X] maximize / minimize for panes (settled on fullscreen for now)
 
 ## misc
-- [ ] [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
+- [ ] add [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)
 - [ ] coupled to fiug (versus being useable elsewhere)
 	- [ ] layout should not have a concept of "editor" or "tree"
 - [ ] react wrapper
+- [ ] popularity, quality, maintenance scores [on npmjs.com](https://stackoverflow.com/questions/49866588/how-npmjs-com-calculates-the-code-quality)
 
 ## fiug-specific
 - [ ] wire up events in test/index.html (for fiug example)

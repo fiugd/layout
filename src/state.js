@@ -1,5 +1,5 @@
-const randomId = (prefix="_") =>
-	prefix + Math.random().toString(16).replace('0.','');
+import { getConfigNode, randomId } from './utils.js';
+import removePane from './removePane.js';
 
 export const parseConfig = (config) => {
 	const { children, rows, columns, tabs, ...rest } = config;
@@ -20,19 +20,6 @@ export const parseConfig = (config) => {
 		id: randomId(),
 		children: _children.map(parseConfig)
 	}
-};
-
-export const flatConfig = (config) => {
-	if(!config.children) return config;
-	return [
-		config,
-		...config.children.map((x) => flatConfig(x, config))
-	].flat();
-};
-
-export const getConfigNode = (config, predicate) => {
-	const configFlat = flatConfig(config);
-	return configFlat.find(predicate);
 };
 
 const outputConfig = (config) => {
@@ -304,3 +291,5 @@ export const onResize = (layout) => (sizer, i, x, y) => {
 	layout.focusAllActiveTabs(layout.dom);
 	layout.onChange();
 };
+
+export const closePane = removePane;

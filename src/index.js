@@ -3,6 +3,7 @@ import * as tabbed from './tabbed.js';
 import * as splitting from './splitting.js';
 import * as dom from './dom.js';
 import * as state from './state.js';
+import { flatConfig } from './utils.js';
 
 window.newPane = splitting.newPane;
 
@@ -28,7 +29,7 @@ class Layout {
 		this.activate = (args) => state.activate({ ...args, layout: this });
 		this.focusAllActiveTabs = () => tabbed.focusAllActiveTabs(this.dom);
 		this.closeAllMenus = tabbed.closeAllMenus;
-		this.flatConfig = () => state.flatConfig(this.config);
+		this.flatConfig = () => flatConfig(this.config);
 
 		//EXTERNAL
 		this.openTab = (args) => {
@@ -37,6 +38,10 @@ class Layout {
 		};
 		this.closeTab = (args) => {
 			this.activate(args);
+			this.onChange();
+		};
+		this.closePane = (args) => {
+			state.closePane(this)(args);
 			this.onChange();
 		};
 

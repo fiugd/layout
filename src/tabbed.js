@@ -40,14 +40,18 @@ const getFilename = (target) => {
 };
 
 export const closeAllMenus = () => {
-	const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
-	for(const menu of Array.from(openMenus)){
-		menu.classList.remove('menu-open');
-		menu.classList.add('hidden');
-	}
-	const selectedActions = document.querySelectorAll('.action-item.selected');
-	for(const action of Array.from(selectedActions)){
-		action.classList.remove('selected');
+	try {
+		const openMenus = document.querySelectorAll('.tabs-menu.menu-open');
+		for(const menu of Array.from(openMenus)){
+			menu.classList.remove('menu-open');
+			menu.classList.add('hidden');
+		}
+		const selectedActions = document.querySelectorAll('.action-item.selected');
+		for(const action of Array.from(selectedActions)){
+			action.classList.remove('selected');
+		}
+	} catch(e){
+		debugger;
 	}
 };
 
@@ -148,11 +152,16 @@ const tabSelectAction = (pane, target, layout) => {
 	onSelect({ pane: pane.id, file });
 };
 
+const closepane = (pane, target, layout) => {
+	layout.closePane(pane.id);
+};
+
 export const actionHandlers = {
 	menuToggle: menuToggleAction,
 	fullscreen: fullscreenAction,
 	exitfullscreen: fullscreenExitAction,
 	tabClose: tabCloseAction,
-	tabSelect: tabSelectAction
+	tabSelect: tabSelectAction,
+	closepane
 };
 

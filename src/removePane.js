@@ -1,4 +1,4 @@
-import {getConfigNode} from './state.js';
+import { getConfigNode } from './utils.js';
 
 export const plusDim = (mult, target, source) => {
 	let unit = "";
@@ -69,19 +69,55 @@ const removePaneConfig = ({ layout, pane }) => {
 
 	return {
 		child: paneConfig.id,
-		parent: parentConfig.id
+		parent: parentConfig.id,
+		parentConfig
 	}
 };
 
 const removePaneDom = ({ dom, removed }) => {
+	if(typeof document === "undefined")
+		return console.log("no DOM present");
 	if(removed.error)
 		return console.log('ERROR:\n'+ removed.error + "\n");
 
-	console.log(`
-TODO DOM OPERATIONS:
-Change parent grid dims: ${removed.parent}
-Remove child: ${removed.child}
-`.trim()+"\n");
+	const { parent, child, parentConfig } = removed;
+	const parentDom = document.querySelector('#'+parent);
+	const childDom = parentDom.querySelector('#'+child);
+	
+	const gridTemplateRows = parentDom.style.gridTemplateRows
+		.split(' ').filter(x=>x);
+	const gridTemplateColumns = parentDom.style.gridTemplateColumns
+		.split(' ').filter(x=>x);
+
+	const children = Array.from(parentDom.children)
+	const childIndex = children.indexOf(childDom);
+	const spacerIndex = childIndex === children.length -1
+		? childIndex-1
+		: childIndex+1;
+
+	gridTemplateRows[spacerIndex] = "";
+	gridTemplateRows[childIndex] = "";
+	gridTemplateColumns[spacerIndex] = "";
+	gridTemplateColumns[childIndex] = "";
+	
+	const rowsCSS = gridTemplateRows.filter(x=>x).join(" ");
+	const colsCSS = gridTemplateColumns.filter(x=>x).join(" ");
+
+	console.log({
+		rowsCSS, colsCSS
+	})
+	if(rowsCSS)
+		parentDom.style.gridTemplateRows = parentConfig.children
+			.map(x => x.width)
+			.join(" 0px ");
+	if(colsCSS)
+		parentDom.style.gridTemplateColumns = parentConfig.children
+			.map(x => x.width)
+			.join(" 0px ");
+
+	children[spacerIndex].remove();
+	children[childIndex].remove();
+
 };
 
 const removePane = (layout) => (pane) => {

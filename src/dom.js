@@ -60,32 +60,31 @@ const tabClose = () => `
 
 const tabMenuActions = [
 	{
-		title: "TODO:",
-		disabled: true,
+		title: "Close Pane"
 	},
-	{
-		seperator: true,
-	},
-	{
-		title: "Close All Tabs",
-		disabled: true,
-	},
-	{
-		title: "Close Pane",
-		disabled: true,
-	},
-	{
-		title: "Close Inactive Tabs",
-		disabled: true,
-	},
-	{
-		title: "Close Inactive Left",
-		disabled: true,
-	},
-	{
-		title: "Close Inactive Right",
-		disabled: true,
-	},
+	// {
+	// 	title: "TODO:",
+	// 	disabled: true,
+	// },
+	// {
+	// 	seperator: true,
+	// },
+	// {
+	// 	title: "Close All Tabs",
+	// 	disabled: true,
+	// },
+	// {
+	// 	title: "Close Inactive Tabs",
+	// 	disabled: true,
+	// },
+	// {
+	// 	title: "Close Inactive Left",
+	// 	disabled: true,
+	// },
+	// {
+	// 	title: "Close Inactive Right",
+	// 	disabled: true,
+	// },
 ];
 
 const tabMenuItem = (i) => {
@@ -188,7 +187,7 @@ export const createPane = ({
 	id,
 	active: paneActive,
 }) => {
-	const active = children.find((x) => x.active);
+	const active = children.find((x) => x.active) || children[0];
 	const isModule = children.find(
 		(x) => x.iframe.includes("/_/modules") || x.iframe.includes("/dist/")
 	);
@@ -357,21 +356,25 @@ const containerSizers = (layout, containers, configFlat) => {
 };
 
 export const createDom = (layout) => {
-	const { flatConfig, config } = layout;
-	const { children, id, orient } = config;
-	const layoutDom = document.createElement('div');
-	layoutDom.classList.add('layout-container', orient);
-	id && (layoutDom.id = id);
+	try {
+		const { flatConfig, config } = layout;
+		const { children, id, orient } = config;
+		const layoutDom = document.createElement('div');
+		layoutDom.classList.add('layout-container', orient);
+		id && (layoutDom.id = id);
 
-	layoutDom.innerHTML = `<style>${style()}</style>` + 
-		children.map(childDom(config)).join('');
+		layoutDom.innerHTML = `<style>${style()}</style>` + 
+			children.map(childDom(config)).join('');
 
-	const containers = layoutDom
-		.querySelectorAll('.layout-container');
-	containerSizers(
-		layout,
-		[layoutDom, ...Array.from(containers)],
-		flatConfig()
-	);
-	return layoutDom;
+		const containers = layoutDom
+			.querySelectorAll('.layout-container');
+		containerSizers(
+			layout,
+			[layoutDom, ...Array.from(containers)],
+			flatConfig()
+		);
+		return layoutDom;
+	} catch(e){
+		debugger;
+	}
 };

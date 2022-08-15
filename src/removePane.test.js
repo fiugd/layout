@@ -6,10 +6,11 @@ const layout = {
 		children: [{
 			id: "parent",
 			height: "200px",
+			orient: "tabs",
 			children: [
-				{ width: "37.5%", id: "start" },
-				{ width: "30.7%", id: "middle" },
-				{ width: "31.8%", id: "last" },
+				{ width: "37.5%", id: "start", iframe: "" },
+				{ width: "30.7%", id: "middle", iframe: "" },
+				{ width: "31.8%", id: "last", iframe: "" },
 			],
 		}, {
 			id: "uncle",
@@ -17,10 +18,9 @@ const layout = {
 			children: []
 		}],
 	},
-	dom: {
-	
-	}
+	dom: {}
 };
+
 removePane(layout)("start");
 removePane(layout)("middle");
 removePane(layout)("last");

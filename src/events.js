@@ -20,11 +20,20 @@ const pointerDown = (sizer, index, resize) => (e) => {
 	document.addEventListener('pointercancel', pointerUp);
 };
 
-const dragPreview = document.createElement('div');
-dragPreview.classList.add('drag-preview', 'hidden');
-dragPreview.style.left = "-999px";
-dragPreview.style.top = "-999px";
-document.body.append(dragPreview);
+const createDragPreview = () => {
+	try {
+		const dragPreview = document.createElement('div');
+		dragPreview.classList.add('drag-preview', 'hidden');
+		dragPreview.style.left = "-999px";
+		dragPreview.style.top = "-999px";
+		document.body.append(dragPreview);
+		return dragPreview;
+	} catch(e){
+		console.log('unable to create dragPreview');
+		return {};
+	}
+};
+const dragPreview = createDragPreview();
 
 var offX = 15;
 var offY = -10;
@@ -100,12 +109,16 @@ const dragStartMessage = (layout) => (e) => {
 
 // used by document pointerdown & iframe message that it was clicked
 const setPaneActive = (parentPane) => {
-	const activePane = document.querySelector('.pane.active');
-	if(activePane) activePane.classList.toggle('active');
-	parentPane.classList.toggle('active');
-	const parentContentIframe = parentPane.querySelector('.content iframe');
-	//if(!parentContentIframe) return console.log('no iframe found');
-	//parentContentIframe.contentWindow.focus();
+	try {
+		const activePane = document.querySelector('.pane.active');
+		if(activePane) activePane.classList.toggle('active');
+		parentPane.classList.toggle('active');
+		const parentContentIframe = parentPane.querySelector('.content iframe');
+		//if(!parentContentIframe) return console.log('no iframe found');
+		//parentContentIframe.contentWindow.focus();
+	} catch(e){
+		debugger;
+	}
 };
 
 export const attachResizeListener = (resize) => {

@@ -17,11 +17,15 @@ const removePaneConfig = ({ layout, pane }) => {
 	if(!paneConfig)
 		return { error: "pane config not found" };
 
+	if(paneConfig.fixed)
+		return { error: "pane is fixed, cannot be closed" }
+
 	const parentConfig = getConfigNode(
 		config,
 		(node) => node.children && node.children
 			.find(c => c.id === pane)
 	);
+
 	if(!parentConfig)
 		return { error: "pane parent config not found" };
 

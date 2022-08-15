@@ -13,3 +13,21 @@ export const getConfigNode = (config, predicate) => {
 
 export const randomId = (prefix="_") =>
 	prefix + Math.random().toString(16).replace('0.','');
+
+export const getFilename = (target) => {
+	let filename = target.split("/").pop();
+	if (filename.includes("&paneid="))
+		filename = filename.split("&paneid=").shift();
+	if (filename.includes("?file="))
+		filename = filename.split("?file=").pop();
+	return filename;
+};
+
+export const getFilepath = (target) => {
+	let filename = target;
+	if (filename.includes("&paneid="))
+		filename = filename.split("&paneid=").shift();
+	if (filename.includes("?file="))
+		filename = filename.split("?file=").pop();
+	return filename;
+};

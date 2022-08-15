@@ -1,27 +1,7 @@
 import style from './style.js';
+import { randomId, getFilename, getFilepath } from './utils.js';
 
-const randomId = (prefix = "_") =>
-	prefix + Math.random().toString(16).replace("0.", "");
-
-const getFilename = (target) => {
-	let filename = target.split("/").pop();
-	if (filename.includes("&paneid="))
-		filename = filename.split("&paneid=").shift();
-	if (filename.includes("?file="))
-		filename = filename.split("?file=").pop();
-	return filename;
-};
-
-const getFilepath = (target) => {
-	let filename = target;
-	if (filename.includes("&paneid="))
-		filename = filename.split("&paneid=").shift();
-	if (filename.includes("?file="))
-		filename = filename.split("?file=").pop();
-	return filename;
-};
-
-const tabControls = () => `
+const tabControls = (menuactions=[]) => `
 	<div class="tabs-controls">
 		<div class="action-item" data-action="fullscreen">
 			<svg viewBox="0 0 10 10" class="icon stroke">
@@ -37,13 +17,16 @@ const tabControls = () => `
 				<line x1="1" y1="9" x2="9" y2="9"></line>
 			</svg>
 		</div>
-		<div class="action-item" data-action="menuToggle">
-			<svg viewBox="0 0 10 10" class="icon fill">
-				<circle cx="1" cy="5" r="1"></circle>
-				<circle cx="5" cy="5" r="1"></circle>
-				<circle cx="9" cy="5" r="1"></circle>
-			</svg>
-		</div>
+		${ menuactions.filter(x=>!x.disabled).length
+			? `<div class="action-item" data-action="menuToggle">
+					<svg viewBox="0 0 10 10" class="icon fill">
+						<circle cx="1" cy="5" r="1"></circle>
+						<circle cx="5" cy="5" r="1"></circle>
+						<circle cx="9" cy="5" r="1"></circle>
+					</svg>
+				</div>`
+			: ""
+		}
 	</div>
 `;
 
@@ -58,9 +41,10 @@ const tabClose = () => `
 	</div>
 `;
 
-const tabMenuActions = [
+const tabMenuActions = (pane) => [
 	{
-		title: "Close Pane"
+		title: "Close Pane",
+		disabled: pane.fixed
 	},
 	// {
 	// 	title: "TODO:",
@@ -180,13 +164,15 @@ export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
 	return `<div class="content">${iframe}</div>`;
 };
 
-export const createPane = ({
-	orient,
-	children,
-	drop,
-	id,
-	active: paneActive,
-}) => {
+export const createPane = (paneConfig) => {
+	const {
+		orient,
+		children,
+		drop,
+		id,
+		active: paneActive,
+	} = paneConfig;
+
 	const active = children.find((x) => x.active) || children[0];
 	const isModule = children.find(
 		(x) => x.iframe.includes("/_/modules") || x.iframe.includes("/dist/")
@@ -196,6 +182,8 @@ export const createPane = ({
 	const activeClass = paneActive ? " active" : "";
 	const tabbedClass = orient === "tabs" ? " tabbed" : "";
 	const classes = tabbedClass + dropClass + bottomDockedClass + activeClass;
+
+	const menuActions = tabMenuActions(paneConfig);
 
 	return `
 	<div class="pane${classes}" id="${id}">
@@ -210,12 +198,12 @@ export const createPane = ({
 							))
 							.join("")}
 					</div>
-					${tabControls()}
+					${tabControls(menuActions)}
 				</div>`
 				: ""
 		}
 		${createContent({ src: active.iframe, paneid: id })}
-		${tabsMenu(tabMenuActions)}
+		${tabsMenu(menuActions)}
 	</div>
 	`;
 };
@@ -233,7 +221,7 @@ export const newPaneChildren = (target, tabbed) => {
 			: ""
 	}
 	${createContent({ src: tabbed ? target : "terminal.html" })}
-	${tabbed && tabsMenu(tabMenuActions)}
+	${tabbed && tabsMenu(tabMenuActions())}
 	`;
 };
 

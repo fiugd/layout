@@ -1,6 +1,5 @@
 import * as dom from './dom.js';
-
-const randomId = (prefix="_") => prefix + Math.random().toString(16).replace('0.','');
+import { randomId } from './utils.js';
 
 const createEmptyDom = dom.createEmpty;
 const createTabDom = dom.createTab;
@@ -8,6 +7,7 @@ const createContentDom = dom.createContent;
 export const createDom = dom.createPane;
 
 export const focusAllActiveTabs = (layoutDom) => {
+	if(!layoutDom) debugger
 	const activeTabs = Array.from(layoutDom.querySelectorAll('.tab.active'));
 	activeTabs.forEach(t => t.scrollIntoView({inline: "center"}));
 };

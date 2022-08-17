@@ -2,7 +2,7 @@
 rows:
   - activate: false
     columns:
-      - iframe: action.html
+      - iframe: /fiugd/beta/dist/actionbar.html
         width: 45px
         resize: false
         drop: false
@@ -30,7 +30,7 @@ rows:
               - iframe: /fiugd/beta/dist/terminal.html
                 drop: false
                 height: 50%
-  - iframe: status.html
+  - iframe: /fiugd/beta/dist/statusbar.html
     height: 22px
     resize: false
     drop: false

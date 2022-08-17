@@ -290,6 +290,8 @@ export const onResize = (layout) => (sizer, i, x, y) => {
 	layout.splitting.setSize(sizer.parentNode, containerConfig);
 	layout.focusAllActiveTabs(layout.dom);
 	layout.onChange();
+	layout.events['resize']
+		.forEach(handler => handler());
 };
 
 export const closePane = removePane;

@@ -118,6 +118,9 @@
 				}, location);
 			}
 		});
+		layout.on('resize', () => {
+			console.log('optionally notify status bar of resize')
+		});
 
 		// EXTERNAL
 		const fileSelect = (e) => {

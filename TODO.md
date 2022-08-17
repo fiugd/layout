@@ -14,6 +14,9 @@
 - [ ] min/max height/width for panes
 - [ ] snapping for panes
 - [ ] media query functionality for responsiveness across mobile/desktop
+- [ ] resize behavior options
+	- refresh while resizing
+	- refresh after resize
 
 ## misc
 - [ ] add [TS type declarations](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package)

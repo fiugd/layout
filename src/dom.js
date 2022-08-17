@@ -382,6 +382,15 @@ export const createDom = (layout) => {
 		layoutDom.innerHTML = `<style>${style()}</style>` + 
 			children.map(childDom(config)).join('');
 
+		if(layout.events.createTab){
+			const tabs = Array.from(layoutDom.querySelectorAll('.tab'));
+			for(const tab of tabs){
+				const pane = tab.closest('.pane')?.id;
+				const file = tab.getAttribute('path');
+				layout.events.createTab({ tab, pane, file });
+			}
+		}
+
 		const containers = layoutDom
 			.querySelectorAll('.layout-container');
 		containerSizers(

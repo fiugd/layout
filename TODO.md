@@ -1,14 +1,14 @@
 # TODO
 
 ## tabs
-- [ ] option to customize look/feel of tabs
-	- [ ] status indicators
-	- [ ] file icons
+- [ ] status indicators
 - [ ] double-click tab bar to start new tab (file)
 - [ ] scrolled indicators
 - [ ] tab re-order
 - [ ] tab drag to another frame
 - [ ] tab bar as drop target (possibly defer or reject this)
+- [X] option to customize look/feel of tabs
+	- [X] file icons
 
 ## layout
 - [ ] min/max height/width for panes
@@ -22,20 +22,16 @@
 - [ ] react wrapper
 - [ ] popularity, quality, maintenance scores [on npmjs.com](https://stackoverflow.com/questions/49866588/how-npmjs-com-calculates-the-code-quality)
 
-## fiug-specific
-- [ ] wire up events in test/index.html (for fiug example)
-	- [ ] respond to terminal's fileOpen event
-
 ## fiug v0.4.6 (@fiug/layout) versus fiug v0.4.5
 
 ### missing in @fiug/layout
-- file icons for tabs
 - changed status indicator for tabs
 - explorer snap behavior
-- responds to fileDelete/fileClose
 
 ### missing from fiug v0.4.6
 - action bar
 - status bar
 - wired up to service worker
 - menus
+- responds to fileDelete/fileClose
+- reponsds to (acks) terminal's fileOpen event

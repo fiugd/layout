@@ -55,7 +55,7 @@ export const closeAllMenus = () => {
 	}
 };
 
-export const openTab = (parent, src) => {
+export const openTab = (parent, src, layout) => {
 	closeAllMenus();
 	const filename = getFilename(src);
 	const content = parent.querySelector('.content');
@@ -74,7 +74,13 @@ export const openTab = (parent, src) => {
 	}
 	tabsContainer.classList.remove('hidden');
 	tabs.insertAdjacentHTML('beforeend', createTabDom(true, src));
+
 	const tab = tabs.querySelector('.tab:last-child');
+
+	const pane = tab.closest('.pane')?.id;
+	const file = tab.getAttribute('path');
+	layout.events.createTab({ tab, pane, file: filename });
+
 	tab.scrollIntoView({inline: "center"});
 };
 

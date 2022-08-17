@@ -9,14 +9,17 @@ window.newPane = splitting.newPane;
 
 class Layout {
 	constructor(config){
-		this.events = {};
+		this.events = { ...config.events };
 		this.on = (eventName, handler) => {
 			this.events[eventName] = this.events[eventName] || [];
 			this.events[eventName].push(handler);
 		};
 
 		this.splitting = splitting;
-		this.tabbed = tabbed;
+		this.tabbed = {
+			...tabbed,
+			openTab: (...args) => tabbed.openTab(...args, this)
+		};
 
 		this.config = state.parseConfig(config);
 		this.onChange = state.onChange(this);

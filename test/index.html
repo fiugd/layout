@@ -28,8 +28,9 @@
 
 	<script type="module">
 		import YAML from "https://cdn.skypack.dev/yaml";
+		import iconMap from './icons.js';
 
-		//import Layout from "https://unpkg.com/@fiug/layout@0.0.4";
+		//import Layout from "https://unpkg.com/@fiug/layout@0.0.5";
 		import Layout from "../src/index.js";
 
 		function debounce(func, timeout = 500) {
@@ -65,10 +66,16 @@
 				layoutConfig = YAML.parse(source);
 			}
 		}
+		
+		const createTab = ({ tab, file, pane }) => {
+			const title = tab.querySelector('span');
+			title.classList.add('icon', 'icon-' + iconMap(file));
+		};
 
 		const layout = new Layout({
 			...layoutConfig,
-			parent: document.body
+			parent: document.body,
+			events: { createTab }
 		});
 
 		let activeEditor = document.querySelector('.pane.tabbed.active')?.id;

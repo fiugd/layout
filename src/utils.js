@@ -31,3 +31,55 @@ export const getFilepath = (target) => {
 		filename = filename.split("?file=").pop();
 	return filename;
 };
+
+export const debounce = (func, timeout = 500) => {
+	let timer;
+	return (...args) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			requestAnimationFrame(() => {
+				func.apply(this, args)
+			});
+		}, timeout);
+	};
+};
+
+export const throttle = (func, interval) => {
+	let shouldFire = true;
+	return (...args) => {
+			if (!shouldFire) return;
+			requestAnimationFrame(() => {
+				func.apply(this, args)
+			});
+			shouldFire = false;
+			setTimeout(() => {
+				shouldFire = true;
+			}, interval);
+	};
+};
+
+export function debounce2 (func, delay) {
+	var cooldown = null
+	var multiple = null
+	return function () {
+		var self = this
+		var args = arguments
+		if (cooldown) {
+			multiple = true
+			clearTimeout(cooldown)
+		} else {
+			requestAnimationFrame(() => {
+				func.apply(self, args)
+			});
+		}
+		cooldown = setTimeout(function () {
+			if (multiple) {
+				requestAnimationFrame(() => {
+					func.apply(self, args)
+				});
+			}
+			cooldown = null
+			multiple = null
+		}, delay)
+	}
+}

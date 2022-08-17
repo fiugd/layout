@@ -1,15 +1,17 @@
 import * as splitting from './splitting.js';
 import * as tabbed from './tabbed.js';
+import { debounce } from './utils.js';
 
 const pointerDown = (sizer, index, resize) => (e) => {
 	let { x: startX, y: startY } = e;
 	sizer.setPointerCapture(e.pointerId);
 
-	const pointerMove = (e) => {
+	const pointerMove = debounce((e) => {
 		resize(sizer, index, e.x - startX, e.y - startY);
 		startX = e.x;
 		startY = e.y;
-	};
+	}, 7);
+
 	const pointerUp = () => {
 		document.removeEventListener('pointermove', pointerMove);
 		document.removeEventListener('pointerup', pointerUp);

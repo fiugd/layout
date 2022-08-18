@@ -24,7 +24,9 @@
 		}
 	</style>
 
-	<body></body>
+	<body>
+		<div id="layout"></div>
+	</body>
 
 	<script type="module">
 		import YAML from "https://cdn.skypack.dev/yaml";
@@ -66,16 +68,19 @@
 				layoutConfig = YAML.parse(source);
 			}
 		}
-		
+
 		const createTab = ({ tab, file, pane }) => {
 			const title = tab.querySelector('span');
 			title.classList.add('icon', 'icon-' + iconMap(file));
 		};
+		const createPane = ({ pane }) => {
+			console.log(`pane created: ${pane.id}`)
+		};
 
 		const layout = new Layout({
 			...layoutConfig,
-			parent: document.body,
-			events: { createTab }
+			parent: document.querySelector('#layout'),
+			events: { createTab, createPane }
 		});
 
 		let activeEditor = document.querySelector('.pane.tabbed.active')?.id;

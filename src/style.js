@@ -196,6 +196,8 @@ const paneStyle = () => {
 		display: grid;
 		width: 100%;
 		height: 100%;
+		min-height: 100%;
+		min-width: 100%;
 	}
 	.pane {
 		position: relative;
@@ -206,7 +208,7 @@ const paneStyle = () => {
 		box-sizing: border-box;
 	}
 	.pane.bottomDocked {
-		margin-bottom: -23px;
+		/* margin-bottom: -23px; */
 		/*z-index: 1;*/
 	}
 	.pane.maximum {
@@ -224,11 +226,13 @@ const paneStyle = () => {
 		border-color: #2a2a2a;
 	}
 	.pane.active:after {
+		/*
 		content: "";
 		position: absolute;
 		pointer-events: none;
 		display: block;
 		box-sizing: border-box;
+		*/
 		/*
 		right: 0;
 		top: 0;
@@ -236,12 +240,14 @@ const paneStyle = () => {
 		left: 1px;
 		bottom: 23px;
 		*/
+		/*
 		right: 11px;
 		bottom: 28px;
 		background: #779997;
 		width: 10px;
 		height: 10px;
 		border-radius: 50%;
+		*/
 	}
 	.sizer {
 		background: transparent;

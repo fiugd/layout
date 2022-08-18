@@ -1,6 +1,7 @@
 ---
 rows:
   - activate: false
+    height: auto
     columns:
       - iframe: /fiugd/beta/dist/actionbar.html
         width: 45px

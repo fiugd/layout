@@ -206,7 +206,7 @@ export const createPane = (paneConfig) => {
 		(x) => x.iframe.includes("/_/modules") || x.iframe.includes("/dist/")
 	);
 	const dropClass = drop + "" !== "false" ? " dragTo" : "";
-	const bottomDockedClass = isModule ? " bottomDocked" : "";
+	const bottomDockedClass = isModule ? " bottomDocked" : ""; // bottomDocked class does not work as expected
 	const activeClass = paneActive ? " active" : "";
 	const tabbedClass = orient === "tabs" ? " tabbed" : "";
 	const classes = tabbedClass + dropClass + bottomDockedClass + activeClass;
@@ -388,6 +388,13 @@ export const createDom = (layout) => {
 				const pane = tab.closest('.pane')?.id;
 				const file = tab.getAttribute('path');
 				layout.events.createTab({ tab, pane, file });
+			}
+		}
+
+		if(layout.events.createPane){
+			const panes = Array.from(layoutDom.querySelectorAll('.pane'));
+			for(const pane of panes){
+				layout.events.createPane({ pane });
 			}
 		}
 

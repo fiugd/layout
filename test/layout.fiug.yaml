@@ -4,7 +4,7 @@ rows:
     height: auto
     columns:
       - iframe: /fiugd/beta/dist/actionbar.html
-        width: 45px
+        width: 50px
         resize: false
         drop: false
       - iframe: /fiugd/beta/dist/tree.html

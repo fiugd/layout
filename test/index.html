@@ -20,7 +20,7 @@
 		}
 		html,
 		body {
-			overscroll-behavior-x: none;
+			overscroll-behavior: none;
 		}
 	</style>
 
@@ -30,7 +30,10 @@
 
 	<script type="module">
 		import YAML from "https://cdn.skypack.dev/yaml";
+		import menus from "/fiugd/beta/dist/menus.js";
 		import iconMap from './icons.js';
+		
+		document.body.append(menus());
 
 		//import Layout from "https://unpkg.com/@fiug/layout@0.0.5";
 		import Layout from "../src/index.js";

@@ -12,7 +12,7 @@ export const focusAllActiveTabs = (layoutDom) => {
 	activeTabs.forEach(t => t.scrollIntoView({inline: "center"}));
 };
 
-const closeTab = (parent, tab) => {
+export const closeTab = (parent, tab) => {
 	tab.remove();
 
 	const tabsContainer = parent.querySelector('.tabs-container');

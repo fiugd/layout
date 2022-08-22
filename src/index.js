@@ -40,7 +40,11 @@ class Layout {
 			this.onChange();
 		};
 		this.closeTab = (args) => {
-			this.activate(args);
+			const { tab, pane } = args;
+			const file = tab.getAttribute("source")
+				.split('&paneid=').shift();
+			this.tabbed.closeTab(pane, tab);
+			this.onClose({ pane: pane.id, file })
 			this.onChange();
 		};
 		this.closePane = (args) => {

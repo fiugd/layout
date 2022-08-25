@@ -403,7 +403,8 @@ export const createDom = (layout) => {
 			flatConfig()
 		);
 		return layoutDom;
-	} catch(e){
+	} catch(error){
+		console.log(error);
 		debugger;
 	}
 };

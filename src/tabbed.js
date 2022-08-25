@@ -1,5 +1,5 @@
 import * as dom from './dom.js';
-import { randomId } from './utils.js';
+import { randomId, getFilename } from './utils.js';
 
 const createEmptyDom = dom.createEmpty;
 const createTabDom = dom.createTab;
@@ -28,15 +28,6 @@ export const closeTab = (parent, tab) => {
 		srcdoc: createEmptyDom(),
 		childrenOnly: true
 	});
-};
-
-const getFilename = (target) => {
-	let filename = target.split("/").pop();
-	if(filename.includes("?file="))
-		filename = filename.split("?file=").pop();
-	if(filename.includes("&paneid="))
-		filename = filename.split("&paneid=").shift();
-	return filename;
 };
 
 export const closeAllMenus = () => {

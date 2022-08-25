@@ -16,7 +16,10 @@ export const randomId = (prefix="_") =>
 
 
 export function UrlParams(url){
-	const urlParams = new URLSearchParams(url.split('?').pop() || "");
+	const paramsString = url.includes('?')
+		? url.split('?').pop()
+		: "";
+	const urlParams = new URLSearchParams(paramsString);
 	return urlParams;
 };
 

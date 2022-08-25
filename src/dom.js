@@ -1,5 +1,5 @@
 import style from './style.js';
-import { randomId, getFilename, getFilepath } from './utils.js';
+import { randomId, getFilename, getFilepath, addParams } from './utils.js';
 
 // WIP to hide tab controls when no valid actions exist
 
@@ -150,13 +150,11 @@ const dummyFiles = [
 	"six.html",
 ];
 
-const iframeAddPaneId = (iframe, id) => {
+const iframeAddPaneId = (iframe, paneid) => {
 	const isModule = iframe.includes("/_/modules") ||
 		iframe.includes("/dist/");
 	if (!isModule) return iframe;
-	return iframe.includes("?file")
-		? iframe + "&paneid=" + id
-		: iframe + "?paneid=" + id;
+	return addParams(iframe, { paneid });
 };
 
 export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
@@ -281,10 +279,9 @@ export const childContent = (child) => {
 		];
 		let _iframe = allowed.includes(iframe) ? iframe : "terminal.html";
 		const isModule = iframe.includes("/_/modules") || iframe.includes("/dist/");
-		if (isModule)
-			_iframe = iframe.includes("?file")
-				? iframe + "&paneid=" + child.id
-				: iframe + "?paneid=" + child.id;
+		if (isModule){
+			_iframe = addParams(iframe, { paneid: child.id });
+		}
 		return createPane({
 			...child,
 			children: [{ iframe: _iframe, active: true }],

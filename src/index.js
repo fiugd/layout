@@ -5,6 +5,8 @@ import * as dom from './dom.js';
 import * as state from './state.js';
 import { flatConfig } from './utils.js';
 
+import { UrlParams, addParams } from './utils.js';
+
 window.newPane = splitting.newPane;
 
 class Layout {
@@ -41,8 +43,7 @@ class Layout {
 		};
 		this.closeTab = (args) => {
 			const { tab, pane } = args;
-			const file = tab.getAttribute("source")
-				.split('&paneid=').shift();
+			const file = UrlParams(tab.getAttribute("source")).get("file");
 			this.tabbed.closeTab(pane, tab);
 			this.onClose({ pane: pane.id, file })
 			this.onChange();

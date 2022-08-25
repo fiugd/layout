@@ -14,22 +14,34 @@ export const getConfigNode = (config, predicate) => {
 export const randomId = (prefix="_") =>
 	prefix + Math.random().toString(16).replace('0.','');
 
+
+export function UrlParams(url){
+	const urlParams = new URLSearchParams(url.split('?').pop() || "");
+	return urlParams;
+};
+
+export function addParams(url, toAdd){
+	const currentParams = Object.fromEntries(
+		UrlParams(url)
+	);
+	const newParams = new URLSearchParams({
+		...currentParams,
+		...toAdd
+	});
+	return url.split("?").shift() + "?" + newParams.toString();
+}
+
 export const getFilename = (target) => {
-	let filename = target.split("/").pop();
-	if (filename.includes("&paneid="))
-		filename = filename.split("&paneid=").shift();
-	if (filename.includes("?file="))
-		filename = filename.split("?file=").pop();
+	const params = UrlParams(target);
+	const path = params.get('file');
+	const filename = path.split("/").pop();
 	return filename;
 };
 
 export const getFilepath = (target) => {
-	let filename = target;
-	if (filename.includes("&paneid="))
-		filename = filename.split("&paneid=").shift();
-	if (filename.includes("?file="))
-		filename = filename.split("?file=").pop();
-	return filename;
+	const params = UrlParams(target);
+	const path = params.get('file');
+	return path;
 };
 
 export const debounce = (func, timeout = 500) => {
@@ -82,4 +94,4 @@ export function debounce2 (func, delay) {
 			multiple = null
 		}, delay)
 	}
-}
+};

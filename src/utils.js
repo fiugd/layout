@@ -15,7 +15,7 @@ export const randomId = (prefix="_") =>
 	prefix + Math.random().toString(16).replace('0.','');
 
 
-export function UrlParams(url){
+export function UrlParams(url=""){
 	const paramsString = url.includes('?')
 		? url.split('?').pop()
 		: "";
@@ -34,9 +34,10 @@ export function addParams(url, toAdd){
 	return url.split("?").shift() + "?" + newParams.toString();
 }
 
-export const getFilename = (target) => {
+export const getFilename = (target="") => {
 	const params = UrlParams(target);
 	const path = params.get('file');
+	if(!path) return "";
 	const filename = path.split("/").pop();
 	return filename;
 };

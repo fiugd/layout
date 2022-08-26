@@ -86,7 +86,7 @@ export const activate = ({ layout, pane, file }) => {
 };
 
 export const onChange = (layout) => (args) => {
-	layout.events['change']
+	(layout.events['change'] || [])
 		.forEach(handler => handler(
 			outputConfig(layout.config)
 		));
@@ -95,12 +95,12 @@ export const onChange = (layout) => (args) => {
 export const onSelect = (layout) => (args) => {
 	layout.activate(args);
 	layout.onChange();
-	layout.events['select']
+	(layout.events['select'] || [])
 		.forEach(handler => handler(args))
 };
 
 export const onOpen = (layout) => (args) => {
-	layout.events['open']
+	(layout.events['open'] || [])
 		.forEach(handler => handler(args))
 };
 
@@ -123,7 +123,8 @@ export const onClose = (layout) => (args) => {
 		lastChild.active = true;
 	}
 
-	layout.events['close'].forEach(handler => handler(args));
+	(layout.events['close'] || [])
+		.forEach(handler => handler(args));
 
 	if(!lastChild){
 		//TODO: should maybe be activating the next pane
@@ -290,7 +291,7 @@ export const onResize = (layout) => (sizer, i, x, y) => {
 	layout.splitting.setSize(sizer.parentNode, containerConfig);
 	layout.focusAllActiveTabs(layout.dom);
 	layout.onChange();
-	layout.events['resize']
+	(layout.events['resize'] || [])
 		.forEach(handler => handler());
 };
 

@@ -12,7 +12,7 @@ export const focusAllActiveTabs = (layoutDom) => {
 	activeTabs.forEach(t => t.scrollIntoView({inline: "center"}));
 };
 
-export const closeTab = (parent, tab) => {
+export const closeTab = (parent, tab, layout) => {
 	tab.remove();
 
 	const tabsContainer = parent.querySelector('.tabs-container');
@@ -21,7 +21,7 @@ export const closeTab = (parent, tab) => {
 	const lastTab = tabs && tabs[tabs.length-1];
 
 	const src = lastTab && lastTab.getAttribute('source');
-	if(src) return  openTab(parent, src);
+	if(src) return  openTab(parent, src, layout);
 
 	tabsContainer.classList.add('hidden');
 	content.innerHTML = createContentDom({
@@ -139,7 +139,7 @@ const tabCloseAction = (pane, target, layout) => {
 	const file = tab.getAttribute("source")
 		.split('&paneid=').shift();
 	onClose({ pane: pane.id, file });
-	closeTab(pane, tab);
+	closeTab(pane, tab, layout);
 };
 
 const tabSelectAction = (pane, target, layout) => {

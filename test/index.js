@@ -182,7 +182,7 @@ layout.on('resize', () => {
 // EXTERNAL
 const fileSelect = (e) => {
 	//TODO: something like this belongs in the module, not sure how to do it
-	const file = `/fiugd/beta/dist/editor.html?file=${e.src}`;
+	const file = `?file=${e.src}&service=${e.service}`;
 	const allPanes = Array.from(document.querySelectorAll('.pane.tabbed'));
 	const panesWithFileOpen = [];
 	const panesWithFileActive = [];
@@ -231,7 +231,9 @@ const cursorActivity = (e) => {
 	const params = new Proxy(new URLSearchParams(e.source.location.search), {
 		get: (searchParams, prop) => searchParams.get(prop),
 	});
-	const file = params.file && e.source.location.pathname + `?file=${params.file}`;
+	const service = params.service;
+	const file = (params.service && params.file) && `?file=${params.file}&service=${params.service}`;
+	
 	if(!file) return layout.activate({ pane });
 	layout.openTab({ pane, file });
 };

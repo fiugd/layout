@@ -157,7 +157,13 @@ const iframeAddPaneId = (iframe, paneid) => {
 	return addParams(iframe, { paneid });
 };
 
-export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
+const getContent = ({ src, srcdoc, layout, pane }) => {
+	const { createTabContent } = layout?.events;
+	if(src && createTabContent && typeof createTabContent === "function"){
+		const userDefinedContent = createTabContent({ pane, file: src, layout });
+		if(userDefinedContent) return userDefinedContent;
+	}
+
 	const _src = dummyFiles.includes(src)
 		? "document.html"
 		: src;
@@ -173,7 +179,7 @@ export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
 	].join(" ");
 	const iframe = src
 		? `<iframe
-			src="${paneid ? iframeAddPaneId(_src, paneid) : _src}"
+			src="${paneid ? iframeAddPaneId(_src, pane) : _src}"
 			allowtransparency=”true”
 			sandbox="${sandbox}"
 			width="100%" height="100%"
@@ -184,13 +190,16 @@ export const createContent = ({ src, srcdoc, childrenOnly, paneid }) => {
 			sandbox="${sandbox}"
 			width="100%" height="100%"
 			></iframe>`;
-
-	if (childrenOnly) return iframe;
-
-	return `<div class="content">${iframe}</div>`;
+	return iframe;
 };
 
-export const createPane = (paneConfig) => {
+export const createContent = ({ src, srcdoc, childrenOnly, paneid, layout }) => {
+	const content = getContent({ src, srcdoc, layout, pane: paneid });
+	if (childrenOnly) return content;
+	return `<div class="content">${content}</div>`;
+};
+
+export const createPane = (paneConfig, layout) => {
 	const {
 		orient,
 		children,
@@ -228,7 +237,7 @@ export const createPane = (paneConfig) => {
 				</div>`
 				: ""
 		}
-		${createContent({ src: active.iframe, paneid: id })}
+		${createContent({ src: active.iframe, paneid: id, layout })}
 		${tabsMenu(menuActions)}
 	</div>
 	`;
@@ -266,7 +275,7 @@ export const newPane = (target, tabbed, dragTo, id, bottomDocked) => `
 	</div>
 `;
 
-export const childContent = (child) => {
+export const childContent = (child, layout) => {
 	child.id = child.id || randomId();
 	const { iframe, children, id, orient = "", drop } = child;
 	const dragToClass = drop + "" !== "false" ? " dragTo" : "";
@@ -285,21 +294,21 @@ export const childContent = (child) => {
 		return createPane({
 			...child,
 			children: [{ iframe: _iframe, active: true }],
-		});
+		}, layout);
 	}
 
-	if (children && orient === "tabs") return createPane(child);
+	if (children && orient === "tabs") return createPane(child, layout);
 
 	return `
 	<div class="layout-container ${orient}" id="${id}">
-		${children.map(childDom(child)).join("")}
+		${children.map(childDom(child, layout)).join("")}
 	</div>
 	`;
 };
 
-export const childDom = (config) => (child, i, all) => {
+export const childDom = (config, layout) => (child, i, all) => {
 	const { orient } = config;
-	if (i === 0) return childContent(child);
+	if (i === 0) return childContent(child, layout);
 	const prev = all[i - 1];
 	const next = all[i + 1];
 	const canResize = (() => {
@@ -310,7 +319,7 @@ export const childDom = (config) => (child, i, all) => {
 	const sizer = canResize
 		? `<div class="sizer ${orient}"></div>`
 		: `<div class="sizer ${orient} disabled"></div>`;
-	return sizer + childContent(child);
+	return sizer + childContent(child, layout);
 };
 
 export const createEmpty = () =>
@@ -377,7 +386,7 @@ export const createDom = (layout) => {
 		id && (layoutDom.id = id);
 
 		layoutDom.innerHTML = `<style>${style()}</style>` + 
-			children.map(childDom(config)).join('');
+			children.map(childDom(config, layout)).join('');
 
 		if(layout.events.createTab){
 			const tabs = Array.from(layoutDom.querySelectorAll('.tab'));

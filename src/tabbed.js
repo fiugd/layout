@@ -51,7 +51,8 @@ export const openTab = (parent, src, layout) => {
 	const filename = getFilename(src);
 	const content = parent.querySelector('.content');
 	const tabsContainer = parent.querySelector('.tabs-container');
-	content.innerHTML = createContentDom({ src, childrenOnly: true });
+
+	content.innerHTML = createContentDom({ layout, src, childrenOnly: true });
 
 	Array.from(parent.querySelectorAll('.tab.active'))
 		.forEach(x=>x.classList.remove('active'));

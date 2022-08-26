@@ -54,8 +54,9 @@ class Layout {
 		};
 
 		this.dom = dom.createDom(this);
-		this.config.parent.append(this.dom);
+		if(!this.dom) return console.error('layout creation failed');
 
+		this.config.parent.append(this.dom);
 		this.focusAllActiveTabs();
 		events.attachEvents(this);
 	}

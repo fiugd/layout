@@ -7,30 +7,27 @@ rows:
         width: 50px
         resize: false
         drop: false
-      - iframe: /fiugd/beta/dist/tree.html
-        width: 220px
+      - width: 220px
         minWidth: 200px
         snapWidth: 150px
         drop: false
+        tabs:
+          - iframe: /fiugd/beta/dist/tree.html
+          - iframe: /fiugd/beta/dist/search.html
       - activate: false
         minChildren: 2
         columns:
           - active: true
-            # fixed: true
-            width: 35%
+            module: /fiugd/beta/dist/editor.html
+            width: 50%
             tabs:
-              - iframe: /fiugd/beta/dist/editor.html?file=TODO.md
+              - iframe: ?file=README.md&service=fiugd/beta
                 active: true
-          - width: 35%
+          - width: 50%
+            drop: false
             tabs:
-              - iframe: /fiugd/beta/dist/editor.html?file=src/state.js
-          - width: 30%
-            rows:
               - iframe: /fiugd/beta/dist/terminal.html
-                drop: false
-              - iframe: /fiugd/beta/dist/terminal.html
-                drop: false
-                height: 50%
+              - iframe: /fiugd/beta/dist/preview.html
   - iframe: /fiugd/beta/dist/statusbar.html
     height: 22px
     resize: false

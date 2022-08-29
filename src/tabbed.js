@@ -1,5 +1,5 @@
 import * as dom from './dom.js';
-import { randomId, getFilename } from './utils.js';
+import { randomId, getFilename, getServicename } from './utils.js';
 
 const createEmptyDom = dom.createEmpty;
 const createTabDom = dom.createTab;
@@ -49,6 +49,7 @@ export const closeAllMenus = () => {
 export const openTab = (parent, src, layout) => {
 	closeAllMenus();
 	const filename = getFilename(src);
+	const servicename = getServicename(src);
 	const content = parent.querySelector('.content');
 	const tabsContainer = parent.querySelector('.tabs-container');
 
@@ -57,8 +58,7 @@ export const openTab = (parent, src, layout) => {
 	Array.from(parent.querySelectorAll('.tab.active'))
 		.forEach(x=>x.classList.remove('active'));
 	const tabs = parent.querySelector('.tabs');
-	const found = tabs.querySelector(`.tab[file="${filename}"]`);
-	//if(found) return;
+	const found = tabs.querySelector(`.tab[source^="?file=${filename}&service=${servicename}"]`);
 	if(found){
 		found.classList.add('active');
 		found.scrollIntoViewIfNeeded({inline: "center"})
@@ -71,7 +71,7 @@ export const openTab = (parent, src, layout) => {
 
 	const pane = tab.closest('.pane')?.id;
 	const file = tab.getAttribute('path');
-	layout.events.createTab({ tab, pane, file: filename });
+	layout.events.createTab({ tab, pane, file: `?file=${filename}&service=${servicename}` });
 
 	tab.scrollIntoView({inline: "center"});
 };

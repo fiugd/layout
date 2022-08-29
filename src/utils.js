@@ -31,7 +31,8 @@ export function addParams(url, toAdd){
 		...currentParams,
 		...toAdd
 	});
-	return url.split("?").shift() + "?" + newParams.toString();
+	const path = url.split("?").shift() + "?" + newParams.toString().replace(/%2F/g, '/')
+	return path;
 }
 
 export const getFilename = (target="") => {
@@ -39,6 +40,12 @@ export const getFilename = (target="") => {
 	const path = params.get('file') || target;
 	const filename = path.split("/").pop();
 	return filename;
+};
+
+export const getServicename = (target="") => {
+	const params = UrlParams(target);
+	const service = params.get('service');
+	return service;
 };
 
 export const getFilepath = (target) => {

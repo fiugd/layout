@@ -248,14 +248,12 @@ export const newPaneChildren = (target, tabbed, layout) => {
 	${
 		tabbed
 			? `<div class="tabs-container">
-				<div class="tabs">
-					${createTab(true, getFilename(target))}
-				</div>
+				<div class="tabs"></div>
 				${tabControls()}
 			</div>`
 			: ""
 	}
-	${createContent({ src: tabbed ? target : "terminal.html", layout })}
+	<div class="content"></div>
 	${tabbed && tabsMenu(tabMenuActions())}
 	`;
 };

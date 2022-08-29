@@ -139,7 +139,6 @@ const addPane = (node, target, append, vertical, row, layout) => {
 };
 
 export const newPane = (direction, node, target, layout) => {
-	debugger;
 	const row = node.parentNode.classList.contains('row');
 	const column = node.parentNode.classList.contains('column');
 	const horizontal = ["left", "right"].includes(direction);

@@ -243,7 +243,6 @@ export const onDrop = (layout) => (args) => {
 	}
 
 	if(!splitPane && !addedPane) return;
-	debugger;
 	layout.onChange();
 };
 

@@ -70,8 +70,8 @@ const dragStartMessage = (layout) => (e) => {
 		}[splitDirection];
 		const splitPane = document.getElementById(pane?.id);
 		if(dir && splitPane){
-			const editorFile = `/fiugd/beta/dist/editor.html?file=${file}`;
-			const split = splitting.newPane(dir, splitPane, editorFile);
+			const editorFile = `?file=${file}`;
+			const split = splitting.newPane(dir, splitPane, editorFile, layout);
 			layout.onDrop({
 				type: "split",
 				dir,

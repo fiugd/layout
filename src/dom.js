@@ -243,7 +243,7 @@ export const createPane = (paneConfig, layout) => {
 	`;
 };
 
-export const newPaneChildren = (target, tabbed) => {
+export const newPaneChildren = (target, tabbed, layout) => {
 	return `
 	${
 		tabbed
@@ -255,12 +255,12 @@ export const newPaneChildren = (target, tabbed) => {
 			</div>`
 			: ""
 	}
-	${createContent({ src: tabbed ? target : "terminal.html" })}
+	${createContent({ src: tabbed ? target : "terminal.html", layout })}
 	${tabbed && tabsMenu(tabMenuActions())}
 	`;
 };
 
-export const newPane = (target, tabbed, dragTo, id, bottomDocked) => `
+export const newPane = (target, tabbed, dragTo, id, bottomDocked, layout) => `
 	<div class="${[
 		"pane",
 		tabbed && "tabbed",
@@ -271,7 +271,7 @@ export const newPane = (target, tabbed, dragTo, id, bottomDocked) => `
 		.join(" ")}"
 		id="${id}"
 	>
-		${newPaneChildren(target, tabbed)}
+		${newPaneChildren(target, tabbed, layout)}
 	</div>
 `;
 

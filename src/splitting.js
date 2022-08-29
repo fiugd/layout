@@ -24,7 +24,7 @@ export const setSize = (container, config) => {
 		.join(' 0px ');
 };
 
-const split = (node, target, append, vertical, row) => {
+const split = (node, target, append, vertical, row, layout) => {
 	try {
 		const containerId = randomId();
 		const paneId = randomId();
@@ -35,9 +35,10 @@ const split = (node, target, append, vertical, row) => {
 		const sizerDir = row ? "column" : "row";
 		const parentTabbed = node.classList.contains('tabbed');
 		const parentDragTo = node.classList.contains('dragTo');
+		const bottomDocked = undefined;
 		container.innerHTML = `
 			${ append ? `<div class="sizer ${sizerDir}"></div>` : "" }
-			${ dom.newPane(target, parentTabbed, parentDragTo, paneId) }
+			${ dom.newPane(target, parentTabbed, parentDragTo, paneId, bottomDocked, layout) }
 			${ !append ? `<div class="sizer ${sizerDir}"></div>` : "" }
 		`;
 		if(vertical){
@@ -75,11 +76,12 @@ const split = (node, target, append, vertical, row) => {
 		}
 		return { splitPane };
 	} catch(e){
+		console.log(e);
 		debugger;
 	}
 };
 
-const addPane = (node, target, append, vertical, row) => {
+const addPane = (node, target, append, vertical, row, layout) => {
 	try {
 		let dims = row
 			? node.parentNode.style.gridTemplateRows.split(" ").filter(x=>x)
@@ -102,7 +104,7 @@ const addPane = (node, target, append, vertical, row) => {
 		const parentDragTo = node.classList.contains('dragTo');
 
 		const id = randomId();
-		pane.innerHTML = dom.newPaneChildren(target, parentTabbed);
+		pane.innerHTML = dom.newPaneChildren(target, parentTabbed, layout);
 		pane.id = id;
 
 		const insertLocation = append ? 'afterend' : 'beforebegin';
@@ -136,7 +138,7 @@ const addPane = (node, target, append, vertical, row) => {
 	}
 };
 
-export const newPane = (direction, node, target) => {
+export const newPane = (direction, node, target, layout) => {
 	try {
 		const row = node.parentNode.classList.contains('row');
 		const column = node.parentNode.classList.contains('column');
@@ -152,7 +154,7 @@ export const newPane = (direction, node, target) => {
 		})();
 		if(!operation) return;
 
-		return operation(node, target, append, vertical, row);
+		return operation(node, target, append, vertical, row, layout);
 	} catch(e){
 		debugger;
 	}

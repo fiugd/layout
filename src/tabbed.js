@@ -52,7 +52,7 @@ export const openTab = (parent, src, layout) => {
 	const content = parent.querySelector('.content');
 	const tabsContainer = parent.querySelector('.tabs-container');
 
-	content.innerHTML = createContentDom({ layout, src, childrenOnly: true });
+	content.innerHTML = createContentDom({ layout, src, childrenOnly: true, paneid: parent.id });
 
 	Array.from(parent.querySelectorAll('.tab.active'))
 		.forEach(x=>x.classList.remove('active'));

@@ -36,15 +36,14 @@ export function addParams(url, toAdd){
 
 export const getFilename = (target="") => {
 	const params = UrlParams(target);
-	const path = params.get('file');
-	if(!path) return "";
+	const path = params.get('file') || target;
 	const filename = path.split("/").pop();
 	return filename;
 };
 
 export const getFilepath = (target) => {
 	const params = UrlParams(target);
-	const path = params.get('file');
+	const path = params.get('file') || target;
 	return path;
 };
 

@@ -48,11 +48,12 @@ function follow(evt) {
 }
 
 let dragging = false;
-let file;
+let file, service;
 const dragStartMessage = (layout) => (e) => {
-	const { file: inputFile, source, dragStart, dragEnd, pointerId, pane, splitDirection } = JSON.parse(e.data);
+	const { file: inputFile, service: inputService, source, dragStart, dragEnd, pointerId, pane, splitDirection } = JSON.parse(e.data);
 	//document.body.setPointerCapture(pointerId);
 	file = inputFile || file;
+	service = inputService || service;
 
 	if(dragStart){
 		dragging = true;
@@ -70,7 +71,7 @@ const dragStartMessage = (layout) => (e) => {
 		}[splitDirection];
 		const splitPane = document.getElementById(pane?.id);
 		if(dir && splitPane){
-			const editorFile = `?file=${file}`;
+			const editorFile = `?file=${file}&service=${service}`;
 			const split = splitting.newPane(dir, splitPane, editorFile, layout);
 			layout.onDrop({
 				type: "split",
@@ -82,7 +83,7 @@ const dragStartMessage = (layout) => (e) => {
 		}
 		const tabbedPane = splitPane.classList.contains('tabbed');
 		if(!dir && tabbedPane){
-			const editorFile = `/fiugd/beta/dist/editor.html?file=${file}`;
+			const editorFile = `?file=${file}&service=${service}`;
 			layout.openTab({
 				pane: splitPane.id,
 				file: editorFile
@@ -160,6 +161,7 @@ export const dragStart = (ev, draggedEv) => {
 		pointerId: ev.pointerId,
 		dragStart: draggedEv.target.textContent,
 		file: draggedEv.target.textContent,
+		service: draggedEv.service,
 		source: location.href.split('/').pop()
 	});
 	window.parent.postMessage(message, '*');

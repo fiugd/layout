@@ -139,23 +139,20 @@ const addPane = (node, target, append, vertical, row, layout) => {
 };
 
 export const newPane = (direction, node, target, layout) => {
-	try {
-		const row = node.parentNode.classList.contains('row');
-		const column = node.parentNode.classList.contains('column');
-		const horizontal = ["left", "right"].includes(direction);
-		const vertical = ["up", "down"].includes(direction);
-		const append = ["right", "down"].includes(direction);
+	debugger;
+	const row = node.parentNode.classList.contains('row');
+	const column = node.parentNode.classList.contains('column');
+	const horizontal = ["left", "right"].includes(direction);
+	const vertical = ["up", "down"].includes(direction);
+	const append = ["right", "down"].includes(direction);
 
-		const operation = (() => {
-			if(column && horizontal) return addPane;
-			if(row && vertical) return addPane;
-			if(column && vertical) return split;
-			if(row && horizontal) return split;
-		})();
-		if(!operation) return;
+	const operation = (() => {
+		if(column && horizontal) return addPane;
+		if(row && vertical) return addPane;
+		if(column && vertical) return split;
+		if(row && horizontal) return split;
+	})();
+	if(!operation) return;
 
-		return operation(node, target, append, vertical, row, layout);
-	} catch(e){
-		debugger;
-	}
+	return operation(node, target, append, vertical, row, layout);
 };

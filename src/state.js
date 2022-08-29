@@ -147,12 +147,16 @@ export const onDrop = (layout) => (args) => {
 			file, height, width, tabbed, dragTo,
 			pane, location, parent, sibling
 		} = addedPane;
+		const siblingConfig = configFlat
+			.find(x => x.id === sibling);
 		const parentConfig = configFlat
 			.find(x => x.id === parent);
 		const newPane = {};
 		if(!!width) newPane.width = width;
 		if(!!height) newPane.height = height;
-
+		if(siblingConfig?.module){
+			newPane.module = siblingConfig.module;
+		}
 		if(tabbed){
 			newPane.orient = "tabs";
 			newPane.id = pane;
@@ -239,6 +243,7 @@ export const onDrop = (layout) => (args) => {
 	}
 
 	if(!splitPane && !addedPane) return;
+	debugger;
 	layout.onChange();
 };
 

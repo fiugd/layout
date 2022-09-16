@@ -45,13 +45,15 @@ class Layout {
 			const { tab, pane } = args;
 			const file = UrlParams(tab.getAttribute("source")).get("file");
 			this.tabbed.closeTab(pane, tab);
-			this.onClose({ pane: pane.id, file })
+			this.onClose({ pane: pane.id, file });
 			this.onChange();
 		};
 		this.closePane = (args) => {
 			state.closePane(this)(args);
 			this.onChange();
 		};
+		this.hidePane = (args) =>state.hidePane(this)(args);
+		this.showPane = (args) =>state.showPane(this)(args);
 
 		this.dom = dom.createDom(this);
 		if(!this.dom) return console.error('layout creation failed');

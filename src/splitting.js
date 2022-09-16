@@ -15,12 +15,18 @@ const halfDim = (dim) => {
 export const setSize = (container, config) => {
 	if(config.orient === "column"){
 		container.style.gridTemplateColumns = config.children
-			.map(x=>x.width || '1fr')
+			.map(x => {
+				if(x.hidden) return '0px';
+				return x.width || '1fr';
+			})
 			.join(' 0px ');
 		return;
 	}
 	container.style.gridTemplateRows = config.children
-		.map(x=>x.height || '1fr')
+		.map(x => {
+			if(x.hidden) return '0px';
+			return x.height || '1fr';
+		})
 		.join(' 0px ');
 };
 

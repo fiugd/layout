@@ -305,3 +305,21 @@ export const onResize = (layout) => (sizer, i, x, y) => {
 };
 
 export const closePane = removePane;
+
+
+const setPaneHidden = ({ layout, name, hidden }) => {
+	const { config, dom } = layout;
+	if(!config || !dom) return console.log('config and/or dom not found');
+	const paneConfig = getConfigNode(config, x => x.name === name);
+	const parentConfig = getConfigNode(
+		config,
+		(node) => node.children && node.children
+			.find(c => c.id === paneConfig.id)
+	);
+	const parentDom = document.querySelector('#'+parentConfig.id);
+	paneConfig.hidden = hidden;
+	layout.splitting.setSize(parentDom,parentConfig);
+	layout.onChange();
+};
+export const hidePane = (layout) => ({ name }) => setPaneHidden({ layout, name, hidden: true });
+export const showPane = (layout) => ({ name }) => setPaneHidden({ layout, name, hidden: false });
